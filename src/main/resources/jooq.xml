@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.11.0.xsd">
+	<!-- Configure the database connection here -->
+	<generator>
+		<generate>
+			<pojos>true</pojos>
+			<globalCatalogReferences>false</globalCatalogReferences>
+			<globalKeyReferences>false</globalKeyReferences>
+			<globalLinkReferences>false</globalLinkReferences>>
+			<globalQueueReferences>false</globalQueueReferences>
+			<globalRoutineReferences>false</globalRoutineReferences>
+			<globalSchemaReferences>false</globalSchemaReferences>
+			<globalSequenceReferences>false</globalSequenceReferences>
+			<globalTableReferences>false</globalTableReferences>
+			<globalUDTReferences>false</globalUDTReferences>
+		</generate>
+
+		<database>
+			<excludes>
+			</excludes>
+			<includes>.*</includes>
+			<inputSchema>gridscore-next</inputSchema>
+			<outputSchema>gridscore_db</outputSchema>
+			<name>org.jooq.meta.mysql.MySQLDatabase</name>
+
+			<forcedTypes>
+				<forcedType>
+					<binding>jhi.gridscore.server.database.binding.TrialBinding</binding>
+					<expression>.*(trials)\.(trial)</expression>
+					<types>.*json.*</types>
+					<userType>jhi.gridscore.server.pojo.Trial</userType>
+				</forcedType>
+			</forcedTypes>
+		</database>
+
+		<target>
+			<directory>src/main/java/</directory>
+			<packageName>jhi.gridscore.server.database.codegen</packageName>
+		</target>
+	</generator>
+
+	<jdbc>
+		<driver>com.mysql.cj.jdbc.Driver</driver>
+		<password></password>
+		<properties>
+			<property>
+				<key>user</key>
+				<value>root</value>
+			</property>
+			<property>
+				<key>password</key>
+				<value></value>
+			</property>
+		</properties>
+		<url>jdbc:mysql://localhost/gridscore-next?serverTimezone=UTC</url>
+
+		<!-- You can also pass user/password and other JDBC properties in the optional properties tag: -->
+		<user>root</user>
+	</jdbc>
+</configuration>
