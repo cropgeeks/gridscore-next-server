@@ -9,6 +9,7 @@ import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.util.*;
 import org.geotools.data.*;
+import org.geotools.data.Transaction;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.shapefile.*;
 import org.geotools.data.simple.*;

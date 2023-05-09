@@ -12,11 +12,11 @@ public class Timeframe
 {
 	private String        start;
 	private String        end;
-	private TimeframeType type = TimeframeType.TRAIT_TIMEFRAME_TYPE_SUGGEST;
+	private TimeframeType type = TimeframeType.SUGGEST;
 
 	public static enum TimeframeType
 	{
-		TRAIT_TIMEFRAME_TYPE_SUGGEST,
-		TRAIT_TIMEFRAME_TYPE_ENFORCE
+		SUGGEST,
+		ENFORCE
 	}
 }
