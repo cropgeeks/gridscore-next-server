@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.database.Database;
-import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
+import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.pojo.transaction.*;
 import org.jooq.DSLContext;
@@ -40,14 +40,20 @@ public class TrialTransactionResource
 			try (Connection conn = Database.getConnection())
 			{
 				DSLContext context = Database.getContext(conn);
-				Trials wrapper = context.selectFrom(TRIALS)
-										.where(TRIALS.OWNER_CODE.eq(shareCode))
-										.or(TRIALS.EDITOR_CODE.eq(shareCode))
-										.fetchAnyInto(Trials.class);
+				TrialsRecord wrapper = context.selectFrom(TRIALS)
+											  .where(TRIALS.OWNER_CODE.eq(shareCode))
+											  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+											  .or(TRIALS.VIEWER_CODE.eq(shareCode))
+											  .fetchAny();
 
 				if (wrapper == null)
 				{
 					return Response.status(Response.Status.NOT_FOUND)
+								   .build();
+				}
+				if (Objects.equals(shareCode, wrapper.getViewerCode()))
+				{
+					return Response.status(Response.Status.FORBIDDEN)
 								   .build();
 				}
 
@@ -160,7 +166,14 @@ public class TrialTransactionResource
 				}
 
 				// Set updated on to UTC NOW
-				trial.setUpdatedOn(ZonedDateTime.now(ZoneOffset.UTC).format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+				ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+				trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+				wrapper.setTrial(trial);
+				wrapper.setUpdatedOn(now.toLocalDateTime());
+				wrapper.store();
+
+				// Limit the share codes to what the user is allowed to see
+				TrialResource.setShareCodes(trial, shareCode, wrapper);
 
 				return Response.ok(trial).build();
 			}

@@ -42,11 +42,11 @@ public class TrialResource
 		{
 			DSLContext context = Database.getContext(conn);
 
-			Trials trial = context.selectFrom(TRIALS)
+			TrialsRecord trial = context.selectFrom(TRIALS)
 								  .where(TRIALS.OWNER_CODE.eq(shareCode))
 								  .or(TRIALS.EDITOR_CODE.eq(shareCode))
 								  .or(TRIALS.VIEWER_CODE.eq(shareCode))
-								  .fetchAnyInto(Trials.class);
+								  .fetchAny();
 
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
@@ -58,7 +58,7 @@ public class TrialResource
 		}
 	}
 
-	private void setShareCodes(Trial result, String baseShareCode, Trials trial)
+	public static void setShareCodes(Trial result, String baseShareCode, TrialsRecord trial)
 	{
 		ShareCodes codes = new ShareCodes();
 		if (StringUtils.equals(baseShareCode, trial.getOwnerCode()))
