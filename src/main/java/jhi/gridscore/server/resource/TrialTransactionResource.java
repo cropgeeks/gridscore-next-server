@@ -162,6 +162,40 @@ public class TrialTransactionResource
 
 							break;
 						}
+						case TRAIT_DATA_CHANGED:
+						{
+							TraitDataContent content = gson.fromJson(t.getContent(), TraitDataContent.class);
+
+							Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
+
+							if (cell.getMeasurements() == null)
+								cell.setMeasurements(new HashMap<>());
+
+							Map<String, List<Measurement>> cellMeasurements = cell.getMeasurements();
+							for (TraitMeasurement m : content.getMeasurements())
+							{
+								trial.getTraits().stream().filter(trait -> Objects.equals(trait.getId(), m.getTraitId())).findFirst()
+									 .ifPresent(trait -> {
+										 if (!cellMeasurements.containsKey(trait.getId()))
+											 cellMeasurements.put(trait.getId(), new ArrayList<>());
+
+										 List<Measurement> list = cellMeasurements.get(trait.getId());
+										 if (trait.isAllowRepeats() || list.size() < 1)
+										 {
+											 // Add new
+											 list.add(new Measurement()
+												 .setValues(m.getValues())
+												 .setTimestamp(m.getTimestamp()));
+										 }
+										 else
+										 {
+											 // Update
+											 list.get(0).setValues(m.getValues())
+												 .setTimestamp(m.getTimestamp());
+										 }
+									 });
+							}
+						}
 					}
 				}
 
