@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static jhi.gridscore.server.database.codegen.tables.Trials.*;
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 @Path("trial/{shareCode}/transaction")
 public class TrialTransactionResource
@@ -28,7 +28,7 @@ public class TrialTransactionResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postTransactions(List<Transaction> transactions)
-		throws SQLException
+			throws SQLException
 	{
 		if (StringUtils.isEmpty(shareCode) || transactions == null)
 		{
@@ -180,12 +180,22 @@ public class TrialTransactionResource
 											 cellMeasurements.put(trait.getId(), new ArrayList<>());
 
 										 List<Measurement> list = cellMeasurements.get(trait.getId());
+
 										 if (trait.isAllowRepeats() || list.size() < 1)
 										 {
-											 // Add new
-											 list.add(new Measurement()
-												 .setValues(m.getValues())
-												 .setTimestamp(m.getTimestamp()));
+											 Optional<Measurement> match = list.stream().filter(om -> Objects.equals(m.getTimestamp(), om.getTimestamp())).findFirst();
+
+											 if (match.isPresent())
+											 {
+												 match.get().setValues(m.getValues());
+											 }
+											 else
+											 {
+												 // Add new
+												 list.add(new Measurement()
+														 .setValues(m.getValues())
+														 .setTimestamp(m.getTimestamp()));
+											 }
 										 }
 										 else
 										 {
