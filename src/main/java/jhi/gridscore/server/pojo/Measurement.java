@@ -14,4 +14,5 @@ public class Measurement
 {
 	private String       timestamp;
 	private List<String> values;
+	private Boolean      delete = false;
 }

@@ -57,169 +57,196 @@ public class TrialTransactionResource
 								   .build();
 				}
 
-				Trial trial = wrapper.getTrial();
 
-				// Sort the transactions in order of their timestamp to make sure everything happens in the correct order
-				transactions.sort(Comparator.comparing(Transaction::getTimestamp));
-
-				Gson gson = new Gson();
-				for (Transaction t : transactions)
+				synchronized (wrapper.getOwnerCode())
 				{
-					switch (t.getOperation())
+					// Fetch it again once we're in the synchronised block
+					wrapper = context.selectFrom(TRIALS)
+									 .where(TRIALS.OWNER_CODE.eq(shareCode))
+									 .or(TRIALS.EDITOR_CODE.eq(shareCode))
+									 .or(TRIALS.VIEWER_CODE.eq(shareCode))
+									 .fetchAny();
+
+					Trial trial = wrapper.getTrial();
+
+					// Sort the transactions in order of their timestamp to make sure everything happens in the correct order
+					transactions.sort(Comparator.comparing(Transaction::getTimestamp));
+
+					Gson gson = new Gson();
+					for (Transaction t : transactions)
 					{
-						case TRIAL_TRAITS_ADDED:
+						switch (t.getOperation())
 						{
-							TraitContent content = gson.fromJson(t.getContent(), TraitContent.class);
-
-							// Add all the new traits
-							trial.getTraits().addAll(content);
-
-							// Iterate all plots
-							for (Cell cell : trial.getData().values())
+							case TRIAL_TRAITS_ADDED:
 							{
-								// Make sure the measurements array exists
+								TraitContent content = gson.fromJson(t.getContent(), TraitContent.class);
+
+								// Add all the new traits
+								trial.getTraits().addAll(content);
+
+								// Iterate all plots
+								for (Cell cell : trial.getData().values())
+								{
+									// Make sure the measurements array exists
+									if (cell.getMeasurements() == null)
+										cell.setMeasurements(new HashMap<>());
+
+									// Add keys with empty lists for each trait
+									for (Trait trait : content)
+										cell.getMeasurements().put(trait.getId(), new ArrayList<>());
+								}
+
+								break;
+							}
+							case TRIAL_COMMENT_ADDED:
+							{
+								TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
+
+								// Make sure the list exists
+								if (trial.getComments() == null)
+									trial.setComments(new ArrayList<>());
+
+								// Add the new comment
+								trial.getComments().add(new Comment().setContent(content.getContent())
+																	 .setTimestamp(content.getTimestamp()));
+
+								break;
+							}
+							case TRIAL_COMMENT_DELETED:
+							{
+								TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
+
+								if (trial.getComments() != null)
+								{
+									// Remove all comments that match the timestamp AND content
+									trial.setComments(trial.getComments().stream()
+														   .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
+														   .collect(Collectors.toList()));
+								}
+
+								break;
+							}
+							case PLOT_COMMENT_ADDED:
+							{
+								PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
+
+								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
+
+								if (cell != null)
+								{
+									// Make sure the list exists
+									if (cell.getComments() == null)
+										cell.setComments(new ArrayList<>());
+
+									// Add the new comment
+									cell.getComments().add(new Comment().setContent(content.getContent())
+																		.setTimestamp(content.getTimestamp()));
+								}
+
+								break;
+							}
+							case PLOT_COMMENT_DELETED:
+							{
+								PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
+
+								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
+
+								if (cell != null)
+								{
+									// Remove all comments that match the timestamp AND content
+									cell.setComments(cell.getComments().stream()
+														 .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
+														 .collect(Collectors.toList()));
+								}
+
+								break;
+							}
+							case PLOT_MARKED_CHANGED:
+							{
+								PlotMarkedContent content = gson.fromJson(t.getContent(), PlotMarkedContent.class);
+
+								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
+
+								if (cell != null)
+									cell.setIsMarked(content.getIsMarked());
+
+								break;
+							}
+							case TRAIT_DATA_CHANGED:
+							{
+								TraitDataContent content = gson.fromJson(t.getContent(), TraitDataContent.class);
+
+								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
+
 								if (cell.getMeasurements() == null)
 									cell.setMeasurements(new HashMap<>());
 
-								// Add keys with empty lists for each trait
-								for (Trait trait : content)
-									cell.getMeasurements().put(trait.getId(), new ArrayList<>());
-							}
+								Map<String, List<Measurement>> cellMeasurements = cell.getMeasurements();
+								for (TraitMeasurement m : content.getMeasurements())
+								{
+									trial.getTraits().stream().filter(trait -> Objects.equals(trait.getId(), m.getTraitId())).findFirst()
+										 .ifPresent(trait -> {
+											 if (!cellMeasurements.containsKey(trait.getId()))
+												 cellMeasurements.put(trait.getId(), new ArrayList<>());
 
-							break;
-						}
-						case TRIAL_COMMENT_ADDED:
-						{
-							TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
+											 List<Measurement> list = cellMeasurements.get(trait.getId());
 
-							// Make sure the list exists
-							if (trial.getComments() == null)
-								trial.setComments(new ArrayList<>());
-
-							// Add the new comment
-							trial.getComments().add(new Comment().setContent(content.getContent())
-																 .setTimestamp(content.getTimestamp()));
-
-							break;
-						}
-						case TRIAL_COMMENT_DELETED:
-						{
-							TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
-
-							if (trial.getComments() != null)
-							{
-								// Remove all comments that match the timestamp AND content
-								trial.setComments(trial.getComments().stream()
-													   .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
-													   .collect(Collectors.toList()));
-							}
-
-							break;
-						}
-						case PLOT_COMMENT_ADDED:
-						{
-							PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
-
-							Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-							if (cell != null)
-							{
-								// Make sure the list exists
-								if (cell.getComments() == null)
-									cell.setComments(new ArrayList<>());
-
-								// Add the new comment
-								cell.getComments().add(new Comment().setContent(content.getContent())
-																	.setTimestamp(content.getTimestamp()));
-							}
-
-							break;
-						}
-						case PLOT_COMMENT_DELETED:
-						{
-							PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
-
-							Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-							if (cell != null)
-							{
-								// Remove all comments that match the timestamp AND content
-								cell.setComments(cell.getComments().stream()
-													 .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
-													 .collect(Collectors.toList()));
-							}
-
-							break;
-						}
-						case PLOT_MARKED_CHANGED:
-						{
-							PlotMarkedContent content = gson.fromJson(t.getContent(), PlotMarkedContent.class);
-
-							Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-							if (cell != null)
-								cell.setIsMarked(content.getIsMarked());
-
-							break;
-						}
-						case TRAIT_DATA_CHANGED:
-						{
-							TraitDataContent content = gson.fromJson(t.getContent(), TraitDataContent.class);
-
-							Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-							if (cell.getMeasurements() == null)
-								cell.setMeasurements(new HashMap<>());
-
-							Map<String, List<Measurement>> cellMeasurements = cell.getMeasurements();
-							for (TraitMeasurement m : content.getMeasurements())
-							{
-								trial.getTraits().stream().filter(trait -> Objects.equals(trait.getId(), m.getTraitId())).findFirst()
-									 .ifPresent(trait -> {
-										 if (!cellMeasurements.containsKey(trait.getId()))
-											 cellMeasurements.put(trait.getId(), new ArrayList<>());
-
-										 List<Measurement> list = cellMeasurements.get(trait.getId());
-
-										 if (trait.isAllowRepeats() || list.size() < 1)
-										 {
-											 Optional<Measurement> match = list.stream().filter(om -> Objects.equals(m.getTimestamp(), om.getTimestamp())).findFirst();
-
-											 if (match.isPresent())
+											 if (m.getDelete())
 											 {
-												 match.get().setValues(m.getValues());
+												 if (trait.isAllowRepeats())
+												 {
+													 // Remove any value with the same timestamp
+													 list.removeIf(om -> Objects.equals(m.getTimestamp(), om.getTimestamp()));
+												 }
+												 else
+												 {
+													 // Remove any value here
+													 list.clear();
+												 }
 											 }
 											 else
 											 {
-												 // Add new
-												 list.add(new Measurement()
-														 .setValues(m.getValues())
-														 .setTimestamp(m.getTimestamp()));
+												 if (trait.isAllowRepeats() || list.size() < 1)
+												 {
+													 Optional<Measurement> match = list.stream().filter(om -> Objects.equals(m.getTimestamp(), om.getTimestamp())).findFirst();
+
+													 if (match.isPresent())
+													 {
+														 match.get().setValues(m.getValues());
+													 }
+													 else
+													 {
+														 // Add new
+														 list.add(new Measurement()
+																 .setValues(m.getValues())
+																 .setTimestamp(m.getTimestamp()));
+													 }
+												 }
+												 else
+												 {
+													 // Update
+													 list.get(0).setValues(m.getValues())
+														 .setTimestamp(m.getTimestamp());
+												 }
 											 }
-										 }
-										 else
-										 {
-											 // Update
-											 list.get(0).setValues(m.getValues())
-												 .setTimestamp(m.getTimestamp());
-										 }
-									 });
+										 });
+								}
 							}
 						}
 					}
+
+					// Set updated on to UTC NOW
+					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+					trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+					wrapper.setTrial(trial);
+					wrapper.setUpdatedOn(now.toLocalDateTime());
+					wrapper.store();
+
+					// Limit the share codes to what the user is allowed to see
+					TrialResource.setShareCodes(trial, shareCode, wrapper);
+
+					return Response.ok(trial).build();
 				}
-
-				// Set updated on to UTC NOW
-				ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-				trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
-				wrapper.setTrial(trial);
-				wrapper.setUpdatedOn(now.toLocalDateTime());
-				wrapper.store();
-
-				// Limit the share codes to what the user is allowed to see
-				TrialResource.setShareCodes(trial, shareCode, wrapper);
-
-				return Response.ok(trial).build();
 			}
 		}
 	}
