@@ -1,6 +1,6 @@
 package jhi.gridscore.server.util;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.*;
@@ -14,20 +14,18 @@ import org.jooq.tools.StringUtils;
 
 import java.io.*;
 import java.sql.*;
-import java.text.*;
-import java.time.Instant;
+import java.text.ParseException;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
-import java.util.Date;
 import java.util.stream.*;
 
-import static jhi.gridscore.server.database.codegen.tables.Trials.*;
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 public class DataToSpreadsheet
 {
 	public static void main(String[] args)
-		throws IOException, SQLException
+			throws IOException, SQLException
 	{
 		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next/src/main/resources/trials-data.xlsx");
 		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
@@ -47,9 +45,9 @@ public class DataToSpreadsheet
 		}
 	}
 
-	private File template;
-	private File target;
-	private Trial trial;
+	private File           template;
+	private File           target;
+	private Trial          trial;
 
 	public DataToSpreadsheet(File template, File target, Trial trial)
 	{
@@ -58,13 +56,24 @@ public class DataToSpreadsheet
 		this.trial = trial;
 	}
 
-	public void run()
-		throws IOException
+	private String getTimezonedDate(String input, boolean dashes)
 	{
-		SimpleDateFormat TS = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXX");
-		SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat SDFNS = new SimpleDateFormat("yyyyMMdd");
+		ZonedDateTime offsetTz = ZonedDateTime.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 
+		if (dashes)
+			return offsetTz.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		else
+			return offsetTz.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+	}
+
+	private String getTimezonedNow()
+	{
+		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	}
+
+	public void run()
+			throws IOException
+	{
 		try (FileInputStream is = new FileInputStream(template);
 			 FileOutputStream os = new FileOutputStream(target))
 		{
@@ -73,18 +82,14 @@ public class DataToSpreadsheet
 			XSSFSheet data = workbook.getSheet("DATA");
 			XSSFSheet dates = workbook.getSheet("RECORDING_DATES");
 
-			TemporalAccessor ta = DateTimeFormatter.ISO_INSTANT.parse(trial.getUpdatedOn());
-			Instant in = Instant.from(ta);
-			Date d = Date.from(in);
-
 			// Write title and description
 			XSSFSheet metadata = workbook.getSheet("METADATA");
 			metadata.getRow(1).getCell(2).setCellValue(trial.getName());
 			metadata.getRow(2).getCell(2).setCellValue("GridScore trial: " + trial.getDescription());
 			if (trial.getUpdatedOn() != null)
-				metadata.getRow(4).getCell(2).setCellValue(SDF.format(d));
+				metadata.getRow(4).getCell(2).setCellValue(getTimezonedDate(trial.getUpdatedOn(), true));
 			else
-				metadata.getRow(4).getCell(2).setCellValue(SDF.format(new Date(System.currentTimeMillis())));
+				metadata.getRow(4).getCell(2).setCellValue(getTimezonedNow());
 
 			writeTraits(workbook);
 
@@ -99,7 +104,7 @@ public class DataToSpreadsheet
 						 dateRow.createCell(i + 10).setCellValue(t.getName());
 					 });
 
-			exportNonAggregated(data, dates, TS, SDF, SDFNS);
+			exportNonAggregated(data, dates);
 
 			workbook.setActiveSheet(0);
 			workbook.write(os);
@@ -107,7 +112,7 @@ public class DataToSpreadsheet
 		}
 	}
 
-	private void exportNonAggregated(XSSFSheet data, XSSFSheet dates, SimpleDateFormat TS, SimpleDateFormat SDF, SimpleDateFormat SDFNS)
+	private void exportNonAggregated(XSSFSheet data, XSSFSheet dates)
 	{
 		Gson gson = new Gson();
 
@@ -119,18 +124,12 @@ public class DataToSpreadsheet
 			int row = Integer.parseInt(rowColumn[0]);
 			int col = Integer.parseInt(rowColumn[1]);
 			cell.getMeasurements().forEach((traitId, measurements) -> measurements.forEach(m -> {
-				try
-				{
-					String date = SDF.format(TS.parse(m.getTimestamp()));
+				String date = getTimezonedDate(m.getTimestamp(), false);
 
-					if (!unique.contains(date)) {
-						cells.add(new CoordinateDateCell(cell, row, col, date));
-						unique.add(date);
-					}
-				}
-				catch (ParseException e)
+				if (!unique.contains(date))
 				{
-					// TODO
+					cells.add(new CoordinateDateCell(cell, row, col, date));
+					unique.add(date);
 				}
 			}));
 		});
@@ -228,15 +227,8 @@ public class DataToSpreadsheet
 
 						 List<Measurement> traitMeasurements = c.getMeasurements().get(t.getId());
 						 List<Measurement> measurements = traitMeasurements == null ? new ArrayList<>() : traitMeasurements.stream().filter(m -> {
-							 try
-							 {
-								 String date = SDF.format(TS.parse(m.getTimestamp()));
-								 return Objects.equals(date, c.date);
-							 }
-							 catch (ParseException e)
-							 {
-								 return false;
-							 }
+							 String date = getTimezonedDate(m.getTimestamp(), true);
+							 return Objects.equals(date, c.date);
 						 }).collect(Collectors.toList());
 
 						 if (CollectionUtils.isEmpty(measurements))
@@ -282,15 +274,7 @@ public class DataToSpreadsheet
 						 setCell(t, dc, value);
 						 if (value != null)
 						 {
-							 try
-							 {
-								 setCell(t, pc, SDFNS.format(SDF.parse(c.date)));
-							 }
-							 catch (ParseException pe)
-							 {
-								 // Do nothing here
-								 setCell(t, pc, null);
-							 }
+							 setCell(t, pc, c.date);
 						 }
 					 }
 				 });
@@ -304,7 +288,8 @@ public class DataToSpreadsheet
 		return cell;
 	}
 
-	private void writeAttributes(XSSFWorkbook workbook) {
+	private void writeAttributes(XSSFWorkbook workbook)
+	{
 		XSSFSheet attributes = workbook.getSheet("ATTRIBUTES");
 		XSSFTable attributeTable = attributes.getTables().get(0);
 
@@ -339,9 +324,12 @@ public class DataToSpreadsheet
 
 		Package pkg = getClass().getPackage();
 
-		if (pkg != null && !StringUtils.isBlank(pkg.getImplementationVersion())) {
+		if (pkg != null && !StringUtils.isBlank(pkg.getImplementationVersion()))
+		{
 			row.createCell(2).setCellValue(pkg.getImplementationVersion());
-		} else {
+		}
+		else
+		{
 			row.createCell(2).setCellValue("DEVELOPMENT");
 		}
 	}
