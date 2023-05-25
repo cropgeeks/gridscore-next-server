@@ -30,7 +30,7 @@ public class TrialTransactionResource
 	public Response postTransactions(List<Transaction> transactions)
 			throws SQLException
 	{
-		if (StringUtils.isEmpty(shareCode) || transactions == null)
+		if (StringUtils.isEmpty(shareCode))
 		{
 			return Response.status(Response.Status.BAD_REQUEST)
 						   .build();
@@ -68,6 +68,10 @@ public class TrialTransactionResource
 									 .fetchAny();
 
 					Trial trial = wrapper.getTrial();
+
+					// If there's nothing to do, simply return
+					if (transactions == null || transactions.size() < 1)
+						return Response.ok(trial).build();
 
 					// Sort the transactions in order of their timestamp to make sure everything happens in the correct order
 					transactions.sort(Comparator.comparing(Transaction::getTimestamp));

@@ -39,7 +39,7 @@ public class DataToSpreadsheet
 		{
 			DSLContext context = Database.getContext(conn);
 
-			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("hAQpxBoZ3PvlD4WkUhd3ATGHV6M")).fetchAnyInto(Trials.class);
+			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("0GAtAzTDdaJ9F2sGd1YAnEYqWfI")).fetchAnyInto(Trials.class);
 
 			new DataToSpreadsheet(template, target, trials.getTrial()).run();
 		}
@@ -85,7 +85,10 @@ public class DataToSpreadsheet
 			// Write title and description
 			XSSFSheet metadata = workbook.getSheet("METADATA");
 			metadata.getRow(1).getCell(2).setCellValue(trial.getName());
-			metadata.getRow(2).getCell(2).setCellValue("GridScore trial: " + trial.getDescription());
+			if (!StringUtils.isBlank(trial.getDescription()))
+				metadata.getRow(2).getCell(2).setCellValue("GridScore trial: " + trial.getDescription());
+			else
+				metadata.getRow(2).getCell(2).setCellValue("GridScore trial");
 			if (trial.getUpdatedOn() != null)
 				metadata.getRow(4).getCell(2).setCellValue(getTimezonedDate(trial.getUpdatedOn(), true));
 			else
@@ -227,7 +230,7 @@ public class DataToSpreadsheet
 
 						 List<Measurement> traitMeasurements = c.getMeasurements().get(t.getId());
 						 List<Measurement> measurements = traitMeasurements == null ? new ArrayList<>() : traitMeasurements.stream().filter(m -> {
-							 String date = getTimezonedDate(m.getTimestamp(), true);
+							 String date = getTimezonedDate(m.getTimestamp(), false);
 							 return Objects.equals(date, c.date);
 						 }).collect(Collectors.toList());
 
