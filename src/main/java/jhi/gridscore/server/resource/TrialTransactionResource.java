@@ -81,6 +81,32 @@ public class TrialTransactionResource
 					{
 						switch (t.getOperation())
 						{
+							case TRIAL_GERMPLASM_ADDED:
+							{
+								GermplasmContent content = gson.fromJson(t.getContent(), GermplasmContent.class);
+
+								int counter = 0;
+								for (String germplasm : content) {
+									Cell cell = new Cell()
+											.setGermplasm(germplasm)
+											.setRep(null);
+
+									Map<String, List<Measurement>> measurements = new HashMap<>();
+
+									trial.getTraits().forEach(trait -> {
+										measurements.put(trait.getId(), new ArrayList<>());
+									});
+
+									cell.setMeasurements(measurements);
+
+									trial.getData().put(trial.getLayout().getRows() + counter + "|" + (trial.getLayout().getColumns() - 1), cell);
+
+									counter++;
+								}
+
+								trial.getLayout().setRows(trial.getLayout().getRows() + counter);
+								break;
+							}
 							case TRIAL_TRAITS_ADDED:
 							{
 								TraitContent content = gson.fromJson(t.getContent(), TraitContent.class);
