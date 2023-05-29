@@ -181,9 +181,9 @@ public class TrialExportResource
 		{
 			DSLContext context = Database.getContext(conn);
 			Trials trials = context.selectFrom(TRIALS)
-								   .where(TRIALS.OWNER_CODE.eq(shareCode))
-								   .or(TRIALS.EDITOR_CODE.eq(shareCode))
-								   .or(TRIALS.VIEWER_CODE.eq(shareCode))
+								   .where(TRIALS.OWNER_CODE.eq(shareCode)
+														   .or(TRIALS.EDITOR_CODE.eq(shareCode))
+														   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 								   .fetchAnyInto(Trials.class);
 
 			File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore"), uuid);
@@ -241,9 +241,9 @@ public class TrialExportResource
 			DSLContext context = Database.getContext(conn);
 
 			Trials trial = context.selectFrom(TRIALS)
-								  .where(TRIALS.OWNER_CODE.eq(shareCode))
-								  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-								  .or(TRIALS.VIEWER_CODE.eq(shareCode))
+								  .where(TRIALS.OWNER_CODE.eq(shareCode)
+														  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+														  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 								  .fetchAnyInto(Trials.class);
 
 			if (trial == null)
@@ -290,9 +290,9 @@ public class TrialExportResource
 		{
 			DSLContext context = Database.getContext(conn);
 			Trials trials = context.selectFrom(TRIALS)
-								   .where(TRIALS.OWNER_CODE.eq(shareCode))
-								   .or(TRIALS.EDITOR_CODE.eq(shareCode))
-								   .or(TRIALS.VIEWER_CODE.eq(shareCode))
+								   .where(TRIALS.OWNER_CODE.eq(shareCode)
+														   .or(TRIALS.EDITOR_CODE.eq(shareCode))
+														   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 								   .fetchAnyInto(Trials.class);
 
 			if (trials == null)

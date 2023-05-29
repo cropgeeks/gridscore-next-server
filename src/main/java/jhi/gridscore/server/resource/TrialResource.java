@@ -43,10 +43,10 @@ public class TrialResource
 			DSLContext context = Database.getContext(conn);
 
 			TrialsRecord trial = context.selectFrom(TRIALS)
-								  .where(TRIALS.OWNER_CODE.eq(shareCode))
-								  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-								  .or(TRIALS.VIEWER_CODE.eq(shareCode))
-								  .fetchAny();
+										.where(TRIALS.OWNER_CODE.eq(shareCode)
+																.or(TRIALS.EDITOR_CODE.eq(shareCode))
+																.or(TRIALS.VIEWER_CODE.eq(shareCode)))
+										.fetchAny();
 
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();

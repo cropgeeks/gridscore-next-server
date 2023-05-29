@@ -41,9 +41,9 @@ public class TrialTransactionResource
 			{
 				DSLContext context = Database.getContext(conn);
 				TrialsRecord wrapper = context.selectFrom(TRIALS)
-											  .where(TRIALS.OWNER_CODE.eq(shareCode))
-											  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-											  .or(TRIALS.VIEWER_CODE.eq(shareCode))
+											  .where(TRIALS.OWNER_CODE.eq(shareCode)
+																	  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+																	  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 											  .fetchAny();
 
 				if (wrapper == null)
@@ -62,9 +62,9 @@ public class TrialTransactionResource
 				{
 					// Fetch it again once we're in the synchronised block
 					wrapper = context.selectFrom(TRIALS)
-									 .where(TRIALS.OWNER_CODE.eq(shareCode))
-									 .or(TRIALS.EDITOR_CODE.eq(shareCode))
-									 .or(TRIALS.VIEWER_CODE.eq(shareCode))
+									 .where(TRIALS.OWNER_CODE.eq(shareCode)
+															 .or(TRIALS.EDITOR_CODE.eq(shareCode))
+															 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 									 .fetchAny();
 
 					Trial trial = wrapper.getTrial();
@@ -86,7 +86,8 @@ public class TrialTransactionResource
 								GermplasmContent content = gson.fromJson(t.getContent(), GermplasmContent.class);
 
 								int counter = 0;
-								for (String germplasm : content) {
+								for (String germplasm : content)
+								{
 									Cell cell = new Cell()
 											.setGermplasm(germplasm)
 											.setRep(null);
