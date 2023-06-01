@@ -1,8 +1,10 @@
 package jhi.gridscore.server.pojo;
 
-import com.google.gson.JsonElement;
+import jhi.gridscore.server.pojo.transaction.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import java.util.*;
 
 @Getter
 @Setter
@@ -11,22 +13,13 @@ import lombok.experimental.Accessors;
 @ToString
 public class Transaction
 {
-	private String               trialId;
-	private TransactionOperation operation;
-	private String               timestamp;
-	private JsonElement          content;
-
-	@Getter
-	@ToString
-	public static enum TransactionOperation
-	{
-		PLOT_COMMENT_ADDED,
-		PLOT_COMMENT_DELETED,
-		PLOT_MARKED_CHANGED,
-		TRIAL_COMMENT_ADDED,
-		TRIAL_COMMENT_DELETED,
-		TRIAL_GERMPLASM_ADDED,
-		TRIAL_TRAITS_ADDED,
-		TRAIT_DATA_CHANGED
-	}
+	private String                                trialId;
+	private Map<String, List<PlotCommentContent>> plotCommentAddedTransactions;
+	private Map<String, List<PlotCommentContent>> plotCommentDeletedTransactions;
+	private Map<String, Boolean>                  plotMarkedTransactions;
+	private Map<String, List<TraitMeasurement>>   plotTraitDataChangeTransactions;
+	private List<TrialCommentContent>             trialCommentAddedTransactions;
+	private List<TrialCommentContent>             trialCommentDeletedTransactions;
+	private List<String>                          trialGermplasmAddedTransactions;
+	private List<Trait>                           trialTraitAddedTransactions;
 }

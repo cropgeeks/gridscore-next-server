@@ -1,12 +1,12 @@
 package jhi.gridscore.server.resource;
 
-import com.google.gson.Gson;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.pojo.transaction.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
@@ -27,7 +27,7 @@ public class TrialTransactionResource
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postTransactions(List<Transaction> transactions)
+	public Response postTransactions(Transaction transaction)
 			throws SQLException
 	{
 		if (StringUtils.isEmpty(shareCode))
@@ -70,150 +70,98 @@ public class TrialTransactionResource
 					Trial trial = wrapper.getTrial();
 
 					// If there's nothing to do, simply return
-					if (transactions == null || transactions.size() < 1)
+					if (transaction == null)
 						return Response.ok(trial).build();
 
-					// Sort the transactions in order of their timestamp to make sure everything happens in the correct order
-					transactions.sort(Comparator.comparing(Transaction::getTimestamp));
+					/* ADD TRAITS */
+					if (!CollectionUtils.isEmpty(transaction.getTrialTraitAddedTransactions()))
+						trial.getTraits().addAll(transaction.getTrialTraitAddedTransactions());
 
-					Gson gson = new Gson();
-					for (Transaction t : transactions)
+					/* ADD TRIAL GERMPLASM */
+					if (!CollectionUtils.isEmpty(transaction.getTrialGermplasmAddedTransactions()))
 					{
-						switch (t.getOperation())
+						int counter = 0;
+						for (String germplasm : transaction.getTrialGermplasmAddedTransactions())
 						{
-							case TRIAL_GERMPLASM_ADDED:
+							// Create new cell
+							Cell cell = new Cell()
+									.setGermplasm(germplasm)
+									.setRep(null);
+
+							// Add to data map
+							trial.getData().put(trial.getLayout().getRows() + counter + "|" + (trial.getLayout().getColumns() - 1), cell);
+
+							counter++;
+						}
+
+						// Increment row count
+						trial.getLayout().setRows(trial.getLayout().getRows() + counter);
+					}
+
+					for (Map.Entry<String, Cell> entry : trial.getData().entrySet())
+					{
+						String key = entry.getKey();
+						Cell cell = entry.getValue();
+
+						// Make sure the measurements object is set
+						if (cell.getMeasurements() == null)
+							cell.setMeasurements(new HashMap<>());
+
+						// Make sure a measurements array exists for each trait (including any new traits that were added during this transaction)
+						for (Trait t : trial.getTraits())
+						{
+							if (!cell.getMeasurements().containsKey(t.getId()))
+								cell.getMeasurements().put(t.getId(), new ArrayList<>());
+						}
+
+						// Check if the marked status has changed
+						if (transaction.getPlotMarkedTransactions() != null)
+						{
+							Boolean change = transaction.getPlotMarkedTransactions().get(key);
+
+							if (change != null)
+								cell.setIsMarked(change);
+						}
+
+						// Check if comments have been added
+						if (transaction.getPlotCommentAddedTransactions() != null)
+						{
+							List<PlotCommentContent> plotComments = transaction.getPlotCommentAddedTransactions().get(key);
+
+							if (!CollectionUtils.isEmpty(plotComments))
 							{
-								GermplasmContent content = gson.fromJson(t.getContent(), GermplasmContent.class);
+								if (cell.getComments() == null)
+									cell.setComments(new ArrayList<>());
 
-								int counter = 0;
-								for (String germplasm : content)
-								{
-									Cell cell = new Cell()
-											.setGermplasm(germplasm)
-											.setRep(null);
-
-									Map<String, List<Measurement>> measurements = new HashMap<>();
-
-									trial.getTraits().forEach(trait -> {
-										measurements.put(trait.getId(), new ArrayList<>());
-									});
-
-									cell.setMeasurements(measurements);
-
-									trial.getData().put(trial.getLayout().getRows() + counter + "|" + (trial.getLayout().getColumns() - 1), cell);
-
-									counter++;
-								}
-
-								trial.getLayout().setRows(trial.getLayout().getRows() + counter);
-								break;
+								// Add all new comments
+								cell.getComments().addAll(plotComments.stream().map(c -> new Comment().setContent(c.getContent()).setTimestamp(c.getTimestamp())).collect(Collectors.toList()));
 							}
-							case TRIAL_TRAITS_ADDED:
+						}
+
+						// Check if comments have been deleted
+						if (transaction.getPlotCommentDeletedTransactions() != null)
+						{
+							List<PlotCommentContent> plotComments = transaction.getPlotCommentDeletedTransactions().get(key);
+
+							if (!CollectionUtils.isEmpty(plotComments))
 							{
-								TraitContent content = gson.fromJson(t.getContent(), TraitContent.class);
-
-								// Add all the new traits
-								trial.getTraits().addAll(content);
-
-								// Iterate all plots
-								for (Cell cell : trial.getData().values())
-								{
-									// Make sure the measurements array exists
-									if (cell.getMeasurements() == null)
-										cell.setMeasurements(new HashMap<>());
-
-									// Add keys with empty lists for each trait
-									for (Trait trait : content)
-										cell.getMeasurements().put(trait.getId(), new ArrayList<>());
-								}
-
-								break;
-							}
-							case TRIAL_COMMENT_ADDED:
-							{
-								TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
-
-								// Make sure the list exists
-								if (trial.getComments() == null)
-									trial.setComments(new ArrayList<>());
-
-								// Add the new comment
-								trial.getComments().add(new Comment().setContent(content.getContent())
-																	 .setTimestamp(content.getTimestamp()));
-
-								break;
-							}
-							case TRIAL_COMMENT_DELETED:
-							{
-								TrialCommentContent content = gson.fromJson(t.getContent(), TrialCommentContent.class);
-
-								if (trial.getComments() != null)
+								if (cell.getComments() != null)
 								{
 									// Remove all comments that match the timestamp AND content
-									trial.setComments(trial.getComments().stream()
-														   .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
-														   .collect(Collectors.toList()));
+									cell.getComments().removeIf(c -> plotComments.stream().anyMatch(oc -> Objects.equals(c.getContent(), oc.getContent()) && Objects.equals(c.getTimestamp(), oc.getTimestamp())));
 								}
-
-								break;
 							}
-							case PLOT_COMMENT_ADDED:
+						}
+
+						// Check if any data has changed
+						if (transaction.getPlotTraitDataChangeTransactions() != null)
+						{
+							List<TraitMeasurement> measures = transaction.getPlotTraitDataChangeTransactions().get(key);
+
+							if (!CollectionUtils.isEmpty(measures))
 							{
-								PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
-
-								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-								if (cell != null)
-								{
-									// Make sure the list exists
-									if (cell.getComments() == null)
-										cell.setComments(new ArrayList<>());
-
-									// Add the new comment
-									cell.getComments().add(new Comment().setContent(content.getContent())
-																		.setTimestamp(content.getTimestamp()));
-								}
-
-								break;
-							}
-							case PLOT_COMMENT_DELETED:
-							{
-								PlotCommentContent content = gson.fromJson(t.getContent(), PlotCommentContent.class);
-
-								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-								if (cell != null)
-								{
-									// Remove all comments that match the timestamp AND content
-									cell.setComments(cell.getComments().stream()
-														 .filter(c -> !Objects.equals(c.getContent(), content.getContent()) || !Objects.equals(c.getTimestamp(), content.getTimestamp()))
-														 .collect(Collectors.toList()));
-								}
-
-								break;
-							}
-							case PLOT_MARKED_CHANGED:
-							{
-								PlotMarkedContent content = gson.fromJson(t.getContent(), PlotMarkedContent.class);
-
-								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-								if (cell != null)
-									cell.setIsMarked(content.getIsMarked());
-
-								break;
-							}
-							case TRAIT_DATA_CHANGED:
-							{
-								TraitDataContent content = gson.fromJson(t.getContent(), TraitDataContent.class);
-
-								Cell cell = trial.getData().get(content.getRow() + "|" + content.getColumn());
-
-								if (cell.getMeasurements() == null)
-									cell.setMeasurements(new HashMap<>());
-
 								Map<String, List<Measurement>> cellMeasurements = cell.getMeasurements();
-								for (TraitMeasurement m : content.getMeasurements())
+								for (TraitMeasurement m : measures)
 								{
 									trial.getTraits().stream().filter(trait -> Objects.equals(trait.getId(), m.getTraitId())).findFirst()
 										 .ifPresent(trait -> {
@@ -263,6 +211,32 @@ public class TrialTransactionResource
 										 });
 								}
 							}
+						}
+					}
+
+					/* ADD TRIAL COMMENTS */
+					if (!CollectionUtils.isEmpty(transaction.getTrialCommentAddedTransactions()))
+					{
+						// Make sure the list exists
+						if (trial.getComments() == null)
+							trial.setComments(new ArrayList<>());
+
+						List<TrialCommentContent> comments = transaction.getTrialCommentAddedTransactions();
+						comments.sort(Comparator.comparing(TrialCommentContent::getTimestamp));
+
+						// Add the new comment
+						comments.forEach(c -> trial.getComments().add(new Comment().setContent(c.getContent())
+																				   .setTimestamp(c.getTimestamp())));
+					}
+
+					/* REMOVE TRIAL COMMENTS */
+					if (!CollectionUtils.isEmpty(transaction.getTrialCommentDeletedTransactions()))
+					{
+						if (trial.getComments() != null)
+						{
+							List<TrialCommentContent> comments = transaction.getTrialCommentDeletedTransactions();
+							// Remove all comments that match the timestamp AND content
+							trial.getComments().removeIf(c -> comments.stream().anyMatch(oc -> Objects.equals(c.getContent(), oc.getContent()) && Objects.equals(c.getTimestamp(), oc.getTimestamp())));
 						}
 					}
 
