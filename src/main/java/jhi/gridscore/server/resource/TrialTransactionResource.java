@@ -54,6 +54,13 @@ public class TrialTransactionResource {
                     return Response.status(Response.Status.FORBIDDEN)
                             .build();
                 }
+                // If there's nothing to do, simply return
+                if (transaction == null)
+                {
+                    // Limit the share codes to what the user is allowed to see
+                    TrialResource.setShareCodes(wrapper.getTrial(), shareCode, wrapper);
+                    return Response.ok(wrapper.getTrial()).build();
+                }
                 // Only owners can update trial details!
                 if (transaction.getTrialEditTransaction() != null && !Objects.equals(shareCode, wrapper.getOwnerCode())) {
                     return Response.status(Response.Status.FORBIDDEN).build();
@@ -68,10 +75,6 @@ public class TrialTransactionResource {
                             .fetchAny();
 
                     Trial trial = wrapper.getTrial();
-
-                    // If there's nothing to do, simply return
-                    if (transaction == null)
-                        return Response.ok(trial).build();
 
                     /* Check for trial modifications */
                     if (transaction.getTrialEditTransaction() != null) {
