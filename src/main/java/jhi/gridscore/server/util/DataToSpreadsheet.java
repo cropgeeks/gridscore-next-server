@@ -1,53 +1,47 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
-import jhi.gridscore.server.database.Database;
-import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
-import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.*;
-import java.text.ParseException;
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.*;
-
-import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 public class DataToSpreadsheet
 {
 	public static void main(String[] args)
 			throws IOException, SQLException
 	{
-		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next/src/main/resources/trials-data.xlsx");
-		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
-
-		if (target.exists() && target.isFile())
-			target.delete();
-
-		Database.init("localhost", "gridscore-next", null, "root", null, false);
-
-		try (Connection conn = Database.getConnection())
-		{
-			DSLContext context = Database.getContext(conn);
-
-			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("0GAtAzTDdaJ9F2sGd1YAnEYqWfI")).fetchAnyInto(Trials.class);
-
-			new DataToSpreadsheet(template, target, trials.getTrial()).run();
-		}
+//		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next/src/main/resources/trials-data.xlsx");
+//		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
+//
+//		if (target.exists() && target.isFile())
+//			target.delete();
+//
+//		Database.init("localhost", "gridscore-next", null, "root", null, false);
+//
+//		try (Connection conn = Database.getConnection())
+//		{
+//			DSLContext context = Database.getContext(conn);
+//
+//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("0GAtAzTDdaJ9F2sGd1YAnEYqWfI")).fetchAnyInto(Trials.class);
+//
+//			new DataToSpreadsheet(template, target, trials.getTrial()).run();
+//		}
 	}
 
-	private File           template;
-	private File           target;
-	private Trial          trial;
+	private File  template;
+	private File  target;
+	private Trial trial;
 
 	public DataToSpreadsheet(File template, File target, Trial trial)
 	{
@@ -255,8 +249,7 @@ public class DataToSpreadsheet
 									 {
 										 total += Double.parseDouble(v);
 										 count++;
-									 }
-									 catch (NumberFormatException | NullPointerException e)
+									 } catch (NumberFormatException | NullPointerException e)
 									 {
 										 // Ignore
 									 }
@@ -272,6 +265,9 @@ public class DataToSpreadsheet
 						 {
 							 List<String> values = measurements.get(measurements.size() - 1).getValues();
 							 value = values.get(values.size() - 1);
+
+							 if (Objects.equals(t.getDataType(), "categorical"))
+								 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
 						 }
 
 						 setCell(t, dc, value);
@@ -328,17 +324,15 @@ public class DataToSpreadsheet
 		Package pkg = getClass().getPackage();
 
 		if (pkg != null && !StringUtils.isBlank(pkg.getImplementationVersion()))
-		{
 			row.createCell(2).setCellValue(pkg.getImplementationVersion());
-		}
 		else
-		{
 			row.createCell(2).setCellValue("DEVELOPMENT");
-		}
 	}
 
 	private void writeTraits(XSSFWorkbook workbook)
 	{
+		Gson gson = new Gson();
+
 		XSSFSheet phenotypes = workbook.getSheet("PHENOTYPES");
 		XSSFTable traitTable = phenotypes.getTables().get(0);
 
@@ -377,7 +371,7 @@ public class DataToSpreadsheet
 					 if (t.getRestrictions() != null)
 					 {
 						 if (!CollectionUtils.isEmpty(t.getRestrictions().getCategories()))
-							 row.createCell(7).setCellValue("[[" + String.join(",", t.getRestrictions().getCategories()) + "]]");
+							 row.createCell(7).setCellValue("[" + gson.toJson(t.getRestrictions().getCategories()) + "]");
 						 if (t.getRestrictions().getMin() != null)
 							 row.createCell(8).setCellValue(t.getRestrictions().getMin());
 						 if (t.getRestrictions().getMax() != null)
