@@ -164,14 +164,31 @@ public class DataToSpreadsheet
 					 // Write the row
 					 dc = getCell(d, 3);
 					 pc = getCell(p, 3);
-					 dc.setCellValue(c.row + 1);
-					 pc.setCellValue(c.row + 1);
+
+					 if (Objects.equals(trial.getLayout().getRowOrder(), Layout.DISPLAY_ORDER_BOTTOM_TO_TOP))
+					 {
+						 dc.setCellValue(trial.getLayout().getRows() - c.row);
+						 pc.setCellValue(trial.getLayout().getRows() - c.row);
+					 }
+					 else
+					 {
+						 dc.setCellValue(c.row + 1);
+						 pc.setCellValue(c.row + 1);
+					 }
 
 					 // Write the column
 					 dc = getCell(d, 4);
 					 pc = getCell(p, 4);
-					 dc.setCellValue(c.col + 1);
-					 pc.setCellValue(c.col + 1);
+					 if (Objects.equals(trial.getLayout().getColumnOrder(), Layout.DISPLAY_ORDER_RIGHT_TO_LEFT))
+					 {
+						 dc.setCellValue(trial.getLayout().getColumns() - c.col);
+						 pc.setCellValue(trial.getLayout().getColumns() - c.col);
+					 }
+					 else
+					 {
+						 dc.setCellValue(c.col + 1);
+						 pc.setCellValue(c.col + 1);
+					 }
 
 					 // Write the location
 					 if (c.getGeography() != null)
