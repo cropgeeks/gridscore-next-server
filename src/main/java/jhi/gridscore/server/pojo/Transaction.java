@@ -22,5 +22,6 @@ public class Transaction
 	private List<TrialCommentContent>             trialCommentDeletedTransactions;
 	private List<String>                          trialGermplasmAddedTransactions;
 	private List<Trait>                           trialTraitAddedTransactions;
+	private List<TraitEditContent>                traitChangeTransactions;
 	private TrialContent                          trialEditTransaction;
 }

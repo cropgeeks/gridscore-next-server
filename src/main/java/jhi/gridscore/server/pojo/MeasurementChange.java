@@ -10,8 +10,7 @@ import java.util.List;
 @Accessors(chain = true)
 @NoArgsConstructor
 @ToString
-public class Measurement
+public class MeasurementChange extends Measurement
 {
-	private String       timestamp;
-	private List<String> values;
+	private Boolean      delete = false;
 }

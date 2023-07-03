@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class TraitMeasurement extends Measurement
+public class TraitMeasurement extends MeasurementChange
 {
 	private String traitId;
 }
