@@ -24,4 +24,5 @@ public class Transaction
 	private List<Trait>                           trialTraitAddedTransactions;
 	private List<TraitEditContent>                traitChangeTransactions;
 	private TrialContent                          trialEditTransaction;
+	private BrapiIdChangeContent                  brapiIdChangeTransaction;
 }

@@ -121,6 +121,14 @@ public class TrialTransactionResource
 						String key = entry.getKey();
 						Cell cell = entry.getValue();
 
+						if (transaction.getBrapiIdChangeTransaction() != null && transaction.getBrapiIdChangeTransaction().getGermplasmBrapiIds() != null)
+						{
+							String id = transaction.getBrapiIdChangeTransaction().getGermplasmBrapiIds().get(key);
+
+							if (!StringUtils.isBlank(id))
+								cell.setBrapiId(id);
+						}
+
 						// Make sure the measurements object is set
 						if (cell.getMeasurements() == null)
 							cell.setMeasurements(new HashMap<>());
@@ -263,6 +271,18 @@ public class TrialTransactionResource
 							List<TrialCommentContent> comments = transaction.getTrialCommentDeletedTransactions();
 							// Remove all comments that match the timestamp AND content
 							trial.getComments().removeIf(c -> comments.stream().anyMatch(oc -> Objects.equals(c.getContent(), oc.getContent()) && Objects.equals(c.getTimestamp(), oc.getTimestamp())));
+						}
+					}
+
+					/* CHANGE TRAIT BRAPI IDS */
+					if (transaction.getBrapiIdChangeTransaction() != null && transaction.getBrapiIdChangeTransaction().getTraitBrapiIds() != null)
+					{
+						for (Trait trait : trial.getTraits())
+						{
+							String id = transaction.getBrapiIdChangeTransaction().getTraitBrapiIds().get(trait.getId());
+
+							if (!StringUtils.isBlank(id))
+								trait.setBrapiId(id);
 						}
 					}
 
