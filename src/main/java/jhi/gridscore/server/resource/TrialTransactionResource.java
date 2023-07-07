@@ -306,6 +306,9 @@ public class TrialTransactionResource
 						}
 					}
 
+					if (transaction.getBrapiConfigChangeTransaction() != null && !StringUtils.isBlank(transaction.getBrapiConfigChangeTransaction().getUrl()))
+						trial.setBrapiConfig(new BrapiConfig().setUrl(transaction.getBrapiConfigChangeTransaction().getUrl()));
+
 					// Set updated on to UTC NOW
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
 					trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));

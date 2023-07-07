@@ -25,4 +25,5 @@ public class Transaction
 	private List<TraitEditContent>                traitChangeTransactions;
 	private TrialContent                          trialEditTransaction;
 	private BrapiIdChangeContent                  brapiIdChangeTransaction;
+	private BrapiConfig				              brapiConfigChangeTransaction;
 }
