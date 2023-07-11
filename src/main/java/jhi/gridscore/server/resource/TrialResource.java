@@ -2,6 +2,7 @@ package jhi.gridscore.server.resource;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
@@ -12,8 +13,10 @@ import org.jooq.tools.StringUtils;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.time.*;
-import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.*;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
@@ -95,7 +98,7 @@ public class TrialResource
 		{
 			DSLContext context = Database.getContext(conn);
 
-			Map<String, String> result = new HashMap<>();
+			Map<String, TrialTimestamp> result = new HashMap<>();
 
 			for (String id : ids)
 			{
@@ -106,9 +109,36 @@ public class TrialResource
 											.fetchAny();
 
 				if (trial != null)
-					result.put(id, trial.getTrial().getUpdatedOn());
+				{
+					TrialTimestamp time = new TrialTimestamp()
+							.setUpdatedOn(trial.getTrial().getUpdatedOn());
+					try
+					{
+						ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
+						// Check how soon a trial will expire after inactivity
+						Integer daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days"));
+						// Add that number of days to the updatedOn date
+						updatedOn = updatedOn.plusDays(daysTillExpiry);
+
+						// Then check how long that date is from today!
+						long timeTillExpiry = ZonedDateTime.now(ZoneOffset.UTC).until(updatedOn, ChronoUnit.DAYS);
+
+						// Set the expiry warning if we're still before the expiry date but within a quarter of the overall expiry duration away
+						time.setShowExpiryWarning(timeTillExpiry > 0 && (timeTillExpiry < (0.25 * daysTillExpiry)));
+						// Also set th expiry date
+						time.setExpiresOn(updatedOn.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+					} catch (Exception e)
+					{
+						Logger.getLogger("").severe(e.getMessage());
+						// Do nothing here
+					}
+
+					result.put(id, time);
+				}
 				else
+				{
 					result.put(id, null);
+				}
 			}
 
 			return Response.ok(result).build();
