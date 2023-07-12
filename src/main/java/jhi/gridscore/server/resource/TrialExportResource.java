@@ -308,10 +308,10 @@ public class TrialExportResource
 
 			String friendlyFilename = trials.getTrial().getName().replaceAll("\\W+", "-") + "-" + shareCode;
 
-			java.nio.file.Path zipFilePath = result.toPath();
+			java.nio.file.Path filePath = result.toPath();
 			return Response.ok((StreamingOutput) output -> {
-							   Files.copy(zipFilePath, output);
-							   Files.deleteIfExists(zipFilePath);
+							   Files.copy(filePath, output);
+							   Files.deleteIfExists(filePath);
 						   })
 						   .type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 						   .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + friendlyFilename + ".xlsx\"")

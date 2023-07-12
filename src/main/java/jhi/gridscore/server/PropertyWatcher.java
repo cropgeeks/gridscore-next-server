@@ -145,6 +145,10 @@ public class PropertyWatcher
 		return StringUtils.isEmpty(value) ? null : value;
 	}
 
+	public static void set(String property, String value) {
+		properties.setProperty(property, value);
+	}
+
 	public static Boolean getBoolean(String property)
 	{
 		return Boolean.parseBoolean(get(property));

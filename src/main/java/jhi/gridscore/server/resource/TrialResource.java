@@ -6,15 +6,22 @@ import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
+import net.logicsquad.nanocaptcha.content.LatinContentProducer;
+import net.logicsquad.nanocaptcha.image.ImageCaptcha;
+import net.logicsquad.nanocaptcha.image.backgrounds.FlatColorBackgroundProducer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.*;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -32,6 +39,15 @@ public class TrialResource
 		RANDOM.nextBytes(buffer);
 		return ENCODER.encodeToString(buffer);
 	}
+
+	private static final Map<String, String> captchaMap = Collections.synchronizedMap(new LinkedHashMap<>(1000)
+	{
+		@Override
+		protected synchronized boolean removeEldestEntry(Map.Entry<String, String> entry)
+		{
+			return size() > 1000;
+		}
+	});
 
 	@GET
 	@Path("/{shareCode}")
@@ -124,7 +140,7 @@ public class TrialResource
 						long timeTillExpiry = ZonedDateTime.now(ZoneOffset.UTC).until(updatedOn, ChronoUnit.DAYS);
 
 						// Set the expiry warning if we're still before the expiry date but within a quarter of the overall expiry duration away
-						time.setShowExpiryWarning(timeTillExpiry > 0 && (timeTillExpiry < (0.25 * daysTillExpiry)));
+						time.setShowExpiryWarning(timeTillExpiry < (0.25 * daysTillExpiry));
 						// Also set th expiry date
 						time.setExpiresOn(updatedOn.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
 					} catch (Exception e)
@@ -235,5 +251,113 @@ public class TrialResource
 				.setViewerCode(viewerCode));
 
 		return Response.ok(trial).build();
+	}
+
+	@POST
+	@Path("/{shareCode}/renew/{uuid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response postRenewCaptchaResponse(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid, String captchaContent)
+			throws SQLException
+	{
+		if (StringUtils.isBlank(shareCode))
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		try (Connection conn = Database.getConnection())
+		{
+			DSLContext context = Database.getContext(conn);
+
+			TrialsRecord wrapper = context.selectFrom(TRIALS)
+										.where(TRIALS.OWNER_CODE.eq(shareCode)
+																.or(TRIALS.EDITOR_CODE.eq(shareCode))
+																.or(TRIALS.VIEWER_CODE.eq(shareCode)))
+										.fetchAny();
+
+			if (wrapper == null)
+				return Response.status(Response.Status.NOT_FOUND).build();
+
+			// Synchronize on the map to be sure
+			synchronized (captchaMap)
+			{
+				String mapCaptcha = captchaMap.get(uuid);
+
+				// Check if the captcha is correct
+				if (StringUtils.isEmpty(mapCaptcha) || !Objects.equals(mapCaptcha, captchaContent))
+					return Response.status(Response.Status.NOT_FOUND).build();
+
+				synchronized (wrapper.getOwnerCode())
+				{
+					// Fetch it again once we're in the synchronised block
+					wrapper = context.selectFrom(TRIALS)
+								   .where(TRIALS.OWNER_CODE.eq(shareCode)
+														   .or(TRIALS.EDITOR_CODE.eq(shareCode))
+														   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+								   .fetchAny();
+
+					// Set updated on to UTC NOW
+					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+					wrapper.getTrial().setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+					wrapper.setUpdatedOn(now.toLocalDateTime());
+					wrapper.store();
+
+					// Remove it from the map if all is successful
+					captchaMap.remove(uuid);
+
+					return Response.ok().build();
+				}
+			}
+		}
+	}
+
+	@GET
+	@Path("/{shareCode}/captcha/{uuid}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces({"image/png"})
+	public Response getRenewCaptcha(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid)
+			throws SQLException
+	{
+		if (StringUtils.isBlank(shareCode))
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		try
+		{
+			try (Connection conn = Database.getConnection())
+			{
+				DSLContext context = Database.getContext(conn);
+
+				TrialsRecord trial = context.selectFrom(TRIALS)
+											.where(TRIALS.OWNER_CODE.eq(shareCode)
+																	.or(TRIALS.EDITOR_CODE.eq(shareCode))
+																	.or(TRIALS.VIEWER_CODE.eq(shareCode)))
+											.fetchAny();
+
+				if (trial == null)
+					return Response.status(Response.Status.NOT_FOUND).build();
+
+				// Create a captcha with noise
+				ImageCaptcha imageCaptcha = new ImageCaptcha.Builder(200, 50)
+						.addNoise()
+						.addContent(new LatinContentProducer(7))
+						.addBackground(new FlatColorBackgroundProducer(Color.WHITE))
+						.build();
+
+				// Write to image
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ImageIO.write(imageCaptcha.getImage(), "png", baos);
+				byte[] imageData = baos.toByteArray();
+
+				// Remember captcha mapped to the uuid
+				captchaMap.put(uuid, imageCaptcha.getContent());
+
+				// Send image
+				return Response.ok(new ByteArrayInputStream(imageData)).build();
+			}
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+			Logger.getLogger("").severe(e.getLocalizedMessage());
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+						   .build();
+		}
 	}
 }

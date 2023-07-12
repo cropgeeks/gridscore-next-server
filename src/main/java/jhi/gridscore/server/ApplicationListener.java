@@ -2,6 +2,7 @@ package jhi.gridscore.server;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebListener;
+import jhi.gridscore.server.util.ExpiredTrialExportTask;
 
 import java.util.concurrent.*;
 
@@ -26,7 +27,7 @@ public class ApplicationListener implements ServletContextListener
 		PropertyWatcher.initialize();
 
 		backgroundScheduler = Executors.newSingleThreadScheduledExecutor();
-//		backgroundScheduler.scheduleAtFixedRate(new OldConfigRemoverThread(), 0, 1, TimeUnit.HOURS);
+		backgroundScheduler.scheduleAtFixedRate(new ExpiredTrialExportTask(), 0, 1, TimeUnit.DAYS);
 	}
 
 	@Override
