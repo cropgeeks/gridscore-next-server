@@ -231,8 +231,8 @@ public class TrialTransactionResource
 													 {
 														 // Add new
 														 list.add(new Measurement()
-																 .setValues(m.getValues())
-																 .setTimestamp(m.getTimestamp()));
+																		  .setValues(m.getValues())
+																		  .setTimestamp(m.getTimestamp()));
 													 }
 												 }
 												 else

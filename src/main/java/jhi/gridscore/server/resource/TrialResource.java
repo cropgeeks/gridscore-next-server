@@ -105,7 +105,8 @@ public class TrialResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/checkupdate")
-	public Response postCheckUpdate(List<String> ids) throws SQLException
+	public Response postCheckUpdate(List<String> ids)
+			throws SQLException
 	{
 		if (CollectionUtils.isEmpty(ids))
 			return Response.ok(new HashMap<>()).build();
@@ -143,7 +144,8 @@ public class TrialResource
 						time.setShowExpiryWarning(timeTillExpiry < (0.25 * daysTillExpiry));
 						// Also set th expiry date
 						time.setExpiresOn(updatedOn.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
-					} catch (Exception e)
+					}
+					catch (Exception e)
 					{
 						Logger.getLogger("").severe(e.getMessage());
 						// Do nothing here
@@ -246,9 +248,9 @@ public class TrialResource
 
 		// Set them for the response
 		trial.setShareCodes(new ShareCodes()
-				.setOwnerCode(ownerCode)
-				.setEditorCode(editorCode)
-				.setViewerCode(viewerCode));
+									.setOwnerCode(ownerCode)
+									.setEditorCode(editorCode)
+									.setViewerCode(viewerCode));
 
 		return Response.ok(trial).build();
 	}
@@ -268,10 +270,9 @@ public class TrialResource
 			DSLContext context = Database.getContext(conn);
 
 			TrialsRecord wrapper = context.selectFrom(TRIALS)
-										.where(TRIALS.OWNER_CODE.eq(shareCode)
-																.or(TRIALS.EDITOR_CODE.eq(shareCode))
-																.or(TRIALS.VIEWER_CODE.eq(shareCode)))
-										.fetchAny();
+										  .where(TRIALS.OWNER_CODE.eq(shareCode)
+																  .or(TRIALS.EDITOR_CODE.eq(shareCode)))
+										  .fetchAny();
 
 			if (wrapper == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
@@ -289,10 +290,10 @@ public class TrialResource
 				{
 					// Fetch it again once we're in the synchronised block
 					wrapper = context.selectFrom(TRIALS)
-								   .where(TRIALS.OWNER_CODE.eq(shareCode)
-														   .or(TRIALS.EDITOR_CODE.eq(shareCode))
-														   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-								   .fetchAny();
+									 .where(TRIALS.OWNER_CODE.eq(shareCode)
+															 .or(TRIALS.EDITOR_CODE.eq(shareCode))
+															 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+									 .fetchAny();
 
 					// Set updated on to UTC NOW
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
@@ -327,8 +328,7 @@ public class TrialResource
 
 				TrialsRecord trial = context.selectFrom(TRIALS)
 											.where(TRIALS.OWNER_CODE.eq(shareCode)
-																	.or(TRIALS.EDITOR_CODE.eq(shareCode))
-																	.or(TRIALS.VIEWER_CODE.eq(shareCode)))
+																	.or(TRIALS.EDITOR_CODE.eq(shareCode)))
 											.fetchAny();
 
 				if (trial == null)
@@ -352,7 +352,8 @@ public class TrialResource
 				// Send image
 				return Response.ok(new ByteArrayInputStream(imageData)).build();
 			}
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			e.printStackTrace();
 			Logger.getLogger("").severe(e.getLocalizedMessage());

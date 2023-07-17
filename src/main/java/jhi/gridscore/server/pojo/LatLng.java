@@ -12,4 +12,9 @@ public class LatLng
 {
 	private Double lat;
 	private Double lng;
+
+	public boolean isValid()
+	{
+		return lat != null && lng != null;
+	}
 }

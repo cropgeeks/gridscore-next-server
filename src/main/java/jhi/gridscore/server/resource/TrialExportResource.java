@@ -8,8 +8,8 @@ import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.util.*;
-import org.geotools.data.*;
 import org.geotools.data.Transaction;
+import org.geotools.data.*;
 import org.geotools.data.collection.ListFeatureCollection;
 import org.geotools.data.shapefile.*;
 import org.geotools.data.simple.*;
@@ -28,7 +28,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static jhi.gridscore.server.database.codegen.tables.Trials.*;
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 @Path("trial/{shareCode}/export")
 public class TrialExportResource
@@ -37,11 +37,49 @@ public class TrialExportResource
 	String shareCode;
 
 	@GET
+	@Path("/archived")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTrialByIdArchived()
+	{
+		if (StringUtils.isBlank(shareCode))
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		// Use the database name here as it's going to be unique per instance and usually path-safe
+		String path = PropertyWatcher.get("database.name");
+		File folder = new File(System.getProperty("java.io.tmpdir"), path);
+
+		File[] matches = folder.listFiles(filename -> {
+			String[] parts = filename.getName().split("\\.");
+			Logger.getLogger("").info("Checking file: " + filename.getName() + " - " + Arrays.toString(parts));
+			// Has to be 4 parts (datetime.ms.ownerCode.editorCode.zip), last one has to be zip, and either 2nd or 3rd have to be the code
+			return parts.length == 5 && parts[4].equals("zip") && (parts[2].equals(shareCode) || parts[3].equals(shareCode));
+		});
+
+		Logger.getLogger("").info("Matches found: " + (matches == null ? 0 : matches.length));
+
+		if (matches != null && matches.length > 0)
+		{
+			return Response.ok((StreamingOutput) output -> {
+							   Files.copy(matches[0].toPath(), output);
+						   })
+						   .type("application/zip")
+						   .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + matches[0].getName() + "\"")
+						   .header(HttpHeaders.CONTENT_LENGTH, matches[0].length())
+						   .build();
+		}
+		else
+		{
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+
+	@GET
 	@Path("/shapefile")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response postConfigExportShapefile()
-		throws SQLException, IOException
+			throws SQLException, IOException
 	{
 		if (StringUtils.isEmpty(shareCode))
 		{
@@ -68,91 +106,13 @@ public class TrialExportResource
 				{
 					Trial trial = trials.getTrial();
 
-					final SimpleFeatureType TYPE = createFeatureType();
-
-					List<SimpleFeature> features = new ArrayList<>();
-
-					GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
-					SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(TYPE);
-
-					for (Map.Entry<String, Cell> cellEntry : trial.getData().entrySet())
-					{
-						Cell cell = cellEntry.getValue();
-						String[] rowColumn = cellEntry.getKey().split("\\|");
-						int row = Integer.parseInt(rowColumn[0]);
-						int col = Integer.parseInt(rowColumn[1]);
-						Corners corners = cell.getGeography().getCorners();
-						Coordinate[] coordinates = new Coordinate[]{
-							new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat()),
-							new Coordinate(corners.getBottomLeft().getLng(), corners.getBottomLeft().getLat()),
-							new Coordinate(corners.getBottomRight().getLng(), corners.getBottomRight().getLat()),
-							new Coordinate(corners.getTopRight().getLng(), corners.getTopRight().getLat()),
-							new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat())
-						};
-
-						Polygon polygon = geometryFactory.createPolygon(coordinates);
-						featureBuilder.add(polygon);
-						featureBuilder.add(cell.getGermplasm());
-						featureBuilder.add(row + 1);
-						featureBuilder.add(col + 1);
-						featureBuilder.add(cell.getRep());
-						SimpleFeature feature = featureBuilder.buildFeature(null);
-						features.add(feature);
-					}
-
 					/*
 					 * Get an output file name and create the new shapefile
 					 */
 					String uuid = UUID.randomUUID().toString();
 					File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore"), uuid);
-					folder.mkdirs();
-					File target = new File(folder, uuid + ".shp");
 
-					ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
-
-					Map<String, Serializable> params = new HashMap<>();
-					params.put("url", target.toURI().toURL());
-					params.put("create spatial index", Boolean.TRUE);
-
-					ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
-					newDataStore.createSchema(TYPE);
-
-					/*
-					 * Write the features to the shapefile
-					 */
-					Transaction transaction = new DefaultTransaction("create");
-
-					String typeName = newDataStore.getTypeNames()[0];
-					SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
-
-					if (featureSource instanceof SimpleFeatureStore)
-					{
-						SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
-
-						/*
-						 * SimpleFeatureStore has a method to add features from a
-						 * SimpleFeatureCollection object, so we use the ListFeatureCollection
-						 * class to wrap our list of features.
-						 */
-						SimpleFeatureCollection collection = new ListFeatureCollection(TYPE, features);
-						featureStore.setTransaction(transaction);
-						try
-						{
-							featureStore.addFeatures(collection);
-							transaction.commit();
-
-						}
-						catch (Exception problem)
-						{
-							problem.printStackTrace();
-							transaction.rollback();
-
-						}
-						finally
-						{
-							transaction.close();
-						}
-					}
+					exportShapefile(trial, folder, uuid);
 
 					FileUtils.zipUp(folder);
 
@@ -170,12 +130,97 @@ public class TrialExportResource
 		}
 	}
 
+	public static void exportShapefile(Trial trial, File folder, String filename)
+			throws IOException
+	{
+		final SimpleFeatureType TYPE = createFeatureType();
+
+		List<SimpleFeature> features = new ArrayList<>();
+
+		GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory(null);
+		SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(TYPE);
+
+		for (Map.Entry<String, Cell> cellEntry : trial.getData().entrySet())
+		{
+			Cell cell = cellEntry.getValue();
+			String[] rowColumn = cellEntry.getKey().split("\\|");
+			int row = Integer.parseInt(rowColumn[0]);
+			int col = Integer.parseInt(rowColumn[1]);
+			Corners corners = cell.getGeography().getCorners();
+			Coordinate[] coordinates = new Coordinate[]{
+					new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat()),
+					new Coordinate(corners.getBottomLeft().getLng(), corners.getBottomLeft().getLat()),
+					new Coordinate(corners.getBottomRight().getLng(), corners.getBottomRight().getLat()),
+					new Coordinate(corners.getTopRight().getLng(), corners.getTopRight().getLat()),
+					new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat())
+			};
+
+			Polygon polygon = geometryFactory.createPolygon(coordinates);
+			featureBuilder.add(polygon);
+			featureBuilder.add(cell.getGermplasm());
+			featureBuilder.add(row + 1);
+			featureBuilder.add(col + 1);
+			featureBuilder.add(cell.getRep());
+			SimpleFeature feature = featureBuilder.buildFeature(null);
+			features.add(feature);
+		}
+
+		folder.mkdirs();
+		File target = new File(folder, filename + ".shp");
+
+		ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
+
+		Map<String, Serializable> params = new HashMap<>();
+		params.put("url", target.toURI().toURL());
+		params.put("create spatial index", Boolean.TRUE);
+
+		ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+		newDataStore.createSchema(TYPE);
+
+		/*
+		 * Write the features to the shapefile
+		 */
+		Transaction transaction = new DefaultTransaction("create");
+
+		String typeName = newDataStore.getTypeNames()[0];
+		SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
+
+		if (featureSource instanceof SimpleFeatureStore)
+		{
+			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
+
+			/*
+			 * SimpleFeatureStore has a method to add features from a
+			 * SimpleFeatureCollection object, so we use the ListFeatureCollection
+			 * class to wrap our list of features.
+			 */
+			SimpleFeatureCollection collection = new ListFeatureCollection(TYPE, features);
+			featureStore.setTransaction(transaction);
+			try
+			{
+				featureStore.addFeatures(collection);
+				transaction.commit();
+
+			}
+			catch (Exception problem)
+			{
+				problem.printStackTrace();
+				transaction.rollback();
+
+			}
+			finally
+			{
+				transaction.close();
+			}
+		}
+	}
+
 	@GET
 	@Path("/shapefile/{uuid}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/zip")
 	public Response getConfigShapefileDownload(@PathParam("uuid") String uuid)
-		throws IOException, SQLException
+			throws IOException, SQLException
 	{
 		try (Connection conn = Database.getConnection())
 		{
@@ -200,6 +245,7 @@ public class TrialExportResource
 			return Response.ok((StreamingOutput) output -> {
 							   Files.copy(zipFilePath, output);
 							   Files.deleteIfExists(zipFilePath);
+							   org.apache.commons.io.FileUtils.deleteDirectory(folder);
 						   })
 						   .type("application/zip")
 						   .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + friendlyFilename + ".zip\"")
@@ -231,7 +277,7 @@ public class TrialExportResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getExportGerminateTrialById()
-		throws SQLException, URISyntaxException, IOException
+			throws SQLException, URISyntaxException, IOException
 	{
 		if (StringUtils.isBlank(shareCode))
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -264,7 +310,7 @@ public class TrialExportResource
 				File target = new File(folder, uuid + ".xlsx");
 
 				new DataToSpreadsheet(template, target, result)
-					.run();
+						.run();
 
 				sourceCopy.delete();
 
@@ -281,7 +327,7 @@ public class TrialExportResource
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 	public Response getConfigExportDownload(@PathParam("uuid") String uuid)
-		throws IOException, SQLException
+			throws IOException, SQLException
 	{
 		if (StringUtils.isBlank(shareCode) || StringUtils.isBlank(uuid))
 			return Response.status(Response.Status.BAD_REQUEST).build();

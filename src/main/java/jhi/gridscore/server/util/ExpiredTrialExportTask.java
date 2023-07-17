@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
+import jhi.gridscore.server.pojo.Corners;
+import jhi.gridscore.server.resource.TrialExportResource;
+import org.apache.commons.io.FileUtils;
 import org.jooq.DSLContext;
 
 import java.io.*;
@@ -25,10 +28,12 @@ public class ExpiredTrialExportTask implements Runnable
 	@Override
 	public void run()
 	{
+		Logger.getLogger("").info("RUNNING ExpiredTrialExportTask");
 		try
 		{
 			int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days"));
 
+			int count = 0;
 			try (Connection conn = Database.getConnection())
 			{
 				DSLContext context = Database.getContext(conn);
@@ -52,9 +57,10 @@ public class ExpiredTrialExportTask implements Runnable
 						// Trial has expired
 						exportTrial(trial);
 
-
 						// Delete it now we don't need it anymore
 						trial.delete();
+
+						count++;
 					}
 				}
 			}
@@ -63,6 +69,8 @@ public class ExpiredTrialExportTask implements Runnable
 				Logger.getLogger("").severe(e.getMessage());
 				e.printStackTrace();
 			}
+
+			Logger.getLogger("").info("ExpiredTrialExportTask: Archived " + count + " trials");
 		}
 		catch (SQLException | IOException | URISyntaxException e)
 		{
@@ -78,7 +86,7 @@ public class ExpiredTrialExportTask implements Runnable
 		String path = PropertyWatcher.get("database.name");
 		File folder = new File(System.getProperty("java.io.tmpdir"), path);
 		folder.mkdirs();
-		String id = trial.getTrial().getUpdatedOn().replace(":", "-") + "." + trial.getOwnerCode() + "." + trial.getEditorCode() + "." + trial.getViewerCode();
+		String id = trial.getTrial().getUpdatedOn().replace(":", "-") + "." + trial.getOwnerCode() + "." + trial.getEditorCode();
 		// Filename contains all share codes and the date
 		File zipFile = new File(folder, id + ".zip");
 
@@ -100,6 +108,28 @@ public class ExpiredTrialExportTask implements Runnable
 			{
 				Gson gson = new Gson();
 				bw.write(gson.toJson(trial.getTrial()));
+			}
+
+			Corners corners = trial.getTrial().getLayout().getCorners();
+			if (corners != null && corners.isValid())
+			{
+				String uuid = UUID.randomUUID().toString();
+				File subfolder = new File(folder, uuid);
+				subfolder.mkdirs();
+				TrialExportResource.exportShapefile(trial.getTrial(), subfolder, "shapefile");
+
+				File[] generated = subfolder.listFiles();
+
+				if (generated != null)
+				{
+					for (File f : generated)
+					{
+						// Copy it to the zip file
+						Files.copy(f.toPath(), fs.getPath("/" + f.getName()), StandardCopyOption.REPLACE_EXISTING);
+					}
+				}
+
+				FileUtils.deleteDirectory(subfolder);
 			}
 
 			URL resource = PropertyWatcher.class.getClassLoader().getResource("trials-data.xlsx");
