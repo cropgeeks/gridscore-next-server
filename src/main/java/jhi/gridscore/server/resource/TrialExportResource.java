@@ -25,6 +25,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.sql.*;
+import java.time.*;
+import java.time.format.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -37,7 +39,50 @@ public class TrialExportResource
 	String shareCode;
 
 	@GET
-	@Path("/archived")
+	@Path("/archive/exists")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTrialByIdArchiveExists()
+	{
+		if (StringUtils.isBlank(shareCode))
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		// Use the database name here as it's going to be unique per instance and usually path-safe
+		String path = PropertyWatcher.get("database.name");
+		File folder = new File(System.getProperty("java.io.tmpdir"), path);
+
+		File[] matches = folder.listFiles(filename -> {
+			String[] parts = filename.getName().split("\\.");
+			// Has to be 4 parts (datetime.ownerCode.editorCode.zip), last one has to be zip, and either 2nd or 3rd have to be the code
+			return parts.length == 5 && parts[4].equals("zip") && (parts[2].equals(shareCode) || parts[3].equals(shareCode));
+		});
+
+		if (matches != null && matches.length > 0)
+		{
+			File m = matches[0];
+			String[] parts = m.getName().split("\\.");
+
+			// Get the created date from the file modified date
+			ZonedDateTime exported = ZonedDateTime.ofInstant(Instant.ofEpochMilli(m.lastModified()), ZoneOffset.UTC);
+			// Get the updated date from the file name
+			ZonedDateTime updated = ZonedDateTime.parse(parts[0] + "." + parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss.SSSXX"));
+			DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();
+
+			ArchiveInformation info = new ArchiveInformation()
+					.setFileSize(m.length())
+					.setTrialExportedOn(exported.format(formatter))
+					.setTrialUpdatedOn(updated.format(formatter));
+
+			return Response.ok(info).build();
+		}
+		else
+		{
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+	}
+
+	@GET
+	@Path("/archive")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTrialByIdArchived()
@@ -51,12 +96,9 @@ public class TrialExportResource
 
 		File[] matches = folder.listFiles(filename -> {
 			String[] parts = filename.getName().split("\\.");
-			Logger.getLogger("").info("Checking file: " + filename.getName() + " - " + Arrays.toString(parts));
-			// Has to be 4 parts (datetime.ms.ownerCode.editorCode.zip), last one has to be zip, and either 2nd or 3rd have to be the code
+			// Has to be 4 parts (datetime.ownerCode.editorCode.zip), last one has to be zip, and either 2nd or 3rd have to be the code
 			return parts.length == 5 && parts[4].equals("zip") && (parts[2].equals(shareCode) || parts[3].equals(shareCode));
 		});
-
-		Logger.getLogger("").info("Matches found: " + (matches == null ? 0 : matches.length));
 
 		if (matches != null && matches.length > 0)
 		{

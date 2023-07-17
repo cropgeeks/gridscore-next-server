@@ -259,10 +259,10 @@ public class TrialResource
 	@Path("/{shareCode}/renew/{uuid}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRenewCaptchaResponse(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid, String captchaContent)
+	public Response postRenewCaptchaResponse(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid, CaptchaContent captchaContent)
 			throws SQLException
 	{
-		if (StringUtils.isBlank(shareCode))
+		if (StringUtils.isBlank(shareCode) || captchaContent == null || StringUtils.isBlank(captchaContent.getCaptcha()))
 			return Response.status(Response.Status.BAD_REQUEST).build();
 
 		try (Connection conn = Database.getConnection())
@@ -283,7 +283,7 @@ public class TrialResource
 				String mapCaptcha = captchaMap.get(uuid);
 
 				// Check if the captcha is correct
-				if (StringUtils.isEmpty(mapCaptcha) || !Objects.equals(mapCaptcha, captchaContent))
+				if (StringUtils.isEmpty(mapCaptcha) || !Objects.equals(mapCaptcha, captchaContent.getCaptcha()))
 					return Response.status(Response.Status.NOT_FOUND).build();
 
 				synchronized (wrapper.getOwnerCode())
@@ -295,10 +295,13 @@ public class TrialResource
 															 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 									 .fetchAny();
 
+					Trial trial = wrapper.getTrial();
+
 					// Set updated on to UTC NOW
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-					wrapper.getTrial().setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+					trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
 					wrapper.setUpdatedOn(now.toLocalDateTime());
+					wrapper.setTrial(trial);
 					wrapper.store();
 
 					// Remove it from the map if all is successful
