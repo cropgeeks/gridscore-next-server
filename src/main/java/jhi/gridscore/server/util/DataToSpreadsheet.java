@@ -1,10 +1,12 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
+import jhi.gridscore.server.pojo.Cell;
+import jhi.gridscore.server.pojo.Comment;
 import jhi.gridscore.server.pojo.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.jooq.tools.StringUtils;
@@ -43,11 +45,25 @@ public class DataToSpreadsheet
 	private File  target;
 	private Trial trial;
 
+	private boolean hasPlotComments = false;
+
 	public DataToSpreadsheet(File template, File target, Trial trial)
 	{
 		this.template = template;
 		this.target = target;
 		this.trial = trial;
+
+		if (trial.getData() != null)
+		{
+			for (Map.Entry<String, Cell> entry : trial.getData().entrySet())
+			{
+				if (!CollectionUtils.isEmpty(entry.getValue().getComments()))
+				{
+					hasPlotComments = true;
+					break;
+				}
+			}
+		}
 	}
 
 	private String getTimezonedDate(String input, boolean dashes)
@@ -101,6 +117,12 @@ public class DataToSpreadsheet
 						 dateRow.createCell(i + 10).setCellValue(t.getName());
 					 });
 
+			if (hasPlotComments)
+			{
+				dataRow.createCell(trial.getTraits().size() + 10).setCellValue("Plot comment");
+				dateRow.createCell(trial.getTraits().size() + 10).setCellValue("Plot comment");
+			}
+
 			exportNonAggregated(data, dates);
 
 			workbook.setActiveSheet(0);
@@ -111,8 +133,6 @@ public class DataToSpreadsheet
 
 	private void exportNonAggregated(XSSFSheet data, XSSFSheet dates)
 	{
-		Gson gson = new Gson();
-
 		List<CoordinateDateCell> cells = new ArrayList<>();
 
 		trial.getData().forEach((cellIdentifier, cell) -> {
@@ -129,6 +149,20 @@ public class DataToSpreadsheet
 					unique.add(date);
 				}
 			}));
+
+			// Account for comments
+			if (!CollectionUtils.isEmpty(cell.getComments()))
+			{
+				cell.getComments().forEach(c -> {
+					String date = getTimezonedDate(c.getTimestamp(), false);
+
+					if (!unique.contains(date))
+					{
+						cells.add(new CoordinateDateCell(cell, row, col, date));
+						unique.add(date);
+					}
+				});
+			}
 		});
 
 		IntStream.range(0, cells.size())
@@ -266,7 +300,8 @@ public class DataToSpreadsheet
 									 {
 										 total += Double.parseDouble(v);
 										 count++;
-									 } catch (NumberFormatException | NullPointerException e)
+									 }
+									 catch (NumberFormatException | NullPointerException e)
 									 {
 										 // Ignore
 									 }
@@ -291,6 +326,23 @@ public class DataToSpreadsheet
 						 if (value != null)
 						 {
 							 setCell(t, pc, c.date);
+						 }
+					 }
+
+					 if (!CollectionUtils.isEmpty(c.getComments()))
+					 {
+						 List<Comment> comments = c.getComments().stream().filter(m -> {
+							 String date = getTimezonedDate(m.getTimestamp(), false);
+							 return Objects.equals(date, c.date);
+						 }).collect(Collectors.toList());
+
+						 if (!CollectionUtils.isEmpty(comments))
+						 {
+							 dc = getCell(d, trial.getTraits().size() + 10);
+							 pc = getCell(p, trial.getTraits().size() + 10);
+
+							 setCell(new Trait().setDataType("text"), dc, comments.stream().map(Comment::getContent).collect(Collectors.joining("; ")));
+							 setCell(new Trait().setDataType("date"), pc, c.date);
 						 }
 					 }
 				 });
@@ -344,6 +396,26 @@ public class DataToSpreadsheet
 			row.createCell(2).setCellValue(pkg.getImplementationVersion());
 		else
 			row.createCell(2).setCellValue("DEVELOPMENT");
+
+		if (!CollectionUtils.isEmpty(trial.getComments()))
+		{
+			row = sheet.getRow(4);
+			if (row == null)
+				row = sheet.createRow(4);
+			row.createCell(0).setCellValue("Trial comments");
+			row.createCell(1).setCellValue("text");
+			XSSFCell cell = row.createCell(2);
+			cell.setCellValue(trial.getComments()
+								   .stream()
+								   .filter(c -> !StringUtils.isBlank(c.getContent()))
+								   .map(c -> getTimezonedDate(c.getTimestamp(), true) + ": " + c.getContent().replaceAll("\r?\n", " "))
+								   .collect(Collectors.joining("\n")));
+
+			// Allow wrapping on new line characters
+			CellStyle cs = workbook.createCellStyle();
+			cs.setWrapText(true);
+			cell.setCellStyle(cs);
+		}
 	}
 
 	private void writeTraits(XSSFWorkbook workbook)
@@ -353,8 +425,13 @@ public class DataToSpreadsheet
 		XSSFSheet phenotypes = workbook.getSheet("PHENOTYPES");
 		XSSFTable traitTable = phenotypes.getTables().get(0);
 
+		int traitDimensions = trial.getTraits().size();
+
+		if (hasPlotComments)
+			traitDimensions++;
+
 		// Adjust the table size
-		AreaReference area = new AreaReference(traitTable.getStartCellReference(), new CellReference(trial.getTraits().size(), traitTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
+		AreaReference area = new AreaReference(traitTable.getStartCellReference(), new CellReference(traitDimensions, traitTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
 		traitTable.setArea(area);
 		traitTable.getCTTable().getAutoFilter().setRef(area.formatAsString());
 		traitTable.updateReferences();
@@ -395,6 +472,18 @@ public class DataToSpreadsheet
 							 row.createCell(9).setCellValue(t.getRestrictions().getMax());
 					 }
 				 });
+
+		if (hasPlotComments)
+		{
+			XSSFRow row = sheet.getRow(traitDimensions);
+
+			if (row == null)
+				row = sheet.createRow(traitDimensions);
+
+			row.createCell(0).setCellValue("Plot comment");
+			row.createCell(2).setCellValue("Comments provided from the data collectors");
+			row.createCell(3).setCellValue("text");
+		}
 	}
 
 	private void setCell(Trait t, XSSFCell cell, String value)
