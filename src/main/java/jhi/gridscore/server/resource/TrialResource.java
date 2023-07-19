@@ -256,10 +256,10 @@ public class TrialResource
 	}
 
 	@POST
-	@Path("/{shareCode}/renew/{uuid}")
+	@Path("/{shareCode}/renew")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postRenewCaptchaResponse(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid, CaptchaContent captchaContent)
+	public Response postRenewCaptchaResponse(@PathParam("shareCode") String shareCode, CaptchaContent captchaContent)
 			throws SQLException
 	{
 		if (StringUtils.isBlank(shareCode) || captchaContent == null || StringUtils.isBlank(captchaContent.getCaptcha()))
@@ -280,7 +280,7 @@ public class TrialResource
 			// Synchronize on the map to be sure
 			synchronized (captchaMap)
 			{
-				String mapCaptcha = captchaMap.get(uuid);
+				String mapCaptcha = captchaMap.get(shareCode);
 
 				// Check if the captcha is correct
 				if (StringUtils.isEmpty(mapCaptcha) || !Objects.equals(mapCaptcha, captchaContent.getCaptcha()))
@@ -305,7 +305,7 @@ public class TrialResource
 					wrapper.store();
 
 					// Remove it from the map if all is successful
-					captchaMap.remove(uuid);
+					captchaMap.remove(shareCode);
 
 					return Response.ok().build();
 				}
@@ -314,10 +314,10 @@ public class TrialResource
 	}
 
 	@GET
-	@Path("/{shareCode}/captcha/{uuid}")
+	@Path("/{shareCode}/captcha")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces({"image/png"})
-	public Response getRenewCaptcha(@PathParam("shareCode") String shareCode, @PathParam("uuid") String uuid)
+	public Response getRenewCaptcha(@PathParam("shareCode") String shareCode)
 			throws SQLException
 	{
 		if (StringUtils.isBlank(shareCode))
@@ -350,7 +350,7 @@ public class TrialResource
 				byte[] imageData = baos.toByteArray();
 
 				// Remember captcha mapped to the uuid
-				captchaMap.put(uuid, imageCaptcha.getContent());
+				captchaMap.put(shareCode, imageCaptcha.getContent());
 
 				// Send image
 				return Response.ok(new ByteArrayInputStream(imageData)).build();
