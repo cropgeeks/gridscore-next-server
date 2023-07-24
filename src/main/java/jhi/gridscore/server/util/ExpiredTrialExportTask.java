@@ -86,7 +86,7 @@ public class ExpiredTrialExportTask implements Runnable
 		String path = PropertyWatcher.get("database.name");
 		File folder = new File(System.getProperty("java.io.tmpdir"), path);
 		folder.mkdirs();
-		String id = trial.getTrial().getUpdatedOn().split("\\.")[0].replace(":", "-") + "." + trial.getOwnerCode() + "." + trial.getEditorCode();
+		String id = trial.getTrial().getUpdatedOn().replace(":", "-") + "." + trial.getOwnerCode() + "." + trial.getEditorCode();
 		// Filename contains all share codes and the date
 		File zipFile = new File(folder, id + ".zip");
 

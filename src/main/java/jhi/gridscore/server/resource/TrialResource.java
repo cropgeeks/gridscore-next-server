@@ -79,6 +79,33 @@ public class TrialResource
 		}
 	}
 
+	@DELETE
+	@Path("/{shareCode}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteTrialById(@PathParam("shareCode") String shareCode, @QueryParam("name") String trialName)
+			throws SQLException
+	{
+		if (StringUtils.isBlank(shareCode))
+			return Response.status(Response.Status.BAD_REQUEST).build();
+
+		try (Connection conn = Database.getConnection())
+		{
+			DSLContext context = Database.getContext(conn);
+
+			TrialsRecord trial = context.selectFrom(TRIALS)
+										.where(TRIALS.OWNER_CODE.eq(shareCode))
+										.fetchAny();
+
+			if (trial == null)
+				return Response.status(Response.Status.NOT_FOUND).build();
+			else if (!Objects.equals(trial.getTrial().getName(), trialName))
+				return Response.status(Response.Status.FORBIDDEN).build();
+			else
+				return Response.ok(trial.delete() > 0).build();
+		}
+	}
+
 	public static void setShareCodes(Trial result, String baseShareCode, TrialsRecord trial)
 	{
 		ShareCodes codes = new ShareCodes();

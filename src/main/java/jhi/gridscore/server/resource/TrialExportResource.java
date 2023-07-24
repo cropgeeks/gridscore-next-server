@@ -152,7 +152,7 @@ public class TrialExportResource
 					 * Get an output file name and create the new shapefile
 					 */
 					String uuid = UUID.randomUUID().toString();
-					File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore"), uuid);
+					File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore-next"), uuid);
 
 					exportShapefile(trial, folder, uuid);
 
@@ -273,7 +273,7 @@ public class TrialExportResource
 														   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
 								   .fetchAnyInto(Trials.class);
 
-			File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore"), uuid);
+			File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore-next"), uuid);
 			File result = new File(folder, uuid + ".zip");
 
 			if (!FileUtils.isSubDirectory(folder, result))
@@ -345,7 +345,7 @@ public class TrialExportResource
 				File template = new File(resource.toURI());
 
 				String uuid = UUID.randomUUID().toString();
-				File folder = new File(System.getProperty("java.io.tmpdir"), "gridscore");
+				File folder = new File(System.getProperty("java.io.tmpdir"), "gridscore-next");
 				folder.mkdirs();
 				File sourceCopy = new File(folder, "template-" + uuid + ".xlsx");
 				Files.copy(template.toPath(), sourceCopy.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -386,7 +386,7 @@ public class TrialExportResource
 			if (trials == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
 
-			File folder = new File(System.getProperty("java.io.tmpdir"), "gridscore");
+			File folder = new File(System.getProperty("java.io.tmpdir"), "gridscore-next");
 			File result = new File(folder, uuid + ".xlsx");
 
 			if (!FileUtils.isSubDirectory(folder, result))

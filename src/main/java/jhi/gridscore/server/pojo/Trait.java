@@ -15,8 +15,8 @@ public class Trait
 	private String       name;
 	private String       description;
 	private String       dataType;
-	private boolean      allowRepeats;
-	private int          setSize;
+	private boolean      allowRepeats = false;
+	private int          setSize = 1;
 	private Group        group;
 	private Restrictions restrictions;
 	private Timeframe    timeframe;
