@@ -1,6 +1,8 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
+import jhi.gridscore.server.database.Database;
+import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.Cell;
 import jhi.gridscore.server.pojo.Comment;
 import jhi.gridscore.server.pojo.*;
@@ -9,14 +11,17 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
+import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.*;
+
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 public class DataToSpreadsheet
 {
@@ -35,23 +40,25 @@ public class DataToSpreadsheet
 //		{
 //			DSLContext context = Database.getContext(conn);
 //
-//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("0GAtAzTDdaJ9F2sGd1YAnEYqWfI")).fetchAnyInto(Trials.class);
+//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("VrIi4eyYfWXE5DBQf-SDRXz_gfY")).fetchAnyInto(Trials.class);
 //
-//			new DataToSpreadsheet(template, target, trials.getTrial()).run();
+//			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
 //		}
 	}
 
-	private File  template;
-	private File  target;
-	private Trial trial;
+	private File    template;
+	private File    target;
+	private Trial   trial;
+	private boolean aggregate;
 
 	private boolean hasPlotComments = false;
 
-	public DataToSpreadsheet(File template, File target, Trial trial)
+	public DataToSpreadsheet(File template, File target, Trial trial, boolean aggregate)
 	{
 		this.template = template;
 		this.target = target;
 		this.trial = trial;
+		this.aggregate = aggregate;
 
 		if (trial.getData() != null)
 		{
@@ -123,7 +130,10 @@ public class DataToSpreadsheet
 				dateRow.createCell(trial.getTraits().size() + 10).setCellValue("Plot comment");
 			}
 
-			exportNonAggregated(data, dates);
+			if (aggregate)
+				exportAggregatedPerDay(data, dates);
+			else
+				exportIndividually(data, dates);
 
 			workbook.setActiveSheet(0);
 			workbook.write(os);
@@ -131,7 +141,205 @@ public class DataToSpreadsheet
 		}
 	}
 
-	private void exportNonAggregated(XSSFSheet data, XSSFSheet dates)
+	private void exportIndividually(XSSFSheet data, XSSFSheet dates)
+	{
+		final int[] sheetRow = new int[]{0};
+
+		trial.getData().forEach((cellIdentifier, cell) -> {
+			String[] rowColumn = cellIdentifier.split("\\|");
+			int row = Integer.parseInt(rowColumn[0]);
+			int col = Integer.parseInt(rowColumn[1]);
+
+			// Get the maximum number of measurements (including individual set size measurements)
+			int[] measurementCount = new int[]{0};
+			cell.getMeasurements().forEach((traitId, measurements) -> {
+				long count = measurements.stream().map(m -> m.getValues().stream().filter(Objects::nonNull).count()).reduce(0l, Long::sum);
+				measurementCount[0] = (int) Math.max(measurementCount[0], count);
+			});
+
+			if (!CollectionUtils.isEmpty(cell.getComments())) {
+				measurementCount[0] = Math.max(measurementCount[0], cell.getComments().size());
+			}
+
+			// Write all the metadata for the germplasm (repeated enough times)
+			for (int j = 0; j < measurementCount[0]; j++)
+			{
+				int i = j + sheetRow[0];
+				XSSFRow d = data.getRow(i + 1);
+				if (d == null)
+					d = data.createRow(i + 1);
+				XSSFRow p = dates.getRow(i + 1);
+				if (p == null)
+					p = dates.createRow(i + 1);
+
+				// Write the germplasm name
+				XSSFCell dc = getCell(d, 0);
+				XSSFCell pc = getCell(p, 0);
+				dc.setCellValue(cell.getGermplasm());
+				pc.setCellValue(cell.getGermplasm());
+
+				// Write the rep
+				dc = getCell(d, 1);
+				pc = getCell(p, 1);
+				if (!StringUtils.isBlank(cell.getRep()))
+				{
+					dc.setCellValue(cell.getRep());
+					pc.setCellValue(cell.getRep());
+				}
+				else
+				{
+					dc.setCellValue("1");
+					pc.setCellValue("1");
+				}
+
+				// Write the row
+				dc = getCell(d, 3);
+				pc = getCell(p, 3);
+
+				if (Objects.equals(trial.getLayout().getRowOrder(), Layout.DISPLAY_ORDER_BOTTOM_TO_TOP))
+				{
+					dc.setCellValue(trial.getLayout().getRows() - row);
+					pc.setCellValue(trial.getLayout().getRows() - row);
+				}
+				else
+				{
+					dc.setCellValue(row + 1);
+					pc.setCellValue(row + 1);
+				}
+
+				// Write the column
+				dc = getCell(d, 4);
+				pc = getCell(p, 4);
+				if (Objects.equals(trial.getLayout().getColumnOrder(), Layout.DISPLAY_ORDER_RIGHT_TO_LEFT))
+				{
+					dc.setCellValue(trial.getLayout().getColumns() - col);
+					pc.setCellValue(trial.getLayout().getColumns() - col);
+				}
+				else
+				{
+					dc.setCellValue(col + 1);
+					pc.setCellValue(col + 1);
+				}
+
+				// Write the location
+				if (cell.getGeography() != null)
+				{
+					Double lat = null;
+					Double lng = null;
+					if (cell.getGeography().getCorners() != null)
+					{
+						lat = 0d;
+						lng = 0d;
+
+						lat += cell.getGeography().getCorners().getTopLeft().getLat();
+						lng += cell.getGeography().getCorners().getTopLeft().getLng();
+						lat += cell.getGeography().getCorners().getTopRight().getLat();
+						lng += cell.getGeography().getCorners().getTopRight().getLng();
+						lat += cell.getGeography().getCorners().getBottomRight().getLat();
+						lng += cell.getGeography().getCorners().getBottomRight().getLng();
+						lat += cell.getGeography().getCorners().getBottomLeft().getLat();
+						lng += cell.getGeography().getCorners().getBottomLeft().getLng();
+
+						lat /= 4.0;
+						lng /= 4.0;
+					}
+					else if (cell.getGeography().getCenter() != null)
+					{
+						lat = cell.getGeography().getCenter().getLat();
+						lng = cell.getGeography().getCenter().getLng();
+					}
+
+					if (lat != null && lng != null)
+					{
+						dc = getCell(d, 7);
+						dc.setCellValue(lat);
+						pc = getCell(p, 7);
+						pc.setCellValue(lat);
+						dc = getCell(d, 8);
+						dc.setCellValue(lng);
+						pc = getCell(p, 8);
+						pc.setCellValue(lng);
+					}
+				}
+			}
+
+			XSSFCell dc;
+			XSSFCell pc;
+
+			for (int ti = 0; ti < trial.getTraits().size(); ti++)
+			{
+				Trait t = trial.getTraits().get(ti);
+
+				List<Measurement> measurements = cell.getMeasurements().get(t.getId());
+
+				if (!CollectionUtils.isEmpty(measurements))
+				{
+					int counter = 0;
+					for (int j = 0; j < measurements.size(); j++)
+					{
+						List<String> nonNullValues = measurements.get(j).getValues().stream().filter(v -> !StringUtils.isBlank(v)).collect(Collectors.toList());
+						for (int v = 0; v < nonNullValues.size(); v++)
+						{
+							String value = nonNullValues.get(v);
+
+							int i = counter + sheetRow[0] + v;
+							XSSFRow d = data.getRow(i + 1);
+							XSSFRow p = dates.getRow(i + 1);
+
+							dc = getCell(d, ti + 10);
+							pc = getCell(p, ti + 10);
+
+							if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "numeric"))
+							{
+								try
+								{
+									Double.parseDouble(value);
+									setCell(t, dc, value);
+									setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+								}
+								catch (Exception e)
+								{
+									// Do nothing here
+								}
+							}
+							else if (Objects.equals(t.getDataType(), "categorical"))
+							{
+								String parsed = t.getRestrictions().getCategories().get(Integer.parseInt(value));
+								setCell(t, dc, parsed);
+								setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+							}
+							else
+							{
+								setCell(t, dc, value);
+								setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+							}
+						}
+						counter += nonNullValues.size();
+					}
+				}
+			}
+
+			if (!CollectionUtils.isEmpty(cell.getComments()))
+			{
+				for (int j = 0; j < cell.getComments().size(); j++) {
+					int i = sheetRow[0] + j;
+					XSSFRow d = data.getRow(i + 1);
+					XSSFRow p = dates.getRow(i + 1);
+
+					dc = getCell(d, trial.getTraits().size() + 10);
+					pc = getCell(p, trial.getTraits().size() + 10);
+
+					Comment comment = cell.getComments().get(j);
+					setCell(new Trait().setDataType("text"), dc, comment.getContent());
+					setCell(new Trait().setDataType("date"), pc, getTimezonedDate(comment.getTimestamp(), false));
+				}
+			}
+
+			sheetRow[0] += measurementCount[0];
+		});
+	}
+
+	private void exportAggregatedPerDay(XSSFSheet data, XSSFSheet dates)
 	{
 		List<CoordinateDateCell> cells = new ArrayList<>();
 

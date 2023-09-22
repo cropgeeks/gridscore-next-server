@@ -318,9 +318,12 @@ public class TrialExportResource
 	@Path("/g8")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getExportGerminateTrialById()
+	public Response getExportGerminateTrialById(@QueryParam("aggregate") Boolean aggregate)
 			throws SQLException, URISyntaxException, IOException
 	{
+		if (aggregate == null)
+			aggregate = false;
+
 		if (StringUtils.isBlank(shareCode))
 			return Response.status(Response.Status.BAD_REQUEST).build();
 
@@ -351,7 +354,7 @@ public class TrialExportResource
 				Files.copy(template.toPath(), sourceCopy.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				File target = new File(folder, uuid + ".xlsx");
 
-				new DataToSpreadsheet(template, target, result)
+				new DataToSpreadsheet(template, target, result, aggregate)
 						.run();
 
 				sourceCopy.delete();

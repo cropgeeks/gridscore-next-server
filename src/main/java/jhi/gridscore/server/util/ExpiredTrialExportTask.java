@@ -143,7 +143,7 @@ public class ExpiredTrialExportTask implements Runnable
 				Files.copy(template.toPath(), sourceCopy.toPath(), StandardCopyOption.REPLACE_EXISTING);
 				File target = new File(folder, uuid + ".xlsx");
 
-				new DataToSpreadsheet(template, target, trial.getTrial())
+				new DataToSpreadsheet(template, target, trial.getTrial(), false)
 						.run();
 
 				// Delete the copy of the template file
