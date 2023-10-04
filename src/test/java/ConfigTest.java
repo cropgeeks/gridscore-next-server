@@ -16,7 +16,8 @@ public abstract class ConfigTest
 	protected static Client             client;
 	protected static Invocation.Builder postBuilder;
 
-	protected static String formatDate(Date date) {
+	protected static String formatDate(Date date)
+	{
 		ZonedDateTime time = ZonedDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
 		return time.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter());
 	}
@@ -65,7 +66,8 @@ public abstract class ConfigTest
 		return new ApiResult<Trial>().setData(result).setStatus(code);
 	}
 
-	protected ApiResult<Trial> sendTransaction(String shareCode, Transaction transaction) {
+	protected ApiResult<Trial> sendTransaction(String shareCode, Transaction transaction)
+	{
 		Response response = client.target(URL)
 								  .path(shareCode + "/transaction")
 								  .request(MediaType.APPLICATION_JSON)

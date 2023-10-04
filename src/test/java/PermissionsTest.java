@@ -44,7 +44,8 @@ public class PermissionsTest extends ConfigTest
 
 	@Order(2)
 	@Test
-	void testDataChangeAsViewer() {
+	void testDataChangeAsViewer()
+	{
 		Transaction t = new Transaction();
 		Map<String, List<TraitMeasurement>> changes = new HashMap<>();
 
@@ -78,7 +79,8 @@ public class PermissionsTest extends ConfigTest
 
 	@Order(3)
 	@Test
-	void testEditTrialAsEditor() {
+	void testEditTrialAsEditor()
+	{
 		Transaction t = new Transaction();
 
 		t.setTrialEditTransaction(new TrialContent()

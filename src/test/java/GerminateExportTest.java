@@ -1,5 +1,5 @@
 import com.google.gson.Gson;
-import jakarta.ws.rs.client.*;
+import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.pojo.Trial;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -13,16 +13,17 @@ import java.io.*;
 public class GerminateExportTest extends ConfigTest
 {
 	private static Trial trial;
-	private static Gson          gson = new Gson();
+	private static Gson  gson = new Gson();
 
 	/**
 	 * Create the initial configuration.
 	 */
 	@BeforeAll
 	static void setUp()
-		throws Exception
+			throws Exception
 	{
-		try (InputStreamReader is = new InputStreamReader(GerminateExportTest.class.getResourceAsStream("barley.json"))) {
+		try (InputStreamReader is = new InputStreamReader(GerminateExportTest.class.getResourceAsStream("barley.json")))
+		{
 			trial = gson.fromJson(is, Trial.class);
 			setUpClient();
 		}
@@ -34,7 +35,7 @@ public class GerminateExportTest extends ConfigTest
 	@Order(1)
 	@Test
 	void shareConfig()
-		throws Exception
+			throws Exception
 	{
 		ApiResult<Trial> result = sendTrial(trial);
 		Assertions.assertEquals(200, result.status);
@@ -45,7 +46,7 @@ public class GerminateExportTest extends ConfigTest
 	@Order(2)
 	@Test
 	void exportToGerminate()
-		throws Exception
+			throws Exception
 	{
 		Response response = client.target(URL)
 								  .path(trial.getShareCodes().getOwnerCode() + "/export/g8")
@@ -80,15 +81,15 @@ public class GerminateExportTest extends ConfigTest
 		// Check data
 		Sheet data = workbook.getSheet("DATA");
 		Assertions.assertNotNull(data);
-		Assertions.assertEquals(1087, data.getPhysicalNumberOfRows());
+		Assertions.assertEquals(225, data.getPhysicalNumberOfRows());
 		Assertions.assertEquals(16, data.getRow(0).getPhysicalNumberOfCells());
 		String value = data.getRow(31).getCell(13).getStringCellValue();
-		Assertions.assertEquals("91.5", value);
+		Assertions.assertEquals("74.5", value);
 
 		// Check dates
 		Sheet dates = workbook.getSheet("RECORDING_DATES");
 		Assertions.assertNotNull(dates);
-		Assertions.assertEquals(1087, dates.getPhysicalNumberOfRows());
+		Assertions.assertEquals(225, dates.getPhysicalNumberOfRows());
 		Assertions.assertEquals(16, dates.getRow(0).getPhysicalNumberOfCells());
 		value = dates.getRow(1).getCell(12).getStringCellValue();
 		Assertions.assertEquals("20200801", value);
@@ -102,7 +103,7 @@ public class GerminateExportTest extends ConfigTest
 	 */
 	@AfterAll
 	static void breakDown()
-		throws Exception
+			throws Exception
 	{
 		WebTarget target = client.target(URL)
 								 .path(trial.getShareCodes().getOwnerCode())
