@@ -33,6 +33,15 @@ public class TrialResource
 	private static final SecureRandom   RANDOM  = new SecureRandom();
 	private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
 
+	/**
+	 * This creates a 160 bit random entropy string. This is WAY more secure than a UUID for which this already holds up:
+	 * <code>
+	 *     Only after generating 1 billion UUIDs every second for the next 100 years, the probability of creating just one duplicate would be about 50%.
+	 * </code>
+	 * UUIDs use 122 bit random entropy strings.
+	 * <a href="https://neilmadden.blog/2018/08/30/moving-away-from-uuids/">Source</a>
+	 * @return A random id
+	 */
 	private String generateId()
 	{
 		byte[] buffer = new byte[20];
