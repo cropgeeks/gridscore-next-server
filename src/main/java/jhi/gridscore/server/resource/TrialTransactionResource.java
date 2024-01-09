@@ -87,6 +87,7 @@ public class TrialTransactionResource
 						TrialContent change = transaction.getTrialEditTransaction();
 						trial.setName(change.getName());
 						trial.setDescription(change.getDescription());
+						trial.setSocialShareContent(change.getSocialShareContent());
 						trial.getLayout().setCorners(change.getCorners());
 						trial.getLayout().setMarkers(change.getMarkers());
 					}

@@ -14,6 +14,7 @@ public class Trial
 {
 	private String            name;
 	private String            description;
+	private String            socialShareContent;
 	private List<Trait>       traits;
 	private List<Comment>     comments;
 	private Layout            layout;
