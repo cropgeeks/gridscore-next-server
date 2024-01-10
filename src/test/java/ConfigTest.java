@@ -12,7 +12,7 @@ import java.util.Date;
 
 public abstract class ConfigTest
 {
-	protected static String             URL = "http://localhost:8180/gridscore-next-api/v2.2.0/api/trial";
+	protected static String             URL = "http://localhost:8180/gridscore-next-api/v2.4.1/api/trial";
 	protected static Client             client;
 	protected static Invocation.Builder postBuilder;
 
