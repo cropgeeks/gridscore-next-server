@@ -115,21 +115,25 @@ public class TrialResource
 		}
 	}
 
+	private static boolean equalsIgnoreCase(String o1, String o2) {
+		return o1 == null ? o2 == null : o1.equalsIgnoreCase(o2);
+	}
+
 	public static void setShareCodes(Trial result, String baseShareCode, TrialsRecord trial)
 	{
 		ShareCodes codes = new ShareCodes();
-		if (StringUtils.equals(baseShareCode, trial.getOwnerCode()))
+		if (equalsIgnoreCase(baseShareCode, trial.getOwnerCode()))
 		{
 			codes.setOwnerCode(trial.getOwnerCode())
 				 .setEditorCode(trial.getEditorCode())
 				 .setViewerCode(trial.getViewerCode());
 		}
-		else if (StringUtils.equals(baseShareCode, trial.getEditorCode()))
+		else if (equalsIgnoreCase(baseShareCode, trial.getEditorCode()))
 		{
 			codes.setEditorCode(trial.getEditorCode())
 				 .setViewerCode(trial.getViewerCode());
 		}
-		else if (StringUtils.equals(baseShareCode, trial.getViewerCode()))
+		else if (equalsIgnoreCase(baseShareCode, trial.getViewerCode()))
 		{
 			codes.setViewerCode(trial.getViewerCode());
 		}
