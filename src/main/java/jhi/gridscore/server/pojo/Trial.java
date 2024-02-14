@@ -18,6 +18,7 @@ public class Trial
 	private List<Comment>     comments;
 	private Layout            layout;
 	private Map<String, Cell> data;
+	private String            brapiId;
 	private BrapiConfig       brapiConfig;
 	private SocialShareConfig socialShareConfig;
 	private String            updatedOn;

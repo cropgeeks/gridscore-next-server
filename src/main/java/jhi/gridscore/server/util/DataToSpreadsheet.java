@@ -569,37 +569,59 @@ public class DataToSpreadsheet
 		XSSFSheet attributes = workbook.getSheet("ATTRIBUTES");
 		XSSFTable attributeTable = attributes.getTables().get(0);
 
+		int count = 3;
+		if (!CollectionUtils.isEmpty(trial.getComments()))
+			count++;
+		if (!StringUtils.isEmpty(trial.getBrapiId()))
+			count++;
+
 		// Adjust the table size
-		AreaReference area = new AreaReference(attributeTable.getStartCellReference(), new CellReference(3, attributeTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
+		AreaReference area = new AreaReference(attributeTable.getStartCellReference(), new CellReference(count, attributeTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
 		attributeTable.setArea(area);
 		attributeTable.getCTTable().getAutoFilter().setRef(area.formatAsString());
 		attributeTable.updateReferences();
 
 		final XSSFSheet sheet = attributeTable.getXSSFSheet();
 
-		XSSFRow row = sheet.getRow(1);
+		// Write collection method
+		int i = 0;
+		XSSFRow row;
+
+		if (!StringUtils.isEmpty(trial.getBrapiId())) {
+			i++;
+			row = sheet.getRow(i);
+			if (row == null)
+				row = sheet.createRow(i);
+			row.createCell(0).setCellValue("BrAPI Study DB ID");
+			row.createCell(1).setCellValue("text");
+			row.createCell(2).setCellValue(trial.getBrapiId());
+		}
+
+		i++;
+		row = sheet.getRow(i);
 		if (row == null)
-			row = sheet.createRow(1);
+			row = sheet.createRow(i);
 		row.createCell(0).setCellValue("Collection method");
 		row.createCell(1).setCellValue("text");
 		row.createCell(2).setCellValue("Mobile app");
 
-		row = sheet.getRow(2);
+		// Write app name
+		i++;
+		row = sheet.getRow(i);
 		if (row == null)
-			row = sheet.createRow(2);
+			row = sheet.createRow(i);
 		row.createCell(0).setCellValue("Collection app name");
 		row.createCell(1).setCellValue("text");
 		row.createCell(2).setCellValue("GridScore");
 
-		row = sheet.getRow(3);
+		// Write app version
+		i++;
+		row = sheet.getRow(i);
 		if (row == null)
-			row = sheet.createRow(3);
-
+			row = sheet.createRow(i);
 		row.createCell(0).setCellValue("Collection app version");
 		row.createCell(1).setCellValue("text");
-
 		Package pkg = getClass().getPackage();
-
 		if (pkg != null && !StringUtils.isBlank(pkg.getImplementationVersion()))
 			row.createCell(2).setCellValue(pkg.getImplementationVersion());
 		else
@@ -607,9 +629,11 @@ public class DataToSpreadsheet
 
 		if (!CollectionUtils.isEmpty(trial.getComments()))
 		{
-			row = sheet.getRow(4);
+			// Write the trial comments
+			i++;
+			row = sheet.getRow(i);
 			if (row == null)
-				row = sheet.createRow(4);
+				row = sheet.createRow(i);
 			row.createCell(0).setCellValue("Trial comments");
 			row.createCell(1).setCellValue("text");
 			XSSFCell cell = row.createCell(2);
