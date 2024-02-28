@@ -158,6 +158,39 @@ public class TrialTransactionResource
 								cell.setIsMarked(change);
 						}
 
+						// Check if the plot geography (center) has changed
+						if (transaction.getPlotGeographyChangeTransactions() != null)
+						{
+							PlotGeographyContent geography = transaction.getPlotGeographyChangeTransactions().get(key);
+
+							if (geography != null)
+							{
+								if (cell.getGeography() != null && cell.getGeography().getCenter() != null)
+								{
+									// Geography and center exist, so take average
+									LatLng cellCenter = cell.getGeography().getCenter();
+
+									if (cellCenter.getLat() != null)
+										cellCenter.setLat((cellCenter.getLat() + geography.getCenter().getLat()) / 2);
+									else
+										cellCenter.setLat(geography.getCenter().getLat());
+									if (cellCenter.getLng() != null)
+										cellCenter.setLng((cellCenter.getLng() + geography.getCenter().getLng()) / 2);
+									else
+										cellCenter.setLng(geography.getCenter().getLng());
+								}
+								else
+								{
+									// There's no geography or no center. Make sure the geography exists.
+									if (cell.getGeography() == null)
+										cell.setGeography(new Geography());
+
+									// Then set the center.
+									cell.getGeography().setCenter(geography.getCenter());
+								}
+							}
+						}
+
 						// Check if comments have been added
 						if (transaction.getPlotCommentAddedTransactions() != null)
 						{

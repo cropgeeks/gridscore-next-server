@@ -18,6 +18,7 @@ public class Transaction
 	private Map<String, List<PlotCommentContent>> plotCommentDeletedTransactions;
 	private Map<String, Boolean>                  plotMarkedTransactions;
 	private Map<String, List<TraitMeasurement>>   plotTraitDataChangeTransactions;
+	private Map<String, PlotGeographyContent>     plotGeographyChangeTransactions;
 	private List<TrialCommentContent>             trialCommentAddedTransactions;
 	private List<TrialCommentContent>             trialCommentDeletedTransactions;
 	private List<String>                          trialGermplasmAddedTransactions;
@@ -25,5 +26,5 @@ public class Transaction
 	private List<TraitEditContent>                traitChangeTransactions;
 	private TrialContent                          trialEditTransaction;
 	private BrapiIdChangeContent                  brapiIdChangeTransaction;
-	private BrapiConfig				              brapiConfigChangeTransaction;
+	private BrapiConfig                           brapiConfigChangeTransaction;
 }
