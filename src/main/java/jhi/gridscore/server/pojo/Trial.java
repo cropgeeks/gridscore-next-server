@@ -16,6 +16,7 @@ public class Trial
 	private String            description;
 	private List<Trait>       traits;
 	private List<Comment>     comments;
+	private List<Event>       events;
 	private Layout            layout;
 	private Map<String, Cell> data;
 	private String            brapiId;

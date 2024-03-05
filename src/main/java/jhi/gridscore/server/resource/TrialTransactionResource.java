@@ -14,6 +14,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
@@ -305,6 +306,37 @@ public class TrialTransactionResource
 							List<TrialCommentContent> comments = transaction.getTrialCommentDeletedTransactions();
 							// Remove all comments that match the timestamp AND content
 							trial.getComments().removeIf(c -> comments.stream().anyMatch(oc -> Objects.equals(c.getContent(), oc.getContent()) && Objects.equals(c.getTimestamp(), oc.getTimestamp())));
+						}
+					}
+
+					/* ADD TRIAL EVENT */
+					if (!CollectionUtils.isEmpty(transaction.getTrialEventAddedTransactions()))
+					{
+						// Make sure the list exists
+						if (trial.getEvents() == null)
+							trial.setEvents(new ArrayList<>());
+
+						List<TrialEventContent> events = transaction.getTrialEventAddedTransactions();
+						events.sort(Comparator.comparing(TrialEventContent::getTimestamp));
+
+						// Add the new comment
+						events.forEach(c -> trial.getEvents().add(new Event().setContent(c.getContent())
+																			   .setTimestamp(c.getTimestamp())
+																			   .setType(c.getType())
+																			   .setImpact(c.getImpact())));
+					}
+
+					/* REMOVE TRIAL EVENT */
+					if (!CollectionUtils.isEmpty(transaction.getTrialEventDeletedTransactions()))
+					{
+						if (trial.getEvents() != null)
+						{
+							List<TrialEventContent> events = transaction.getTrialEventDeletedTransactions();
+							// Remove all events that match the timestamp AND content
+							trial.getEvents().removeIf(c -> events.stream().anyMatch(oc -> Objects.equals(c.getContent(), oc.getContent())
+									&& Objects.equals(c.getTimestamp(), oc.getTimestamp())
+									&& Objects.equals(c.getType(), oc.getType())
+									&& Objects.equals(c.getImpact(), oc.getImpact())));
 						}
 					}
 
