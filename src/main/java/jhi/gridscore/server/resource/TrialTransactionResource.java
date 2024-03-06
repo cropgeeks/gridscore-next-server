@@ -319,7 +319,7 @@ public class TrialTransactionResource
 						List<TrialEventContent> events = transaction.getTrialEventAddedTransactions();
 						events.sort(Comparator.comparing(TrialEventContent::getTimestamp));
 
-						// Add the new comment
+						// Add the new event
 						events.forEach(c -> trial.getEvents().add(new Event().setContent(c.getContent())
 																			   .setTimestamp(c.getTimestamp())
 																			   .setType(c.getType())

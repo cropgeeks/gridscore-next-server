@@ -648,6 +648,28 @@ public class DataToSpreadsheet
 			cs.setWrapText(true);
 			cell.setCellStyle(cs);
 		}
+
+		if (!CollectionUtils.isEmpty(trial.getEvents()))
+		{
+			// Write the trial events
+			i++;
+			row = sheet.getRow(i);
+			if (row == null)
+				row = sheet.createRow(i);
+			row.createCell(0).setCellValue("Trial events");
+			row.createCell(1).setCellValue("text");
+			XSSFCell cell = row.createCell(2);
+			cell.setCellValue(trial.getEvents()
+								   .stream()
+								   .filter(e -> !StringUtils.isBlank(e.getContent()))
+								   .map(e -> getTimezonedDate(e.getTimestamp(), true) + " (" + e.getType() + "; " + e.getImpact() + "): " + e.getContent().replaceAll("\r?\n", " "))
+								   .collect(Collectors.joining("\n")));
+
+			// Allow wrapping on new line characters
+			CellStyle cs = workbook.createCellStyle();
+			cs.setWrapText(true);
+			cell.setCellStyle(cs);
+		}
 	}
 
 	private void writeTraits(XSSFWorkbook workbook)
