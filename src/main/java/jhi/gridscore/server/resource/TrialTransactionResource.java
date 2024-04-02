@@ -106,6 +106,7 @@ public class TrialTransactionResource
 							// Create new cell
 							Cell cell = new Cell()
 									.setGermplasm(germplasm)
+									.setCategories(new ArrayList<>())
 									.setRep(null);
 
 							// Add to data map

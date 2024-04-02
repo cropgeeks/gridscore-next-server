@@ -19,6 +19,7 @@ public class Cell
 	private Geography                      geography;
 	private Map<String, List<Measurement>> measurements;
 	private List<Comment>                  comments;
+	private List<String>                   categories;
 
 	public Cell(Cell input)
 	{
@@ -29,5 +30,6 @@ public class Cell
 		this.geography = input.getGeography();
 		this.measurements = input.getMeasurements();
 		this.comments = input.getComments();
+		this.categories = input.getCategories();
 	}
 }
