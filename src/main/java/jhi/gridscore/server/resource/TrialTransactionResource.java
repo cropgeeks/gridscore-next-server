@@ -97,6 +97,14 @@ public class TrialTransactionResource
 					if (!CollectionUtils.isEmpty(transaction.getTrialTraitAddedTransactions()))
 						trial.getTraits().addAll(transaction.getTrialTraitAddedTransactions());
 
+					/* ADD PEOPLE */
+					if (!CollectionUtils.isEmpty(transaction.getTrialPersonAddedTransaction())) {
+						if (trial.getPeople() == null)
+							trial.setPeople(transaction.getTrialPersonAddedTransaction());
+						else
+							trial.getPeople().addAll(transaction.getTrialPersonAddedTransaction());
+					}
+
 					/* ADD TRIAL GERMPLASM */
 					if (!CollectionUtils.isEmpty(transaction.getTrialGermplasmAddedTransactions()))
 					{
