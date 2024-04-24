@@ -12,6 +12,7 @@ public class Person
 {
 	private String     id;
 	private String     name;
+	private String     email;
 	private PersonType type = PersonType.DATA_SUBMITTER;
 
 	public static enum PersonType
