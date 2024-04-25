@@ -97,12 +97,21 @@ public class TrialTransactionResource
 					if (!CollectionUtils.isEmpty(transaction.getTrialTraitAddedTransactions()))
 						trial.getTraits().addAll(transaction.getTrialTraitAddedTransactions());
 
+					Logger.getLogger("").info("PEOPLE: " + transaction.getTrialPersonAddedTransactions());
+
 					/* ADD PEOPLE */
-					if (!CollectionUtils.isEmpty(transaction.getTrialPersonAddedTransaction())) {
+					if (!CollectionUtils.isEmpty(transaction.getTrialPersonAddedTransactions()))
+					{
+//						List<Person> people = transaction.getTrialPersonAddedTransaction().stream().map(p -> new Person()
+//								.setName(p.getName())
+//								.setId(p.getId())
+//								.setEmail(p.getEmail())
+//								.setTypes(p.getTypes().stream().map(t -> Person.PersonType.valueOf(t)).collect(Collectors.toList()))).collect(Collectors.toList());
+
 						if (trial.getPeople() == null)
-							trial.setPeople(transaction.getTrialPersonAddedTransaction());
+							trial.setPeople(transaction.getTrialPersonAddedTransactions());
 						else
-							trial.getPeople().addAll(transaction.getTrialPersonAddedTransaction());
+							trial.getPeople().addAll(transaction.getTrialPersonAddedTransactions());
 					}
 
 					/* ADD TRIAL GERMPLASM */
@@ -269,12 +278,15 @@ public class TrialTransactionResource
 
 													 if (match.isPresent())
 													 {
-														 match.get().setValues(m.getValues());
+														 match.get()
+															  .setPersonId(m.getPersonId())
+															  .setValues(m.getValues());
 													 }
 													 else
 													 {
 														 // Add new
 														 list.add(new Measurement()
+																		  .setPersonId(m.getPersonId())
 																		  .setValues(m.getValues())
 																		  .setTimestamp(m.getTimestamp()));
 													 }
@@ -282,7 +294,9 @@ public class TrialTransactionResource
 												 else
 												 {
 													 // Update
-													 list.get(0).setValues(m.getValues())
+													 list.get(0)
+														 .setPersonId(m.getPersonId())
+														 .setValues(m.getValues())
 														 .setTimestamp(m.getTimestamp());
 												 }
 											 }
@@ -330,9 +344,9 @@ public class TrialTransactionResource
 
 						// Add the new event
 						events.forEach(c -> trial.getEvents().add(new Event().setContent(c.getContent())
-																			   .setTimestamp(c.getTimestamp())
-																			   .setType(c.getType())
-																			   .setImpact(c.getImpact())));
+																			 .setTimestamp(c.getTimestamp())
+																			 .setType(c.getType())
+																			 .setImpact(c.getImpact())));
 					}
 
 					/* REMOVE TRIAL EVENT */

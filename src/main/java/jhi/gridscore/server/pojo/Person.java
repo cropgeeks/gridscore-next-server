@@ -3,6 +3,8 @@ package jhi.gridscore.server.pojo;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.*;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -10,17 +12,29 @@ import lombok.experimental.Accessors;
 @ToString
 public class Person
 {
-	private String     id;
-	private String     name;
-	private String     email;
-	private PersonType type = PersonType.DATA_SUBMITTER;
+	private String           id;
+	private String           name;
+	private String           email;
+	private List<PersonType> types = new ArrayList<>();
 
 	public static enum PersonType
 	{
-		DATA_COLLECTOR,
-		DATA_SUBMITTER,
-		AUTHOR,
-		CORRESPONDING_AUTHOR,
-		QUALITY_CHECKER
+		DATA_COLLECTOR("data collector"),
+		DATA_SUBMITTER("data submitter"),
+		AUTHOR("author"),
+		CORRESPONDING_AUTHOR("corresponding author"),
+		QUALITY_CHECKER("quality checker");
+
+		private String templateName;
+
+		private PersonType(String templateName)
+		{
+			this.templateName = templateName;
+		}
+
+		public String getTemplateName()
+		{
+			return templateName;
+		}
 	}
 }

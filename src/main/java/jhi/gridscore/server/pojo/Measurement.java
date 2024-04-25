@@ -12,6 +12,7 @@ import java.util.List;
 @ToString
 public class Measurement
 {
+	private String       personId;
 	private String       timestamp;
 	private List<String> values;
 }

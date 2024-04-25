@@ -115,6 +115,9 @@ public class DataToSpreadsheet
 
 			writeAttributes(workbook);
 
+			if (!CollectionUtils.isEmpty(trial.getPeople()))
+				writeCollaborators(workbook);
+
 			XSSFRow dataRow = data.getRow(0);
 			XSSFRow dateRow = dates.getRow(0);
 			IntStream.range(0, trial.getTraits().size())
@@ -562,6 +565,34 @@ public class DataToSpreadsheet
 		if (cell == null)
 			cell = row.createCell(index);
 		return cell;
+	}
+
+	private void writeCollaborators(XSSFWorkbook workbook) {
+		XSSFSheet collaborators = workbook.getSheet("COLLABORATORS");
+		XSSFTable collaboratorsTable = collaborators.getTables().get(0);
+
+		// Adjust the table size
+		AreaReference area = new AreaReference(collaboratorsTable.getStartCellReference(), new CellReference(trial.getPeople().size() + 1, collaboratorsTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
+		collaboratorsTable.setArea(area);
+		collaboratorsTable.getCTTable().getAutoFilter().setRef(area.formatAsString());
+		collaboratorsTable.updateReferences();
+
+		final XSSFSheet sheet = collaboratorsTable.getXSSFSheet();
+
+		// Write collection method
+		int i = 1;
+		XSSFRow row;
+
+		for (Person p : trial.getPeople()) {
+			i++;
+			row = sheet.getRow(i);
+			if (row == null)
+				row = sheet.createRow(i);
+			row.createCell(0).setCellValue(p.getName());
+			row.createCell(2).setCellValue(p.getTypes().stream().map(Person.PersonType::getTemplateName).collect(Collectors.joining(";")));
+			if (!StringUtils.isBlank(p.getEmail()))
+				row.createCell(4).setCellValue(p.getEmail());
+		}
 	}
 
 	private void writeAttributes(XSSFWorkbook workbook)

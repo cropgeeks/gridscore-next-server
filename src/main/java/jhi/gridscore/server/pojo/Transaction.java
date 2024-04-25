@@ -23,7 +23,7 @@ public class Transaction
 	private List<TrialCommentContent>             trialCommentDeletedTransactions;
 	private List<TrialEventContent>               trialEventAddedTransactions;
 	private List<TrialEventContent>               trialEventDeletedTransactions;
-	private List<Person>                          trialPersonAddedTransaction;
+	private List<Person>                          trialPersonAddedTransactions;
 	private List<String>                          trialGermplasmAddedTransactions;
 	private List<Trait>                           trialTraitAddedTransactions;
 	private List<TraitEditContent>                traitChangeTransactions;
