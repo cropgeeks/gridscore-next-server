@@ -19,6 +19,7 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.*;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
@@ -588,7 +589,8 @@ public class DataToSpreadsheet
 			row = sheet.getRow(i);
 			if (row == null)
 				row = sheet.createRow(i);
-			row.createCell(0).setCellValue(p.getName());
+
+			row.createCell(1).setCellValue(p.getName());
 			row.createCell(2).setCellValue(p.getTypes().stream().map(Person.PersonType::getTemplateName).collect(Collectors.joining(";")));
 			if (!StringUtils.isBlank(p.getEmail()))
 				row.createCell(4).setCellValue(p.getEmail());
