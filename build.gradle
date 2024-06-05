@@ -21,7 +21,7 @@ compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = 11
 
 group 'uk.ac.hutton.ics.gridscore'
-version '2.6.0'
+version '3.0.1'
 
 repositories {
     maven {
