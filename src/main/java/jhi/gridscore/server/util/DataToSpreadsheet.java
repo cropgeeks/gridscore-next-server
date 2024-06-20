@@ -1,8 +1,6 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
-import jhi.gridscore.server.database.Database;
-import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.Cell;
 import jhi.gridscore.server.pojo.Comment;
 import jhi.gridscore.server.pojo.*;
@@ -11,18 +9,14 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
-import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.*;
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.*;
-
-import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 public class DataToSpreadsheet
 {
@@ -145,6 +139,36 @@ public class DataToSpreadsheet
 		}
 	}
 
+	private int getRowLabel(int row)
+	{
+		if (!CollectionUtils.isEmpty(trial.getLayout().getRowLabels()) && trial.getLayout().getRowLabels().size() == trial.getLayout().getRows())
+		{
+			return trial.getLayout().getRowLabels().get(row);
+		}
+		else
+		{
+			if (Objects.equals(trial.getLayout().getRowOrder(), Layout.DISPLAY_ORDER_BOTTOM_TO_TOP))
+				return trial.getLayout().getRows() - row;
+			else
+				return row + 1;
+		}
+	}
+
+	private int getColumnLabel(int column)
+	{
+		if (!CollectionUtils.isEmpty(trial.getLayout().getColumnLabels()) && trial.getLayout().getColumnLabels().size() == trial.getLayout().getColumns())
+		{
+			return trial.getLayout().getColumnLabels().get(column);
+		}
+		else
+		{
+			if (Objects.equals(trial.getLayout().getColumnOrder(), Layout.DISPLAY_ORDER_RIGHT_TO_LEFT))
+				return trial.getLayout().getColumns() - column;
+			else
+				return column + 1;
+		}
+	}
+
 	private void exportIndividually(XSSFSheet data, XSSFSheet dates)
 	{
 		final int[] sheetRow = new int[]{0};
@@ -161,7 +185,8 @@ public class DataToSpreadsheet
 				measurementCount[0] = (int) Math.max(measurementCount[0], count);
 			});
 
-			if (!CollectionUtils.isEmpty(cell.getComments())) {
+			if (!CollectionUtils.isEmpty(cell.getComments()))
+			{
 				measurementCount[0] = Math.max(measurementCount[0], cell.getComments().size());
 			}
 
@@ -196,34 +221,20 @@ public class DataToSpreadsheet
 					pc.setCellValue("1");
 				}
 
+				int rowLabel = getRowLabel(row);
+				int columnLabel = getColumnLabel(col);
+
 				// Write the row
 				dc = getCell(d, 3);
 				pc = getCell(p, 3);
-
-				if (Objects.equals(trial.getLayout().getRowOrder(), Layout.DISPLAY_ORDER_BOTTOM_TO_TOP))
-				{
-					dc.setCellValue(trial.getLayout().getRows() - row);
-					pc.setCellValue(trial.getLayout().getRows() - row);
-				}
-				else
-				{
-					dc.setCellValue(row + 1);
-					pc.setCellValue(row + 1);
-				}
+				dc.setCellValue(rowLabel);
+				pc.setCellValue(rowLabel);
 
 				// Write the column
 				dc = getCell(d, 4);
 				pc = getCell(p, 4);
-				if (Objects.equals(trial.getLayout().getColumnOrder(), Layout.DISPLAY_ORDER_RIGHT_TO_LEFT))
-				{
-					dc.setCellValue(trial.getLayout().getColumns() - col);
-					pc.setCellValue(trial.getLayout().getColumns() - col);
-				}
-				else
-				{
-					dc.setCellValue(col + 1);
-					pc.setCellValue(col + 1);
-				}
+				dc.setCellValue(columnLabel);
+				pc.setCellValue(columnLabel);
 
 				// Write the location
 				if (cell.getGeography() != null)
@@ -325,7 +336,8 @@ public class DataToSpreadsheet
 
 			if (!CollectionUtils.isEmpty(cell.getComments()))
 			{
-				for (int j = 0; j < cell.getComments().size(); j++) {
+				for (int j = 0; j < cell.getComments().size(); j++)
+				{
 					int i = sheetRow[0] + j;
 					XSSFRow d = data.getRow(i + 1);
 					XSSFRow p = dates.getRow(i + 1);
@@ -407,34 +419,20 @@ public class DataToSpreadsheet
 						 pc.setCellValue("1");
 					 }
 
+					 int rowLabel = getRowLabel(c.row);
+					 int columnLabel = getColumnLabel(c.col);
+
 					 // Write the row
 					 dc = getCell(d, 3);
 					 pc = getCell(p, 3);
-
-					 if (Objects.equals(trial.getLayout().getRowOrder(), Layout.DISPLAY_ORDER_BOTTOM_TO_TOP))
-					 {
-						 dc.setCellValue(trial.getLayout().getRows() - c.row);
-						 pc.setCellValue(trial.getLayout().getRows() - c.row);
-					 }
-					 else
-					 {
-						 dc.setCellValue(c.row + 1);
-						 pc.setCellValue(c.row + 1);
-					 }
+					 dc.setCellValue(rowLabel);
+					 pc.setCellValue(rowLabel);
 
 					 // Write the column
 					 dc = getCell(d, 4);
 					 pc = getCell(p, 4);
-					 if (Objects.equals(trial.getLayout().getColumnOrder(), Layout.DISPLAY_ORDER_RIGHT_TO_LEFT))
-					 {
-						 dc.setCellValue(trial.getLayout().getColumns() - c.col);
-						 pc.setCellValue(trial.getLayout().getColumns() - c.col);
-					 }
-					 else
-					 {
-						 dc.setCellValue(c.col + 1);
-						 pc.setCellValue(c.col + 1);
-					 }
+					 dc.setCellValue(columnLabel);
+					 pc.setCellValue(columnLabel);
 
 					 // Write the location
 					 if (c.getGeography() != null)
@@ -568,7 +566,8 @@ public class DataToSpreadsheet
 		return cell;
 	}
 
-	private void writeCollaborators(XSSFWorkbook workbook) {
+	private void writeCollaborators(XSSFWorkbook workbook)
+	{
 		XSSFSheet collaborators = workbook.getSheet("COLLABORATORS");
 		XSSFTable collaboratorsTable = collaborators.getTables().get(0);
 
@@ -584,7 +583,8 @@ public class DataToSpreadsheet
 		int i = 1;
 		XSSFRow row;
 
-		for (Person p : trial.getPeople()) {
+		for (Person p : trial.getPeople())
+		{
 			i++;
 			row = sheet.getRow(i);
 			if (row == null)
@@ -620,7 +620,8 @@ public class DataToSpreadsheet
 		int i = 0;
 		XSSFRow row;
 
-		if (!StringUtils.isEmpty(trial.getBrapiId())) {
+		if (!StringUtils.isEmpty(trial.getBrapiId()))
+		{
 			i++;
 			row = sheet.getRow(i);
 			if (row == null)
