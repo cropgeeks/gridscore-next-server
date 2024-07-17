@@ -55,8 +55,12 @@ public class TrialTransactionResource
 				// Viewers cannot edit anything
 				if (Objects.equals(shareCode, wrapper.getViewerCode()))
 				{
-					return Response.status(Response.Status.FORBIDDEN)
-								   .build();
+					// Check owner and editor as well, though. We sometimes manually set all three codes to the same value which would prevent editing.
+					if (!Objects.equals(shareCode, wrapper.getEditorCode()) && !Objects.equals(shareCode, wrapper.getOwnerCode()))
+					{
+						return Response.status(Response.Status.FORBIDDEN)
+									   .build();
+					}
 				}
 				// If there's nothing to do, simply return
 				if (transaction == null)

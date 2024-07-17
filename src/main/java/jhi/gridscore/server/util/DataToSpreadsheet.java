@@ -41,10 +41,11 @@ public class DataToSpreadsheet
 //		}
 	}
 
-	private File    template;
-	private File    target;
-	private Trial   trial;
-	private boolean aggregate;
+	private File                 template;
+	private File                 target;
+	private Trial                trial;
+	private boolean              aggregate;
+	private Map<String, Integer> traitToColumnIndex = new HashMap<>();
 
 	private boolean hasPlotComments = false;
 
@@ -106,26 +107,51 @@ public class DataToSpreadsheet
 			else
 				metadata.getRow(4).getCell(2).setCellValue(getTimezonedNow());
 
-			writeTraits(workbook);
-
-			writeAttributes(workbook);
-
-			if (!CollectionUtils.isEmpty(trial.getPeople()))
-				writeCollaborators(workbook);
-
 			XSSFRow dataRow = data.getRow(0);
 			XSSFRow dateRow = dates.getRow(0);
-			IntStream.range(0, trial.getTraits().size())
-					 .forEach(i -> {
-						 Trait t = trial.getTraits().get(i);
-						 dataRow.createCell(i + 10).setCellValue(t.getName());
-						 dateRow.createCell(i + 10).setCellValue(t.getName());
-					 });
+
+			int offset = 10;
+			List<Trait> traits = new ArrayList<>(trial.getTraits());
+			for (int i = 0; i < trial.getTraits().size(); i++)
+			{
+				Trait t = trial.getTraits().get(i);
+
+				if (Objects.equals(t.getDataType(), "gps"))
+				{
+					dataRow.createCell(i + offset).setCellValue(t.getName());
+					dateRow.createCell(i + offset).setCellValue(t.getName());
+					traitToColumnIndex.put(t.getId(), i + offset);
+
+					// Add two dummy traits to split up lat/lng
+					offset++;
+					Trait lat = new Trait().setName(t.getName() + "-latitude").setId(t.getId() + "-latitude").setDataType("float").setSetSize(t.getSetSize()).setAllowRepeats(t.isAllowRepeats()).setGroup(t.getGroup());
+					dataRow.createCell(i + offset).setCellValue(lat.getName());
+					dateRow.createCell(i + offset).setCellValue(lat.getName());
+					traitToColumnIndex.put(lat.getId(), i + offset);
+					traits.add(lat);
+
+					offset++;
+					Trait lng = new Trait().setName(t.getName() + "-longitude").setId(t.getId() + "-longitude").setDataType("float").setSetSize(t.getSetSize()).setAllowRepeats(t.isAllowRepeats()).setGroup(t.getGroup());
+					dataRow.createCell(i + offset).setCellValue(lng.getName());
+					dateRow.createCell(i + offset).setCellValue(lng.getName());
+					traitToColumnIndex.put(lng.getId(), i + offset);
+					traits.add(lng);
+
+					setSplitValues(t, lat, lng, trial.getData());
+				}
+				else
+				{
+					dataRow.createCell(i + offset).setCellValue(t.getName());
+					dateRow.createCell(i + offset).setCellValue(t.getName());
+					traitToColumnIndex.put(t.getId(), i + offset);
+				}
+			}
+			trial.setTraits(traits);
 
 			if (hasPlotComments)
 			{
-				dataRow.createCell(trial.getTraits().size() + 10).setCellValue("Plot comment");
-				dateRow.createCell(trial.getTraits().size() + 10).setCellValue("Plot comment");
+				dataRow.createCell(traitToColumnIndex.size() + 10).setCellValue("Plot comment");
+				dateRow.createCell(traitToColumnIndex.size() + 10).setCellValue("Plot comment");
 			}
 
 			if (aggregate)
@@ -133,10 +159,54 @@ public class DataToSpreadsheet
 			else
 				exportIndividually(data, dates);
 
+			if (!CollectionUtils.isEmpty(trial.getPeople()))
+				writeCollaborators(workbook);
+			writeTraits(workbook);
+			writeAttributes(workbook);
+
 			workbook.setActiveSheet(0);
 			workbook.write(os);
 			workbook.close();
 		}
+	}
+
+	private void setSplitValues(Trait gps, Trait lat, Trait lng, Map<String, Cell> data)
+	{
+		data.values().forEach(c -> {
+			if (c == null || !c.getMeasurements().containsKey(gps.getId()))
+				return;
+
+			List<Measurement> ms = c.getMeasurements().get(gps.getId());
+
+			c.getMeasurements().put(lat.getId(), ms.stream().map(mm -> new Measurement()
+														   .setPersonId(mm.getPersonId())
+														   .setTimestamp(mm.getTimestamp())
+														   .setValues(mm.getValues().stream().map(v -> {
+															   if (StringUtils.isEmpty(v))
+																   return v;
+
+															   String[] parts = v.split(";");
+															   if (parts.length == 2)
+																   return parts[0];
+															   else
+																   return null;
+														   }).collect(Collectors.toList())))
+												   .collect(Collectors.toList()));
+			c.getMeasurements().put(lng.getId(), ms.stream().map(mm -> new Measurement()
+														   .setPersonId(mm.getPersonId())
+														   .setTimestamp(mm.getTimestamp())
+														   .setValues(mm.getValues().stream().map(v -> {
+															   if (StringUtils.isEmpty(v))
+																   return v;
+
+															   String[] parts = v.split(";");
+															   if (parts.length == 2)
+																   return parts[1];
+															   else
+																   return null;
+														   }).collect(Collectors.toList())))
+												   .collect(Collectors.toList()));
+		});
 	}
 
 	private int getRowLabel(int row)
@@ -284,6 +354,7 @@ public class DataToSpreadsheet
 			for (int ti = 0; ti < trial.getTraits().size(); ti++)
 			{
 				Trait t = trial.getTraits().get(ti);
+				int traitIndex = traitToColumnIndex.get(t.getId());
 
 				List<Measurement> measurements = cell.getMeasurements().get(t.getId());
 
@@ -301,8 +372,8 @@ public class DataToSpreadsheet
 							XSSFRow d = data.getRow(i + 1);
 							XSSFRow p = dates.getRow(i + 1);
 
-							dc = getCell(d, ti + 10);
-							pc = getCell(p, ti + 10);
+							dc = getCell(d, traitIndex);
+							pc = getCell(p, traitIndex);
 
 							if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "numeric"))
 							{
@@ -342,8 +413,8 @@ public class DataToSpreadsheet
 					XSSFRow d = data.getRow(i + 1);
 					XSSFRow p = dates.getRow(i + 1);
 
-					dc = getCell(d, trial.getTraits().size() + 10);
-					pc = getCell(p, trial.getTraits().size() + 10);
+					dc = getCell(d, traitToColumnIndex.size() + 10);
+					pc = getCell(p, traitToColumnIndex.size() + 10);
 
 					Comment comment = cell.getComments().get(j);
 					setCell(new Trait().setDataType("text"), dc, comment.getContent());
@@ -480,8 +551,10 @@ public class DataToSpreadsheet
 					 {
 						 Trait t = trial.getTraits().get(j);
 
-						 dc = getCell(d, j + 10);
-						 pc = getCell(p, j + 10);
+						 int traitIndex = traitToColumnIndex.get(t.getId());
+
+						 dc = getCell(d, traitIndex);
+						 pc = getCell(p, traitIndex);
 
 						 List<Measurement> traitMeasurements = c.getMeasurements().get(t.getId());
 						 List<Measurement> measurements = traitMeasurements == null ? new ArrayList<>() : traitMeasurements.stream().filter(m -> {
@@ -548,8 +621,8 @@ public class DataToSpreadsheet
 
 						 if (!CollectionUtils.isEmpty(comments))
 						 {
-							 dc = getCell(d, trial.getTraits().size() + 10);
-							 pc = getCell(p, trial.getTraits().size() + 10);
+							 dc = getCell(d, traitToColumnIndex.size() + 10);
+							 pc = getCell(p, traitToColumnIndex.size() + 10);
 
 							 setCell(new Trait().setDataType("text"), dc, comments.stream().map(Comment::getContent).collect(Collectors.joining("; ")));
 							 setCell(new Trait().setDataType("date"), pc, c.date);
