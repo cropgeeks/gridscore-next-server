@@ -26,6 +26,7 @@ public class Transaction
 	private List<Person>                          trialPersonAddedTransactions;
 	private List<String>                          trialGermplasmAddedTransactions;
 	private List<Trait>                           trialTraitAddedTransactions;
+	private List<Trait>                           trialTraitDeletedTransactions;
 	private List<TraitEditContent>                traitChangeTransactions;
 	private TrialContent                          trialEditTransaction;
 	private BrapiIdChangeContent                  brapiIdChangeTransaction;

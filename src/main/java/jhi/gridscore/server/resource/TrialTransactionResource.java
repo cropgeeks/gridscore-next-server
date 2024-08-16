@@ -14,7 +14,6 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
@@ -70,7 +69,7 @@ public class TrialTransactionResource
 					return Response.ok(wrapper.getTrial()).build();
 				}
 				// Only owners can update trial details and edit traits!
-				if ((transaction.getTrialEditTransaction() != null || !CollectionUtils.isEmpty(transaction.getTraitChangeTransactions())) && !Objects.equals(shareCode, wrapper.getOwnerCode()))
+				if ((transaction.getTrialEditTransaction() != null || !CollectionUtils.isEmpty(transaction.getTraitChangeTransactions()) || !CollectionUtils.isEmpty(transaction.getTrialTraitDeletedTransactions())) && !Objects.equals(shareCode, wrapper.getOwnerCode()))
 				{
 					return Response.status(Response.Status.FORBIDDEN).build();
 				}
@@ -101,17 +100,28 @@ public class TrialTransactionResource
 					if (!CollectionUtils.isEmpty(transaction.getTrialTraitAddedTransactions()))
 						trial.getTraits().addAll(transaction.getTrialTraitAddedTransactions());
 
-					Logger.getLogger("").info("PEOPLE: " + transaction.getTrialPersonAddedTransactions());
+					/* DELETE TRAITS */
+					if (!CollectionUtils.isEmpty(transaction.getTrialTraitDeletedTransactions()))
+					{
+						// Remove them all
+						List<String> ids = transaction.getTrialTraitDeletedTransactions().stream().map(Trait::getId).collect(Collectors.toList());
+						trial.getTraits().removeIf(t -> ids.contains(t.getId()));
+
+						for (Trait trait : transaction.getTrialTraitDeletedTransactions())
+						{
+							Map<String, Cell> data = trial.getData();
+
+							for (Cell cell : data.values())
+							{
+								if (cell.getMeasurements() != null)
+									cell.getMeasurements().remove(trait.getId());
+							}
+						}
+					}
 
 					/* ADD PEOPLE */
 					if (!CollectionUtils.isEmpty(transaction.getTrialPersonAddedTransactions()))
 					{
-//						List<Person> people = transaction.getTrialPersonAddedTransaction().stream().map(p -> new Person()
-//								.setName(p.getName())
-//								.setId(p.getId())
-//								.setEmail(p.getEmail())
-//								.setTypes(p.getTypes().stream().map(t -> Person.PersonType.valueOf(t)).collect(Collectors.toList()))).collect(Collectors.toList());
-
 						if (trial.getPeople() == null)
 							trial.setPeople(transaction.getTrialPersonAddedTransactions());
 						else
