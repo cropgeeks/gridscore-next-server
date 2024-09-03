@@ -20,4 +20,19 @@ public class SettingsResource
 
 		return Response.ok(result).build();
 	}
+
+	@GET
+	@Path("/version")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getVersion()
+	{
+		Package p = getClass().getPackage();
+
+		String version = "DEVELOPMENT";
+		if (p != null)
+			version = p.getImplementationVersion();
+
+		return Response.ok(version).build();
+	}
 }
