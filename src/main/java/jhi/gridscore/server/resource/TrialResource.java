@@ -6,6 +6,7 @@ import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
+import jhi.gridscore.server.util.Secured;
 import net.logicsquad.nanocaptcha.content.LatinContentProducer;
 import net.logicsquad.nanocaptcha.image.ImageCaptcha;
 import net.logicsquad.nanocaptcha.image.backgrounds.FlatColorBackgroundProducer;
@@ -27,6 +28,7 @@ import java.util.logging.Logger;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
+@Secured
 @Path("trial")
 public class TrialResource
 {

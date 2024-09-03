@@ -6,6 +6,7 @@ import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.pojo.transaction.*;
+import jhi.gridscore.server.util.Secured;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
+@Secured
 @Path("trial/{shareCode}/transaction")
 public class TrialTransactionResource
 {

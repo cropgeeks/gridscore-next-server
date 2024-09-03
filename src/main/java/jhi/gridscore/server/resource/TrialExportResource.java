@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
+@Secured
 @Path("trial/{shareCode}/export")
 public class TrialExportResource
 {
