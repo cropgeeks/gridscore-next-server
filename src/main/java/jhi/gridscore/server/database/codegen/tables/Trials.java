@@ -9,15 +9,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import jhi.gridscore.server.database.binding.TrialBinding;
+import jhi.gridscore.server.database.binding.UpdateStatsBinding;
 import jhi.gridscore.server.database.codegen.GridscoreDb;
 import jhi.gridscore.server.database.codegen.Indexes;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.Trial;
+import jhi.gridscore.server.pojo.UpdateStats;
 
 import org.jooq.Field;
 import org.jooq.Index;
 import org.jooq.Name;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -69,6 +71,11 @@ public class Trials extends TableImpl<TrialsRecord> {
      * The column <code>gridscore_db.trials.trial</code>.
      */
     public final TableField<TrialsRecord, Trial> TRIAL = createField(DSL.name("trial"), SQLDataType.JSON.nullable(false), this, "", new TrialBinding());
+
+    /**
+     * The column <code>gridscore_db.trials.update_stats</code>.
+     */
+    public final TableField<TrialsRecord, UpdateStats> UPDATE_STATS = createField(DSL.name("update_stats"), SQLDataType.JSON, this, "", new UpdateStatsBinding());
 
     /**
      * The column <code>gridscore_db.trials.created_on</code>.
@@ -151,11 +158,11 @@ public class Trials extends TableImpl<TrialsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, Trial, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<String, String, String, Trial, UpdateStats, LocalDateTime, LocalDateTime> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

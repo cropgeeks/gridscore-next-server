@@ -25,7 +25,7 @@ public class GerminateExportTest extends ConfigTest
 		try (InputStreamReader is = new InputStreamReader(GerminateExportTest.class.getResourceAsStream("barley.json")))
 		{
 			trial = gson.fromJson(is, Trial.class);
-			setUpClient();
+			setUpClient(null);
 		}
 	}
 
@@ -37,7 +37,7 @@ public class GerminateExportTest extends ConfigTest
 	void shareConfig()
 			throws Exception
 	{
-		ApiResult<Trial> result = sendTrial(trial);
+		ApiResult<Trial> result = sendTrial(null, trial);
 		Assertions.assertEquals(200, result.status);
 		trial = result.data;
 		Assertions.assertNotNull(trial.getShareCodes().getOwnerCode());

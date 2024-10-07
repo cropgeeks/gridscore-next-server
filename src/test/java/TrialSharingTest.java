@@ -24,7 +24,7 @@ public class TrialSharingTest extends ConfigTest
 		try (InputStreamReader is = new InputStreamReader(GerminateExportTest.class.getResourceAsStream("minimal.json")))
 		{
 			trial = gson.fromJson(is, Trial.class);
-			setUpClient();
+			setUpClient(null);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class TrialSharingTest extends ConfigTest
 	void shareInitialConfig()
 			throws Exception
 	{
-		ApiResult<Trial> result = sendTrial(trial);
+		ApiResult<Trial> result = sendTrial(null, trial);
 		Assertions.assertEquals(200, result.status);
 		trial = result.data;
 		Assertions.assertNotNull(trial.getShareCodes().getOwnerCode());
@@ -81,7 +81,7 @@ public class TrialSharingTest extends ConfigTest
 
 		t.setPlotTraitDataChangeTransactions(changes);
 
-		ApiResult<Trial> result = sendTransaction(trial.getShareCodes().getOwnerCode(), t);
+		ApiResult<Trial> result = sendTransaction(null, trial.getShareCodes().getOwnerCode(), t);
 		Assertions.assertEquals(200, result.status);
 
 		Cell cell = result.data.getData().get("0|0");
@@ -117,7 +117,7 @@ public class TrialSharingTest extends ConfigTest
 		));
 		t.setPlotCommentAddedTransactions(plotComments);
 
-		ApiResult<Trial> result = sendTransaction(trial.getShareCodes().getOwnerCode(), t);
+		ApiResult<Trial> result = sendTransaction(null, trial.getShareCodes().getOwnerCode(), t);
 		Assertions.assertEquals(200, result.status);
 		Assertions.assertNotNull(result.data.getComments());
 		Assertions.assertEquals(2, result.data.getComments().size());
@@ -144,7 +144,7 @@ public class TrialSharingTest extends ConfigTest
 		));
 		t.setPlotCommentDeletedTransactions(plotComments);
 
-		result = sendTransaction(trial.getShareCodes().getOwnerCode(), t);
+		result = sendTransaction(null, trial.getShareCodes().getOwnerCode(), t);
 		Assertions.assertEquals(200, result.status);
 		Assertions.assertNotNull(result.data.getComments());
 		Assertions.assertEquals(1, result.data.getComments().size());
@@ -167,7 +167,7 @@ public class TrialSharingTest extends ConfigTest
 		// We're adding three traits and recording data for old and new traits
 		Transaction t = gson.fromJson("{\"plotTraitDataChangeTransactions\":{\"0|0\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[0],\"timestamp\":\"2023-07-24T14:17:45.852Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"4\"],\"timestamp\":\"2023-07-24T14:17:45.852Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"1\",\"2\",\"3\"],\"timestamp\":\"2023-07-24T14:17:45.852Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-24\"],\"timestamp\":\"2023-07-24T14:17:45.852Z\"},{\"traitId\":\"jYJf-uOtE_TXc-Lp\",\"values\":[\"something\"],\"timestamp\":\"2023-07-24T14:17:45.852Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"3\"],\"timestamp\":\"2023-07-24T14:18:53.491Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"3\",\"2\",\"1\"],\"timestamp\":\"2023-07-24T14:18:53.491Z\"}],\"0|1\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[1],\"timestamp\":\"2023-07-24T14:17:56.163Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"2\"],\"timestamp\":\"2023-07-24T14:17:56.163Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"4\",\"6\",\"2\"],\"timestamp\":\"2023-07-24T14:17:56.163Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-21\"],\"timestamp\":\"2023-07-24T14:17:56.163Z\"}],\"1|0\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[1],\"timestamp\":\"2023-07-24T14:18:05.596Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"6\"],\"timestamp\":\"2023-07-24T14:18:05.596Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"5\",\"3\",\"6\"],\"timestamp\":\"2023-07-24T14:18:05.596Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-26\"],\"timestamp\":\"2023-07-24T14:18:05.596Z\"},{\"traitId\":\"jYJf-uOtE_TXc-Lp\",\"values\":[\"2131\"],\"timestamp\":\"2023-07-24T14:18:05.596Z\"}],\"1|1\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[1],\"timestamp\":\"2023-07-24T14:18:17.595Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"3\"],\"timestamp\":\"2023-07-24T14:18:17.595Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"4\",\"3\",\"5\"],\"timestamp\":\"2023-07-24T14:18:17.595Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-22\"],\"timestamp\":\"2023-07-24T14:18:17.595Z\"},{\"traitId\":\"jYJf-uOtE_TXc-Lp\",\"values\":[\"rfsdfs\"],\"timestamp\":\"2023-07-24T14:18:17.595Z\"}],\"2|0\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[0],\"timestamp\":\"2023-07-24T14:18:30.634Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"3\"],\"timestamp\":\"2023-07-24T14:18:30.634Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"454\",\"3.55\",\"543.22\"],\"timestamp\":\"2023-07-24T14:18:30.634Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-23\"],\"timestamp\":\"2023-07-24T14:18:30.634Z\"},{\"traitId\":\"jYJf-uOtE_TXc-Lp\",\"values\":[\"fff\"],\"timestamp\":\"2023-07-24T14:18:30.634Z\"}],\"2|1\":[{\"traitId\":\"YTcnavPoi2d3EaKF\",\"values\":[0],\"timestamp\":\"2023-07-24T14:18:43.387Z\"},{\"traitId\":\"DjDDgY-kKUksO90K\",\"values\":[\"0\"],\"timestamp\":\"2023-07-24T14:18:43.387Z\"},{\"traitId\":\"jItYsM6DUTHh_PQB\",\"values\":[\"3\",\"5\",\"1\"],\"timestamp\":\"2023-07-24T14:18:43.387Z\"},{\"traitId\":\"mQOIapcuoA3Cwyue\",\"values\":[\"2023-07-25\"],\"timestamp\":\"2023-07-24T14:18:43.387Z\"},{\"traitId\":\"jYJf-uOtE_TXc-Lp\",\"values\":[\"33333\"],\"timestamp\":\"2023-07-24T14:18:43.387Z\"}]},\"trialTraitAddedTransactions\":[{\"name\":\"t3\",\"description\":null,\"dataType\":\"float\",\"allowRepeats\":true,\"setSize\":3,\"timeframe\":null,\"id\":\"jItYsM6DUTHh_PQB\"},{\"name\":\"t4\",\"description\":null,\"dataType\":\"date\",\"allowRepeats\":false,\"setSize\":1,\"timeframe\":null,\"id\":\"mQOIapcuoA3Cwyue\"},{\"name\":\"t5\",\"description\":null,\"dataType\":\"text\",\"allowRepeats\":false,\"setSize\":1,\"timeframe\":null,\"id\":\"jYJf-uOtE_TXc-Lp\"}]}", Transaction.class);
 
-		ApiResult<Trial> result = sendTransaction(trial.getShareCodes().getOwnerCode(), t);
+		ApiResult<Trial> result = sendTransaction(null, trial.getShareCodes().getOwnerCode(), t);
 		Assertions.assertEquals(200, result.status);
 		Assertions.assertEquals(5, result.data.getTraits().size());
 		Assertions.assertEquals("t4", result.data.getTraits().get(3).getName());

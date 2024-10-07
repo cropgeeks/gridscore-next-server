@@ -3,7 +3,7 @@ import jakarta.ws.rs.client.*;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.pojo.*;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import org.junit.platform.commons.util.StringUtils;
+import org.jooq.tools.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -12,7 +12,7 @@ import java.util.Date;
 
 public abstract class ConfigTest
 {
-	protected static String             URL = "http://localhost:8180/gridscore-next-api/v2.4.1/api/trial";
+	protected static String             URL = "http://localhost:8180/gridscore-next-api/v3.1.1/api/trial";
 	protected static Client             client;
 	protected static Invocation.Builder postBuilder;
 
@@ -22,8 +22,9 @@ public abstract class ConfigTest
 		return time.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter());
 	}
 
-	protected static void setUpClient()
+	protected static void setUpClient(String url)
 	{
+		String finalUrl = StringUtils.isEmpty(url) ? URL : url;
 		client = ClientBuilder.newBuilder()
 							  .build();
 
@@ -33,13 +34,14 @@ public abstract class ConfigTest
 		JacksonJaxbJsonProvider jsonProvider = new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);
 		client.register(jsonProvider);
 
-		postBuilder = client.target(URL)
+		postBuilder = client.target(finalUrl)
 							.request(MediaType.APPLICATION_JSON);
 	}
 
-	protected ApiResult<Trial> getTrial(String shareCode)
+	protected ApiResult<Trial> getTrial(String url, String shareCode)
 	{
-		WebTarget target = client.target(URL);
+		String finalUrl = StringUtils.isEmpty(url) ? URL : url;
+		WebTarget target = client.target(finalUrl);
 
 		if (!StringUtils.isBlank(shareCode))
 			target = target.path(shareCode);
@@ -53,9 +55,10 @@ public abstract class ConfigTest
 		return new ApiResult<Trial>().setData(result).setStatus(code);
 	}
 
-	protected ApiResult<Trial> sendTrial(Trial config)
+	protected ApiResult<Trial> sendTrial(String url, Trial config)
 	{
-		Response response = client.target(URL)
+		String finalUrl = StringUtils.isEmpty(url) ? URL : url;
+		Response response = client.target(finalUrl)
 								  .path("share")
 								  .request(MediaType.APPLICATION_JSON)
 								  .post(Entity.entity(config, MediaType.APPLICATION_JSON));
@@ -66,9 +69,10 @@ public abstract class ConfigTest
 		return new ApiResult<Trial>().setData(result).setStatus(code);
 	}
 
-	protected ApiResult<Trial> sendTransaction(String shareCode, Transaction transaction)
+	protected ApiResult<Trial> sendTransaction(String url, String shareCode, Transaction transaction)
 	{
-		Response response = client.target(URL)
+		String finalUrl = StringUtils.isEmpty(url) ? URL : url;
+		Response response = client.target(finalUrl)
 								  .path(shareCode + "/transaction")
 								  .request(MediaType.APPLICATION_JSON)
 								  .post(Entity.entity(transaction, MediaType.APPLICATION_JSON));

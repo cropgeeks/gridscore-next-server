@@ -53,6 +53,9 @@ public class TrialTransactionResource
 					return Response.status(Response.Status.NOT_FOUND)
 								   .build();
 				}
+
+				// By default, let's assume they're the owner
+				TrialPermissionType type = TrialPermissionType.OWNER;
 				// Viewers cannot edit anything
 				if (Objects.equals(shareCode, wrapper.getViewerCode()))
 				{
@@ -62,6 +65,11 @@ public class TrialTransactionResource
 						return Response.status(Response.Status.FORBIDDEN)
 									   .build();
 					}
+				}
+				else if (Objects.equals(shareCode, wrapper.getEditorCode()))
+				{
+					// They're an editor
+					type = TrialPermissionType.EDITOR;
 				}
 				// If there's nothing to do, simply return
 				if (transaction == null)
@@ -416,8 +424,29 @@ public class TrialTransactionResource
 
 					// Set updated on to UTC NOW
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-					trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
+					String formattedNow = now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter());
+					trial.setUpdatedOn(formattedNow);
 					wrapper.setTrial(trial);
+
+					UpdateStats stats = wrapper.getUpdateStats();
+
+					if (stats == null)
+						stats = new UpdateStats();
+
+					if (type == TrialPermissionType.OWNER)
+					{
+						stats.getOwnerUpdates()
+							 .setUpdateCount(stats.getOwnerUpdates().getUpdateCount() + 1)
+							 .setLastUpdateOn(formattedNow);
+					}
+					else if (type == TrialPermissionType.EDITOR)
+					{
+						stats.getEditorUpdates()
+							 .setUpdateCount(stats.getEditorUpdates().getUpdateCount() + 1)
+							 .setLastUpdateOn(formattedNow);
+					}
+
+					wrapper.setUpdateStats(stats);
 					wrapper.setUpdatedOn(now.toLocalDateTime());
 					wrapper.store();
 

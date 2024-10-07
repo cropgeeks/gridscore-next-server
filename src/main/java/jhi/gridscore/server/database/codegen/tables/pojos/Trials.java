@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import jhi.gridscore.server.pojo.Trial;
+import jhi.gridscore.server.pojo.UpdateStats;
 
 
 /**
@@ -22,6 +23,7 @@ public class Trials implements Serializable {
     private String        editorCode;
     private String        viewerCode;
     private Trial         trial;
+    private UpdateStats   updateStats;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
 
@@ -32,6 +34,7 @@ public class Trials implements Serializable {
         this.editorCode = value.editorCode;
         this.viewerCode = value.viewerCode;
         this.trial = value.trial;
+        this.updateStats = value.updateStats;
         this.createdOn = value.createdOn;
         this.updatedOn = value.updatedOn;
     }
@@ -41,6 +44,7 @@ public class Trials implements Serializable {
         String        editorCode,
         String        viewerCode,
         Trial         trial,
+        UpdateStats   updateStats,
         LocalDateTime createdOn,
         LocalDateTime updatedOn
     ) {
@@ -48,6 +52,7 @@ public class Trials implements Serializable {
         this.editorCode = editorCode;
         this.viewerCode = viewerCode;
         this.trial = trial;
+        this.updateStats = updateStats;
         this.createdOn = createdOn;
         this.updatedOn = updatedOn;
     }
@@ -109,6 +114,20 @@ public class Trials implements Serializable {
     }
 
     /**
+     * Getter for <code>gridscore_db.trials.update_stats</code>.
+     */
+    public UpdateStats getUpdateStats() {
+        return this.updateStats;
+    }
+
+    /**
+     * Setter for <code>gridscore_db.trials.update_stats</code>.
+     */
+    public void setUpdateStats(UpdateStats updateStats) {
+        this.updateStats = updateStats;
+    }
+
+    /**
      * Getter for <code>gridscore_db.trials.created_on</code>.
      */
     public LocalDateTime getCreatedOn() {
@@ -144,6 +163,7 @@ public class Trials implements Serializable {
         sb.append(", ").append(editorCode);
         sb.append(", ").append(viewerCode);
         sb.append(", ").append(trial);
+        sb.append(", ").append(updateStats);
         sb.append(", ").append(createdOn);
         sb.append(", ").append(updatedOn);
 

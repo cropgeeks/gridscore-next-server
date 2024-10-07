@@ -1,21 +1,23 @@
 package jhi.gridscore.server.database;
 
 import jhi.gridscore.server.database.codegen.GridscoreDb;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.jooq.*;
 import org.jooq.conf.*;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.tools.StringUtils;
 
-import java.io.*;
 import java.io.File;
+import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.TimeZone;
 import java.util.logging.*;
 
-import static jhi.gridscore.server.database.codegen.tables.Trials.*;
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 /**
  * @author Sebastian Raubach
@@ -83,13 +85,18 @@ public class Database
 			boolean databaseExists = true;
 			try (Connection conn = Database.getConnection())
 			{
-				DSLContext context = Database.getContext(conn);
-				// Try and see if the `germinatebase` table exists
-				context.selectFrom(TRIALS)
-					   .fetchAny();
+				// Try and see if the `trials` table exists
+				databaseExists = (DSL.using(conn)
+									 .selectCount()
+									 .from("information_schema.tables")
+									 .where("table_schema = '" + databaseName + "'")
+									 .and("table_name = 'trials'")
+									 .fetchOne(0, int.class) == 1);
 			}
 			catch (SQLException | DataAccessException e)
 			{
+				e.printStackTrace();
+				Logger.getLogger("").severe(e.getLocalizedMessage());
 				databaseExists = false;
 			}
 
@@ -129,6 +136,25 @@ public class Database
 			{
 				e.printStackTrace();
 			}
+
+			// Run database updates
+			try
+			{
+				Logger.getLogger("").log(Level.INFO, "RUNNING FLYWAY on: " + databaseName);
+				Flyway flyway = Flyway.configure()
+									  .table("schema_version")
+									  .validateOnMigrate(false)
+									  .dataSource(getDatabaseUrl(), username, password)
+									  .locations("classpath:db/migration")
+									  .baselineOnMigrate(true)
+									  .load();
+				flyway.migrate();
+				flyway.repair();
+			}
+			catch (FlywayException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -152,7 +178,7 @@ public class Database
 	}
 
 	public static Connection getConnection()
-		throws SQLException
+			throws SQLException
 	{
 		return DriverManager.getConnection(getDatabaseUrl(), username, password);
 	}
@@ -160,10 +186,10 @@ public class Database
 	public static DSLContext getContext(Connection connection)
 	{
 		Settings settings = new Settings()
-			.withRenderMapping(new RenderMapping()
-				.withSchemata(
-					new MappedSchema().withInput(GridscoreDb.GRIDSCORE_DB.getQualifiedName().first())
-									  .withOutput(databaseName)));
+				.withRenderMapping(new RenderMapping()
+										   .withSchemata(
+												   new MappedSchema().withInput(GridscoreDb.GRIDSCORE_DB.getQualifiedName().first())
+																	 .withOutput(databaseName)));
 
 		return DSL.using(connection, SQLDialect.MYSQL, settings);
 	}

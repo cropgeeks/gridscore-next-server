@@ -24,7 +24,7 @@ public class PermissionsTest extends ConfigTest
 		try (InputStreamReader is = new InputStreamReader(GerminateExportTest.class.getResourceAsStream("minimal.json")))
 		{
 			trial = gson.fromJson(is, Trial.class);
-			setUpClient();
+			setUpClient(null);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class PermissionsTest extends ConfigTest
 	void shareInitialConfig()
 			throws Exception
 	{
-		ConfigTest.ApiResult<Trial> result = sendTrial(trial);
+		ConfigTest.ApiResult<Trial> result = sendTrial(null, trial);
 		Assertions.assertEquals(200, result.status);
 		trial = result.data;
 		Assertions.assertNotNull(trial.getShareCodes().getOwnerCode());
@@ -73,7 +73,7 @@ public class PermissionsTest extends ConfigTest
 
 		t.setPlotTraitDataChangeTransactions(changes);
 
-		ApiResult<Trial> result = sendTransaction(trial.getShareCodes().getViewerCode(), t);
+		ApiResult<Trial> result = sendTransaction(null, trial.getShareCodes().getViewerCode(), t);
 		Assertions.assertEquals(403, result.status);
 	}
 
@@ -86,7 +86,7 @@ public class PermissionsTest extends ConfigTest
 		t.setTrialEditTransaction(new TrialContent()
 										  .setName("TEST"));
 
-		ApiResult<Trial> result = sendTransaction(trial.getShareCodes().getEditorCode(), t);
+		ApiResult<Trial> result = sendTransaction(null, trial.getShareCodes().getEditorCode(), t);
 		Assertions.assertEquals(403, result.status);
 	}
 

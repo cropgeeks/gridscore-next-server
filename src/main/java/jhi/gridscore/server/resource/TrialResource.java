@@ -38,10 +38,11 @@ public class TrialResource
 	/**
 	 * This creates a 160 bit random entropy string. This is WAY more secure than a UUID for which this already holds up:
 	 * <code>
-	 *     Only after generating 1 billion UUIDs every second for the next 100 years, the probability of creating just one duplicate would be about 50%.
+	 * Only after generating 1 billion UUIDs every second for the next 100 years, the probability of creating just one duplicate would be about 50%.
 	 * </code>
 	 * UUIDs use 122 bit random entropy strings.
 	 * <a href="https://neilmadden.blog/2018/08/30/moving-away-from-uuids/">Source</a>
+	 *
 	 * @return A random id
 	 */
 	private String generateId()
@@ -84,7 +85,28 @@ public class TrialResource
 				return Response.status(Response.Status.NOT_FOUND).build();
 
 			Trial result = trial.getTrial();
-			setShareCodes(result, shareCode, trial);
+			TrialPermissionType type = setShareCodes(result, shareCode, trial);
+
+			UpdateStats stats = trial.getUpdateStats();
+
+			if (stats == null)
+				stats = new UpdateStats();
+
+			if (type == TrialPermissionType.OWNER)
+			{
+				stats.getOwnerUpdates()
+					 .setLoadCount(stats.getOwnerUpdates().getLoadCount() + 1);
+			}
+			else if (type == TrialPermissionType.EDITOR)
+			{
+				stats.getEditorUpdates()
+					 .setLoadCount(stats.getEditorUpdates().getLoadCount() + 1);
+			}
+
+			trial.setUpdateStats(stats);
+			trial.setUpdatedOn(trial.getUpdatedOn());
+			// Also store updated_on to keep the original value
+			trial.store(TRIALS.UPDATE_STATS, TRIALS.UPDATED_ON);
 
 			return Response.ok(result).build();
 		}
@@ -117,30 +139,37 @@ public class TrialResource
 		}
 	}
 
-	private static boolean equalsIgnoreCase(String o1, String o2) {
+	private static boolean equalsIgnoreCase(String o1, String o2)
+	{
 		return o1 == null ? o2 == null : o1.equalsIgnoreCase(o2);
 	}
 
-	public static void setShareCodes(Trial result, String baseShareCode, TrialsRecord trial)
+	public static TrialPermissionType setShareCodes(Trial result, String baseShareCode, TrialsRecord trial)
 	{
 		ShareCodes codes = new ShareCodes();
+		TrialPermissionType type = null;
 		if (equalsIgnoreCase(baseShareCode, trial.getOwnerCode()))
 		{
+			type = TrialPermissionType.OWNER;
 			codes.setOwnerCode(trial.getOwnerCode())
 				 .setEditorCode(trial.getEditorCode())
 				 .setViewerCode(trial.getViewerCode());
 		}
 		else if (equalsIgnoreCase(baseShareCode, trial.getEditorCode()))
 		{
+			type = TrialPermissionType.EDITOR;
 			codes.setEditorCode(trial.getEditorCode())
 				 .setViewerCode(trial.getViewerCode());
 		}
 		else if (equalsIgnoreCase(baseShareCode, trial.getViewerCode()))
 		{
+			type = TrialPermissionType.VIEWER;
 			codes.setViewerCode(trial.getViewerCode());
 		}
 
 		result.setShareCodes(codes);
+
+		return type;
 	}
 
 	@POST

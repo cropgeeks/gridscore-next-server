@@ -30,6 +30,12 @@
 					<types>.*json.*</types>
 					<userType>jhi.gridscore.server.pojo.Trial</userType>
 				</forcedType>
+				<forcedType>
+					<binding>jhi.gridscore.server.database.binding.UpdateStatsBinding</binding>
+					<expression>.*(trials)\.(update_stats)</expression>
+					<types>.*json.*</types>
+					<userType>jhi.gridscore.server.pojo.UpdateStats</userType>
+				</forcedType>
 			</forcedTypes>
 		</database>
 

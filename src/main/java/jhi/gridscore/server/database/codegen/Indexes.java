@@ -4,6 +4,7 @@
 package jhi.gridscore.server.database.codegen;
 
 
+import jhi.gridscore.server.database.codegen.tables.SchemaVersion;
 import jhi.gridscore.server.database.codegen.tables.Trials;
 
 import org.jooq.Index;
@@ -24,5 +25,6 @@ public class Indexes {
 
     public static final Index TRIALS_EDITOR_CODE = Internal.createIndex(DSL.name("editor_code"), Trials.TRIALS, new OrderField[] { Trials.TRIALS.EDITOR_CODE }, false);
     public static final Index TRIALS_OWNER_CODE = Internal.createIndex(DSL.name("owner_code"), Trials.TRIALS, new OrderField[] { Trials.TRIALS.OWNER_CODE }, false);
+    public static final Index SCHEMA_VERSION_SCHEMA_VERSION_S_IDX = Internal.createIndex(DSL.name("schema_version_s_idx"), SchemaVersion.SCHEMA_VERSION, new OrderField[] { SchemaVersion.SCHEMA_VERSION.SUCCESS }, false);
     public static final Index TRIALS_VIEWER_CODE = Internal.createIndex(DSL.name("viewer_code"), Trials.TRIALS, new OrderField[] { Trials.TRIALS.VIEWER_CODE }, false);
 }

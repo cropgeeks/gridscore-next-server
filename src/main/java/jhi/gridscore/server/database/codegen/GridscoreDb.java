@@ -7,6 +7,7 @@ package jhi.gridscore.server.database.codegen;
 import java.util.Arrays;
 import java.util.List;
 
+import jhi.gridscore.server.database.codegen.tables.SchemaVersion;
 import jhi.gridscore.server.database.codegen.tables.Trials;
 
 import org.jooq.Catalog;
@@ -43,6 +44,7 @@ public class GridscoreDb extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            SchemaVersion.SCHEMA_VERSION,
             Trials.TRIALS
         );
     }
