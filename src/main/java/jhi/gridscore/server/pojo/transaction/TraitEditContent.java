@@ -10,9 +10,10 @@ import lombok.experimental.Accessors;
 @ToString
 public class TraitEditContent
 {
-	private String id;
-	private String name;
-	private String description;
-	private String group;
-	private String timestamp;
+	private String  id;
+	private String  name;
+	private String  description;
+	private String  group;
+	private Boolean hasImage;
+	private String  timestamp;
 }

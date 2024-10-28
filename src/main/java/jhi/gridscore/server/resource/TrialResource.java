@@ -135,7 +135,11 @@ public class TrialResource
 			else if (!Objects.equals(trial.getTrial().getName(), trialName))
 				return Response.status(Response.Status.FORBIDDEN).build();
 			else
+			{
+				TraitImageResource.deleteForTrial(trial.getOwnerCode());
+
 				return Response.ok(trial.delete() > 0).build();
+			}
 		}
 	}
 

@@ -127,6 +127,9 @@ public class TrialTransactionResource
 									cell.getMeasurements().remove(trait.getId());
 							}
 						}
+
+						// Remove any stored reference images
+						TraitImageResource.deleteForTrialTraits(wrapper.getOwnerCode(), ids);
 					}
 
 					/* ADD PEOPLE */
@@ -296,7 +299,7 @@ public class TrialTransactionResource
 											 }
 											 else
 											 {
-												 if (trait.isAllowRepeats() || list.size() < 1)
+												 if (trait.isAllowRepeats() || list.isEmpty())
 												 {
 													 Optional<Measurement> match = list.stream().filter(om -> Objects.equals(m.getTimestamp(), om.getTimestamp())).findFirst();
 
@@ -405,18 +408,27 @@ public class TrialTransactionResource
 						// Sort them by date
 						transaction.getTraitChangeTransactions().sort(Comparator.comparing(TraitEditContent::getTimestamp));
 
-						for (TraitEditContent te : transaction.getTraitChangeTransactions())
+						List<String> traitIdsForImageDeletion = new ArrayList<>();
+						for (TraitEditContent newTraitData : transaction.getTraitChangeTransactions())
 						{
-							trial.getTraits().stream().filter(t -> Objects.equals(t.getId(), te.getId())).findAny()
-								 .ifPresent(t -> {
-									 t.setName(te.getName());
-									 t.setDescription(te.getDescription());
-									 if (StringUtils.isBlank(te.getGroup()))
-										 t.setGroup(null);
+							trial.getTraits().stream().filter(t -> Objects.equals(t.getId(), newTraitData.getId())).findAny()
+								 .ifPresent(oldTraitData -> {
+									 // It used to have an image, but now it doesn't
+									 if (oldTraitData.isHasImage() && newTraitData.getHasImage() != null && !newTraitData.getHasImage())
+										 traitIdsForImageDeletion.add(oldTraitData.getId());
+
+									 oldTraitData.setName(newTraitData.getName());
+									 oldTraitData.setDescription(newTraitData.getDescription());
+									 oldTraitData.setHasImage(newTraitData.getHasImage());
+									 if (StringUtils.isBlank(newTraitData.getGroup()))
+										 oldTraitData.setGroup(null);
 									 else
-										 t.setGroup(new Group().setName(te.getGroup()));
+										 oldTraitData.setGroup(new Group().setName(newTraitData.getGroup()));
 								 });
 						}
+
+						if (!CollectionUtils.isEmpty(traitIdsForImageDeletion))
+							TraitImageResource.deleteForTrialTraits(trial.getShareCodes().getOwnerCode(), traitIdsForImageDeletion);
 					}
 
 					if (transaction.getBrapiConfigChangeTransaction() != null && !StringUtils.isBlank(transaction.getBrapiConfigChangeTransaction().getUrl()))

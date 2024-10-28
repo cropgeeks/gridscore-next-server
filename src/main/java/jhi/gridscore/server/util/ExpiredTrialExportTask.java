@@ -154,6 +154,22 @@ public class ExpiredTrialExportTask implements Runnable
 
 				target.delete();
 			}
+
+			File traitImageFolder = new File(PropertyWatcher.get("config.folder"), "trait-images");
+			traitImageFolder.mkdirs();
+
+			File[] potentials = traitImageFolder.listFiles(fn -> fn.getName().startsWith(trial.getOwnerCode() + "-"));
+
+			if (potentials != null)
+			{
+				for (File image : potentials)
+				{
+					// Copy it to the zip file
+					Files.copy(image.toPath(), fs.getPath("/" + image.getName()), StandardCopyOption.REPLACE_EXISTING);
+					// Then delete from the file system
+					image.delete();
+				}
+			}
 		}
 	}
 }

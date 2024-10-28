@@ -16,8 +16,9 @@ public class Trait
 	private String       description;
 	private String       dataType;
 	private boolean      allowRepeats = false;
-	private int          setSize = 1;
+	private int          setSize      = 1;
 	private Group        group;
 	private Restrictions restrictions;
 	private Timeframe    timeframe;
+	private boolean      hasImage     = false;
 }
