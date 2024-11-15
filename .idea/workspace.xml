@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field.">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Local file changes.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,6 +225,7 @@
       <workItem from="1731400922742" duration="1840000" />
       <workItem from="1731485171916" duration="2730000" />
       <workItem from="1731569465322" duration="1805000" />
+      <workItem from="1731662167401" duration="3860000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -242,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731342281773</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="- CHG: Local file changes.">
+      <option name="closed" value="true" />
+      <created>1731664025308</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731664025308</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -264,6 +273,7 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="- CHG: Updated Gradle to v8.8." />
     <MESSAGE value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
-    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
+    <MESSAGE value="- CHG: Local file changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Local file changes." />
   </component>
 </project>

@@ -19,7 +19,6 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
@@ -73,8 +72,6 @@ public class TraitImageResource
 	public Response postTraitImage(@FormDataParam("imageFile") InputStream fileIs, @FormDataParam("imageFile") FormDataContentDisposition fileDetails)
 			throws SQLException, IOException
 	{
-		Logger.getLogger("").info("TRAIT IMAGE SHARE: " + shareCode + " + " + traitId + " -> " + fileDetails);
-
 		if (StringUtils.isEmpty(shareCode) || fileIs == null || fileDetails == null)
 		{
 			return Response.status(Response.Status.BAD_REQUEST)
@@ -86,9 +83,7 @@ public class TraitImageResource
 			{
 				DSLContext context = Database.getContext(conn);
 				TrialsRecord wrapper = context.selectFrom(TRIALS)
-											  .where(TRIALS.OWNER_CODE.eq(shareCode)
-																	  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-																	  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+											  .where(TRIALS.OWNER_CODE.eq(shareCode))
 											  .fetchAny();
 
 				if (wrapper == null)
