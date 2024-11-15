@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Updated Gradle to v8.8.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field.">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,28 +87,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build gridscore-next-server.executor": "Run",
-    "Gradle.gridscore-next-server [build].executor": "Run",
-    "Gradle.gridscore-next-server [clean].executor": "Run",
-    "Gradle.gridscore-next-server [deployTomcat].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sr41756/workspaces/java/gridscore-next-server",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build gridscore-next-server.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [deployTomcat].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sr41756/workspaces/java/gridscore-next-server&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
     <configuration name="gridscore-next-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -220,6 +221,10 @@
       <workItem from="1730724960819" duration="1296000" />
       <workItem from="1730726314909" duration="3099000" />
       <workItem from="1730972269325" duration="1467000" />
+      <workItem from="1731342231061" duration="264000" />
+      <workItem from="1731400922742" duration="1840000" />
+      <workItem from="1731485171916" duration="2730000" />
+      <workItem from="1731569465322" duration="1805000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -229,7 +234,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730733748499</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field.">
+      <option name="closed" value="true" />
+      <created>1731342281773</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731342281773</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -250,6 +263,7 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="- CHG: Updated Gradle to v8.8." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Updated Gradle to v8.8." />
+    <MESSAGE value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
   </component>
 </project>
