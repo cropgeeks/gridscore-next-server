@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Local file changes.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed image sharing permission issue.">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/UpdateStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/UpdateStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,9 +97,10 @@
     &quot;Gradle.gridscore-next-server [clean].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [deployTomcat].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/sr41756/workspaces/java/gridscore-next-server&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sr41756/workspaces/java/rpi-weather-server&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -205,8 +209,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
       </set>
     </attachedChunks>
   </component>
@@ -225,7 +229,10 @@
       <workItem from="1731400922742" duration="1840000" />
       <workItem from="1731485171916" duration="2730000" />
       <workItem from="1731569465322" duration="1805000" />
-      <workItem from="1731662167401" duration="3860000" />
+      <workItem from="1731662167401" duration="6571000" />
+      <workItem from="1731930828856" duration="782000" />
+      <workItem from="1731934072565" duration="2024000" />
+      <workItem from="1733311251308" duration="78000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -251,7 +258,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731664025308</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- FIX: Fixed image sharing permission issue.">
+      <option name="closed" value="true" />
+      <created>1731669530575</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731669530575</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -274,6 +289,7 @@
     <MESSAGE value="- CHG: Updated Gradle to v8.8." />
     <MESSAGE value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
     <MESSAGE value="- CHG: Local file changes." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Local file changes." />
+    <MESSAGE value="- FIX: Fixed image sharing permission issue." />
+    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed image sharing permission issue." />
   </component>
 </project>

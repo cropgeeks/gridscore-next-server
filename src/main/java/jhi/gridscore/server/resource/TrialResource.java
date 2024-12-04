@@ -84,31 +84,45 @@ public class TrialResource
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
 
-			Trial result = trial.getTrial();
-			TrialPermissionType type = setShareCodes(result, shareCode, trial);
-
-			UpdateStats stats = trial.getUpdateStats();
-
-			if (stats == null)
-				stats = new UpdateStats();
-
-			if (type == TrialPermissionType.OWNER)
+			synchronized (trial.getOwnerCode())
 			{
-				stats.getOwnerUpdates()
-					 .setLoadCount(stats.getOwnerUpdates().getLoadCount() + 1);
-			}
-			else if (type == TrialPermissionType.EDITOR)
-			{
-				stats.getEditorUpdates()
-					 .setLoadCount(stats.getEditorUpdates().getLoadCount() + 1);
-			}
+				trial = context.selectFrom(TRIALS)
+							   .where(TRIALS.OWNER_CODE.eq(shareCode)
+													   .or(TRIALS.EDITOR_CODE.eq(shareCode))
+													   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+							   .fetchAny();
 
-			trial.setUpdateStats(stats);
-			trial.setUpdatedOn(trial.getUpdatedOn());
-			// Also store updated_on to keep the original value
-			trial.store(TRIALS.UPDATE_STATS, TRIALS.UPDATED_ON);
+				Trial result = trial.getTrial();
+				TrialPermissionType type = setShareCodes(result, shareCode, trial);
 
-			return Response.ok(result).build();
+				UpdateStats stats = trial.getUpdateStats();
+
+				if (stats == null)
+					stats = new UpdateStats();
+
+				if (type == TrialPermissionType.OWNER)
+				{
+					stats.getOwnerUpdates()
+						 .setLoadCount(stats.getOwnerUpdates().getLoadCount() + 1);
+				}
+				else if (type == TrialPermissionType.EDITOR)
+				{
+					stats.getEditorUpdates()
+						 .setLoadCount(stats.getEditorUpdates().getLoadCount() + 1);
+				}
+				else if (type == TrialPermissionType.VIEWER)
+				{
+					stats.getViewerUpdates()
+						 .setLoadCount(stats.getViewerUpdates().getLoadCount() + 1);
+				}
+
+				trial.setUpdateStats(stats);
+				trial.setUpdatedOn(trial.getUpdatedOn());
+				// Also store updated_on to keep the original value
+				trial.store(TRIALS.UPDATE_STATS, TRIALS.UPDATED_ON);
+
+				return Response.ok(result).build();
+			}
 		}
 	}
 
@@ -323,9 +337,9 @@ public class TrialResource
 
 		// Set them for the response
 		trial.setShareCodes(new ShareCodes()
-									.setOwnerCode(ownerCode)
-									.setEditorCode(editorCode)
-									.setViewerCode(viewerCode));
+				.setOwnerCode(ownerCode)
+				.setEditorCode(editorCode)
+				.setViewerCode(viewerCode));
 
 		return Response.ok(trial).build();
 	}

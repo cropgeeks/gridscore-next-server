@@ -12,6 +12,7 @@ public class UpdateStats
 {
 	private IndividualUpdates ownerUpdates  = new IndividualUpdates(0, 0, null);
 	private IndividualUpdates editorUpdates = new IndividualUpdates(0, 0, null);
+	private IndividualUpdates viewerUpdates = new IndividualUpdates(0, 0, null);
 
 	@Getter
 	@Setter
