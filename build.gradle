@@ -133,12 +133,12 @@ task deployTomcat (type: CargoRedeployRemote) {
 
 generateTypeScript {
     jsonLibrary = 'jackson2'
-    classes = ['jhi.gridscore.server.pojo.Trial']
+    classes = ['jhi.gridscore.server.pojo.Trial', 'jhi.gridscore.server.pojo.Transaction']
     outputKind = 'module'
     outputFile = 'gridscore.ts'
     outputFileType = 'implementationFile'
-    generateConstructors = true
-    mapClasses = 'asClasses'
+//    generateConstructors = true
+//    mapClasses = 'asClasses'
     mapEnum = 'asEnum'
     stringQuotes = 'singleQuotes'
 }
