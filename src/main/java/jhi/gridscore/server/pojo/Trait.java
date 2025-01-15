@@ -21,4 +21,5 @@ public class Trait
 	private Restrictions restrictions;
 	private Timeframe    timeframe;
 	private boolean      hasImage     = false;
+	private String       imageUrl     = null;
 }

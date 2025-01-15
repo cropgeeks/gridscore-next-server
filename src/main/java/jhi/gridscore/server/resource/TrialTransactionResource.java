@@ -420,6 +420,7 @@ public class TrialTransactionResource
 									 oldTraitData.setName(newTraitData.getName());
 									 oldTraitData.setDescription(newTraitData.getDescription());
 									 oldTraitData.setHasImage(newTraitData.getHasImage() != null ? newTraitData.getHasImage() : false);
+									 oldTraitData.setImageUrl(newTraitData.getImageUrl());
 									 if (StringUtils.isBlank(newTraitData.getGroup()))
 										 oldTraitData.setGroup(null);
 									 else

@@ -15,5 +15,6 @@ public class TraitEditContent
 	private String  description;
 	private String  group;
 	private Boolean hasImage;
+	private String  imageUrl;
 	private String  timestamp;
 }

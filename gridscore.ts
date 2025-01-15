@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2025-01-07 13:06:20.
+// Generated using typescript-generator version 3.2.1263 on 2025-01-14 11:11:37.
 
 export interface Trial {
     name: string;
@@ -55,6 +55,7 @@ export interface Trait {
     restrictions: Restrictions;
     timeframe: Timeframe;
     hasImage: boolean;
+    imageUrl: string;
 }
 
 export interface Comment {
@@ -145,6 +146,7 @@ export interface TraitEditContent {
     description: string;
     group: string;
     hasImage: boolean;
+    imageUrl: string;
     timestamp: string;
 }
 

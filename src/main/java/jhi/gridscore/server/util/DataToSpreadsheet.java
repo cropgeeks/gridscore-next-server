@@ -808,6 +808,8 @@ public class DataToSpreadsheet
 						 row = sheet.createRow(i + 1);
 
 					 row.createCell(0).setCellValue(t.getName());
+					 if (!StringUtils.isBlank(t.getDescription()))
+						 row.createCell(2).setCellValue(t.getDescription());
 					 switch (t.getDataType())
 					 {
 						 case "int":
