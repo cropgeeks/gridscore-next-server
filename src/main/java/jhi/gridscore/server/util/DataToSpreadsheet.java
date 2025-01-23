@@ -1,6 +1,8 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
+import jhi.gridscore.server.database.Database;
+import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.Cell;
 import jhi.gridscore.server.pojo.Comment;
 import jhi.gridscore.server.pojo.*;
@@ -9,36 +11,39 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
+import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.*;
+
+import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
 
 public class DataToSpreadsheet
 {
 	public static void main(String[] args)
 			throws IOException, SQLException
 	{
-//		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next/src/main/resources/trials-data.xlsx");
-//		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
-//
-//		if (target.exists() && target.isFile())
-//			target.delete();
-//
-//		Database.init("localhost", "gridscore-next", null, "root", null, false);
-//
-//		try (Connection conn = Database.getConnection())
-//		{
-//			DSLContext context = Database.getContext(conn);
-//
-//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("VrIi4eyYfWXE5DBQf-SDRXz_gfY")).fetchAnyInto(Trials.class);
-//
-//			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
-//		}
+		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next-server/src/main/resources/trials-data.xlsx");
+		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
+
+		if (target.exists() && target.isFile())
+			target.delete();
+
+		Database.init("localhost", "gridscore_next", null, "root", null, false);
+
+		try (Connection conn = Database.getConnection())
+		{
+			DSLContext context = Database.getContext(conn);
+
+			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("tg2WYLBecHPWsdYxCuz2UWl-76c")).fetchAnyInto(Trials.class);
+
+			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
+		}
 	}
 
 	private File                 template;
@@ -241,7 +246,7 @@ public class DataToSpreadsheet
 
 	private void exportIndividually(XSSFSheet data, XSSFSheet dates)
 	{
-		final int[] sheetRow = new int[]{0};
+		final int[] sheetRow = { 0 };
 
 		trial.getData().forEach((cellIdentifier, cell) -> {
 			String[] rowColumn = cellIdentifier.split("\\|");
@@ -424,6 +429,15 @@ public class DataToSpreadsheet
 
 			sheetRow[0] += measurementCount[0];
 		});
+
+//		data.getTables().forEach(data::removeTable);
+//		AreaReference area = data.getWorkbook().getCreationHelper().createAreaReference(new CellReference(0, 0), new CellReference(sheetRow[0], trial.getTraits().size() + 10 + (hasPlotComments ? 1 : 0)));
+//		XSSFTable table = data.createTable(area);
+//		IntStream.of(table.getColumns().size()).forEach(i -> {
+//			table.getCTTable().getTableColumns().getTableColumnArray(i - 1).setId(i);
+//		});
+//		table.updateReferences();
+//		table.updateHeaders();
 	}
 
 	private void exportAggregatedPerDay(XSSFSheet data, XSSFSheet dates)
@@ -834,6 +848,9 @@ public class DataToSpreadsheet
 						 if (t.getRestrictions().getMax() != null)
 							 row.createCell(9).setCellValue(t.getRestrictions().getMax());
 					 }
+
+					 row.createCell(10).setCellValue(t.getSetSize());
+					 row.createCell(11).setCellValue(t.isAllowRepeats() ? "true" : "false");
 				 });
 
 		if (hasPlotComments)
@@ -846,6 +863,8 @@ public class DataToSpreadsheet
 			row.createCell(0).setCellValue("Plot comment");
 			row.createCell(2).setCellValue("Comments provided from the data collectors");
 			row.createCell(3).setCellValue("text");
+			row.createCell(10).setCellValue(1);
+			row.createCell(11).setCellValue("true");
 		}
 	}
 
