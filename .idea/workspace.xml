@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added set size and timeseries flag to traits/phenotypes.">
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,7 +273,7 @@
       <workItem from="1737388364559" duration="1252000" />
       <workItem from="1737450115906" duration="2971000" />
       <workItem from="1737621411858" duration="3819000" />
-      <workItem from="1737641180879" duration="4935000" />
+      <workItem from="1737641180879" duration="5163000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -333,7 +331,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737475256992</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="- ADD: Added set size and timeseries flag to traits/phenotypes.">
+      <option name="closed" value="true" />
+      <created>1737647518515</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737647518515</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -360,6 +366,7 @@
     <MESSAGE value="- CHG: Typescript updates." />
     <MESSAGE value="- ADD: Added missing trait description in Germinate template export.&#10;- ADD: Added trait reference image URL transaction support." />
     <MESSAGE value="- CHG: Version bump." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
+    <MESSAGE value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
   </component>
 </project>

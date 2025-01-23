@@ -1,8 +1,6 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
-import jhi.gridscore.server.database.Database;
-import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.pojo.Cell;
 import jhi.gridscore.server.pojo.Comment;
 import jhi.gridscore.server.pojo.*;
@@ -11,7 +9,6 @@ import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.*;
 import org.apache.poi.xssf.usermodel.*;
-import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
@@ -21,29 +18,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.*;
 
-import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
-
 public class DataToSpreadsheet
 {
 	public static void main(String[] args)
 			throws IOException, SQLException
 	{
-		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next-server/src/main/resources/trials-data.xlsx");
-		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
-
-		if (target.exists() && target.isFile())
-			target.delete();
-
-		Database.init("localhost", "gridscore_next", null, "root", null, false);
-
-		try (Connection conn = Database.getConnection())
-		{
-			DSLContext context = Database.getContext(conn);
-
-			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("tg2WYLBecHPWsdYxCuz2UWl-76c")).fetchAnyInto(Trials.class);
-
-			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
-		}
+//		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next-server/src/main/resources/trials-data.xlsx");
+//		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
+//
+//		if (target.exists() && target.isFile())
+//			target.delete();
+//
+//		Database.init("localhost", "gridscore_next", null, "root", null, false);
+//
+//		try (Connection conn = Database.getConnection())
+//		{
+//			DSLContext context = Database.getContext(conn);
+//
+//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("tg2WYLBecHPWsdYxCuz2UWl-76c")).fetchAnyInto(Trials.class);
+//
+//			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
+//		}
 	}
 
 	private File                 template;
