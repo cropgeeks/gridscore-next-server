@@ -673,7 +673,7 @@ public class DataToSpreadsheet
 				row = sheet.createRow(i);
 
 			row.createCell(1).setCellValue(p.getName());
-			row.createCell(2).setCellValue(p.getTypes().stream().map(Person.PersonType::getTemplateName).collect(Collectors.joining(";")));
+			row.createCell(2).setCellValue(p.getTypes().stream().filter(Objects::nonNull).map(Person.PersonType::getTemplateName).collect(Collectors.joining(";")));
 			if (!StringUtils.isBlank(p.getEmail()))
 				row.createCell(4).setCellValue(p.getEmail());
 		}

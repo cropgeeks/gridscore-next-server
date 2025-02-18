@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added set size and timeseries flag to traits/phenotypes.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,6 +36,23 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="gridscore-next" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="gridscore-next" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="gridscore-next" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="gridscore-next" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="deployment" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -78,6 +97,7 @@
   "keyToString": {
     "Gradle.Build gridscore-next-server.executor": "Run",
     "Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor": "Run",
+    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor": "Debug",
     "Gradle.gridscore-next-server [build].executor": "Run",
     "Gradle.gridscore-next-server [clean].executor": "Run",
     "Gradle.gridscore-next-server [deployTomcat].executor": "Run",
@@ -100,7 +120,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.DataToSpreadsheet">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
     <configuration name="DataToSpreadsheet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.util.DataToSpreadsheet" />
       <module name="gridscore-next.main" />
@@ -114,27 +134,18 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="gridscore-next-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="-x test" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
+    <configuration name="ExpiredTrialExportTask" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.util.ExpiredTrialExportTask" />
+      <module name="gridscore-next.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jhi.gridscore.server.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gridscore-next-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -216,27 +227,27 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.ExpiredTrialExportTask" />
       <item itemvalue="Application.DataToSpreadsheet" />
       <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
-      <item itemvalue="Gradle.gridscore-next-server [build]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.DataToSpreadsheet" />
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
-        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
-        <item itemvalue="Gradle.gridscore-next-server [build]" />
+        <item itemvalue="Application.ExpiredTrialExportTask" />
+        <item itemvalue="Application.DataToSpreadsheet" />
+        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.117" />
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.117" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
@@ -273,7 +284,20 @@
       <workItem from="1737388364559" duration="1252000" />
       <workItem from="1737450115906" duration="2971000" />
       <workItem from="1737621411858" duration="3819000" />
-      <workItem from="1737641180879" duration="5163000" />
+      <workItem from="1737641180879" duration="5177000" />
+      <workItem from="1737719540555" duration="13000" />
+      <workItem from="1737970231294" duration="2041000" />
+      <workItem from="1737975398325" duration="6313000" />
+      <workItem from="1738053517348" duration="1189000" />
+      <workItem from="1738134879018" duration="10052000" />
+      <workItem from="1739176343632" duration="4053000" />
+      <workItem from="1739193271888" duration="744000" />
+      <workItem from="1739262540862" duration="925000" />
+      <workItem from="1739344739424" duration="2387000" />
+      <workItem from="1739523978536" duration="1812000" />
+      <workItem from="1739784321301" duration="1556000" />
+      <workItem from="1739791365909" duration="2270000" />
+      <workItem from="1739867842084" duration="5652000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -339,7 +363,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737647518515</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="- ADD: Added set size and timeseries flag to traits/phenotypes.">
+      <option name="closed" value="true" />
+      <created>1737647547294</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1737647547294</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

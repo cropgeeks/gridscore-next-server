@@ -190,22 +190,25 @@ public class TrialExportResource
 			int row = Integer.parseInt(rowColumn[0]);
 			int col = Integer.parseInt(rowColumn[1]);
 			Corners corners = cell.getGeography().getCorners();
-			Coordinate[] coordinates = new Coordinate[]{
-					new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat()),
-					new Coordinate(corners.getBottomLeft().getLng(), corners.getBottomLeft().getLat()),
-					new Coordinate(corners.getBottomRight().getLng(), corners.getBottomRight().getLat()),
-					new Coordinate(corners.getTopRight().getLng(), corners.getTopRight().getLat()),
-					new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat())
-			};
+			if (corners != null)
+			{
+				Coordinate[] coordinates = new Coordinate[]{
+						new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat()),
+						new Coordinate(corners.getBottomLeft().getLng(), corners.getBottomLeft().getLat()),
+						new Coordinate(corners.getBottomRight().getLng(), corners.getBottomRight().getLat()),
+						new Coordinate(corners.getTopRight().getLng(), corners.getTopRight().getLat()),
+						new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat())
+				};
 
-			Polygon polygon = geometryFactory.createPolygon(coordinates);
-			featureBuilder.add(polygon);
-			featureBuilder.add(cell.getGermplasm());
-			featureBuilder.add(row + 1);
-			featureBuilder.add(col + 1);
-			featureBuilder.add(cell.getRep());
-			SimpleFeature feature = featureBuilder.buildFeature(null);
-			features.add(feature);
+				Polygon polygon = geometryFactory.createPolygon(coordinates);
+				featureBuilder.add(polygon);
+				featureBuilder.add(cell.getGermplasm());
+				featureBuilder.add(row + 1);
+				featureBuilder.add(col + 1);
+				featureBuilder.add(cell.getRep());
+				SimpleFeature feature = featureBuilder.buildFeature(null);
+				features.add(feature);
+			}
 		}
 
 		folder.mkdirs();
