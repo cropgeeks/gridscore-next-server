@@ -149,9 +149,7 @@ public class TrialExportResource
 				{
 					Trial trial = trials.getTrial();
 
-					/*
-					 * Get an output file name and create the new shapefile
-					 */
+					// Get an output file name and create the new shapefile
 					String uuid = UUID.randomUUID().toString();
 					File folder = new File(new File(System.getProperty("java.io.tmpdir"), "gridscore-next"), uuid);
 
