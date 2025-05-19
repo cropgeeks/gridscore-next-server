@@ -145,6 +145,15 @@ public class PropertyWatcher
 		return StringUtils.isEmpty(value) ? null : value;
 	}
 
+	public static String get(String property, String defaultValue) {
+		String value = get(property);
+
+		if (value == null)
+			return defaultValue;
+		else
+			return value;
+	}
+
 	public static void set(String property, String value) {
 		properties.setProperty(property, value);
 	}

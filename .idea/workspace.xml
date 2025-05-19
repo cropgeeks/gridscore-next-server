@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed potential issues with old trial archiving.&#10;-">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Formatting.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,34 +95,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build gridscore-next-server.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor&quot;: &quot;Debug&quot;,
-    &quot;Gradle.gridscore-next-server [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [deployTomcat].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [generateTypeScript].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/sr41756/workspaces/java/rpi-weather-server&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build gridscore-next-server.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.gridscore-next-server [:jhi.gridscore.server.resource.TrialResource.main()].executor": "Run",
+    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor": "Run",
+    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor": "Debug",
+    "Gradle.gridscore-next-server [build].executor": "Run",
+    "Gradle.gridscore-next-server [clean].executor": "Run",
+    "Gradle.gridscore-next-server [deployTomcat].executor": "Run",
+    "Gradle.gridscore-next-server [generateTypeScript].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/sr41756/workspaces/java/rpi-weather-server",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
+}]]></component>
+  <component name="RunManager" selected="Application.TrialResource">
     <configuration name="DataToSpreadsheet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.util.DataToSpreadsheet" />
       <module name="gridscore-next.main" />
@@ -139,6 +144,19 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="jhi.gridscore.server.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TrialResource" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.resource.TrialResource" />
+      <module name="gridscore-next.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jhi.gridscore.server.resource.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -190,28 +208,6 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="gridscore-next-server [generateTypeScript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="generateTypeScript" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -226,27 +222,27 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.TrialResource" />
       <item itemvalue="Application.ExpiredTrialExportTask" />
       <item itemvalue="Application.DataToSpreadsheet" />
-      <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.TrialResource" />
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
         <item itemvalue="Application.ExpiredTrialExportTask" />
         <item itemvalue="Application.DataToSpreadsheet" />
-        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
-        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -299,6 +295,26 @@
       <workItem from="1739867842084" duration="10014000" />
       <workItem from="1739949507035" duration="1190000" />
       <workItem from="1740055494458" duration="594000" />
+      <workItem from="1740137512317" duration="681000" />
+      <workItem from="1740152146953" duration="576000" />
+      <workItem from="1740553837377" duration="2277000" />
+      <workItem from="1740645423423" duration="1614000" />
+      <workItem from="1740732169380" duration="1047000" />
+      <workItem from="1740734648087" duration="1188000" />
+      <workItem from="1741077953740" duration="614000" />
+      <workItem from="1741080551553" duration="1123000" />
+      <workItem from="1741166372459" duration="1829000" />
+      <workItem from="1744203405476" duration="46000" />
+      <workItem from="1744278639815" duration="1312000" />
+      <workItem from="1744316340242" duration="600000" />
+      <workItem from="1744357077112" duration="979000" />
+      <workItem from="1744618467101" duration="1976000" />
+      <workItem from="1745913752941" duration="1363000" />
+      <workItem from="1746256790790" duration="462000" />
+      <workItem from="1746376695072" duration="127000" />
+      <workItem from="1746433087499" duration="1893000" />
+      <workItem from="1746625039766" duration="2028000" />
+      <workItem from="1747642580508" duration="630000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -380,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739879205404</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- CHG: Formatting.">
+      <option name="closed" value="true" />
+      <created>1740137556301</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1740137556301</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -409,6 +433,7 @@
     <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
     <MESSAGE value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
-    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
+    <MESSAGE value="- CHG: Formatting." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Formatting." />
   </component>
 </project>

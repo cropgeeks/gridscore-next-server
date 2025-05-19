@@ -11,7 +11,7 @@ import net.logicsquad.nanocaptcha.content.LatinContentProducer;
 import net.logicsquad.nanocaptcha.image.ImageCaptcha;
 import net.logicsquad.nanocaptcha.image.backgrounds.FlatColorBackgroundProducer;
 import org.apache.commons.collections4.CollectionUtils;
-import org.jooq.DSLContext;
+import org.jooq.*;
 import org.jooq.tools.StringUtils;
 
 import javax.imageio.ImageIO;
@@ -45,7 +45,7 @@ public class TrialResource
 	 *
 	 * @return A random id
 	 */
-	private String generateId()
+	private static String generateId()
 	{
 		byte[] buffer = new byte[20];
 		RANDOM.nextBytes(buffer);
@@ -222,7 +222,7 @@ public class TrialResource
 					{
 						ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 						// Check how soon a trial will expire after inactivity
-						Integer daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days"));
+						int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days", "365"));
 						// Add that number of days to the updatedOn date
 						updatedOn = updatedOn.plusDays(daysTillExpiry);
 

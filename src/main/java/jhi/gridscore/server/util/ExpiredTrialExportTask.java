@@ -31,7 +31,7 @@ public class ExpiredTrialExportTask implements Runnable
 		Logger.getLogger("").info("RUNNING ExpiredTrialExportTask");
 		try
 		{
-			int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days"));
+			int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days", "365"));
 
 			int count = 0;
 			try (Connection conn = Database.getConnection())
