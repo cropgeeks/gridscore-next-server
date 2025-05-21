@@ -19,6 +19,7 @@ public class Transaction
 	private Map<String, Boolean>                  plotMarkedTransactions;
 	private Map<String, List<TraitMeasurement>>   plotTraitDataChangeTransactions;
 	private Map<String, PlotGeographyContent>     plotGeographyChangeTransactions;
+	private Map<String, PlotDetailContent>        plotDetailsChangeTransaction;
 	private List<TrialCommentContent>             trialCommentAddedTransactions;
 	private List<TrialCommentContent>             trialCommentDeletedTransactions;
 	private List<TrialEventContent>               trialEventAddedTransactions;

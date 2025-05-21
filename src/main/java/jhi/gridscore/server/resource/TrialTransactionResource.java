@@ -237,6 +237,19 @@ public class TrialTransactionResource
 							}
 						}
 
+						// Check if plot details have changed
+						if (transaction.getPlotDetailsChangeTransaction() != null)
+						{
+							PlotDetailContent plotChanges = transaction.getPlotDetailsChangeTransaction().get(key);
+
+							if (plotChanges != null)
+							{
+								cell.setBarcode(plotChanges.getBarcode())
+									.setFriendlyName(plotChanges.getFriendlyName())
+									.setPedigree(plotChanges.getPedigree());
+							}
+						}
+
 						// Check if comments have been added
 						if (transaction.getPlotCommentAddedTransactions() != null)
 						{
@@ -313,9 +326,9 @@ public class TrialTransactionResource
 													 {
 														 // Add new
 														 list.add(new Measurement()
-																		  .setPersonId(m.getPersonId())
-																		  .setValues(m.getValues())
-																		  .setTimestamp(m.getTimestamp()));
+																 .setPersonId(m.getPersonId())
+																 .setValues(m.getValues())
+																 .setTimestamp(m.getTimestamp()));
 													 }
 												 }
 												 else

@@ -64,7 +64,7 @@ public class GerminateExportTest extends ConfigTest
 		InputStream in = response.readEntity(InputStream.class);
 
 		XSSFWorkbook workbook = new XSSFWorkbook(in);
-		Assertions.assertEquals(11, workbook.getNumberOfSheets());
+		Assertions.assertEquals(12, workbook.getNumberOfSheets());
 		// Check metadata
 		Sheet metadata = workbook.getSheet("METADATA");
 		Assertions.assertNotNull(metadata);

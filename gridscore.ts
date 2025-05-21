@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2025-01-14 11:11:37.
+// Generated using typescript-generator version 3.2.1263 on 2025-05-19 13:40:07.
 
 export interface Trial {
     name: string;
@@ -29,6 +29,7 @@ export interface Transaction {
     plotMarkedTransactions: { [index: string]: boolean };
     plotTraitDataChangeTransactions: { [index: string]: TraitMeasurement[] };
     plotGeographyChangeTransactions: { [index: string]: PlotGeographyContent };
+    plotDetailsChangeTransaction: { [index: string]: PlotDetailContent };
     trialCommentAddedTransactions: TrialCommentContent[];
     trialCommentDeletedTransactions: TrialCommentContent[];
     trialEventAddedTransactions: TrialEventContent[];
@@ -91,6 +92,9 @@ export interface Layout {
 export interface Cell {
     brapiId: string;
     germplasm: string;
+    barcode: string;
+    friendlyName: string;
+    pedigree: string;
     rep: string;
     isMarked: boolean;
     geography: Geography;
@@ -126,6 +130,12 @@ export interface TraitMeasurement extends MeasurementChange {
 
 export interface PlotGeographyContent extends PlotContent {
     center: LatLng;
+}
+
+export interface PlotDetailContent extends PlotContent {
+    pedigree: string;
+    friendlyName: string;
+    barcode: string;
 }
 
 export interface TrialCommentContent {

@@ -14,6 +14,9 @@ public class Cell
 {
 	private String                         brapiId;
 	private String                         germplasm;
+	private String                         barcode;
+	private String                         friendlyName;
+	private String                         pedigree;
 	private String                         rep;
 	private Boolean                        isMarked;
 	private Geography                      geography;
@@ -25,6 +28,9 @@ public class Cell
 	{
 		this.brapiId = input.getBrapiId();
 		this.germplasm = input.getGermplasm();
+		this.barcode = input.getBarcode();
+		this.friendlyName = input.getFriendlyName();
+		this.pedigree = input.getPedigree();
 		this.rep = input.getRep();
 		this.isMarked = input.getIsMarked();
 		this.geography = input.getGeography();
