@@ -17,6 +17,7 @@ public class Cell
 	private String                         barcode;
 	private String                         friendlyName;
 	private String                         pedigree;
+	private String                         treatment;
 	private String                         rep;
 	private Boolean                        isMarked;
 	private Geography                      geography;
@@ -31,6 +32,7 @@ public class Cell
 		this.barcode = input.getBarcode();
 		this.friendlyName = input.getFriendlyName();
 		this.pedigree = input.getPedigree();
+		this.treatment = input.getTreatment();
 		this.rep = input.getRep();
 		this.isMarked = input.getIsMarked();
 		this.geography = input.getGeography();

@@ -12,6 +12,7 @@ import net.logicsquad.nanocaptcha.image.ImageCaptcha;
 import net.logicsquad.nanocaptcha.image.backgrounds.FlatColorBackgroundProducer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
+import org.jooq.impl.*;
 import org.jooq.tools.StringUtils;
 
 import javax.imageio.ImageIO;
@@ -451,6 +452,31 @@ public class TrialResource
 			Logger.getLogger("").severe(e.getLocalizedMessage());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
 						   .build();
+		}
+	}
+
+	@GET
+	@Path("/stats")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTrialOverviewstats()
+			throws SQLException
+	{
+		try (Connection conn = Database.getConnection())
+		{
+			DSLContext context = Database.getContext(conn);
+
+			Field<Integer> duration = DSL.dateDiff(DSL.cast(TRIALS.UPDATED_ON, SQLDataType.DATE), DSL.cast(TRIALS.CREATED_ON, SQLDataType.DATE)).as("duration");
+
+			return Response.ok(context.select(
+											  DSL.cast(TRIALS.CREATED_ON, SQLDataType.DATE).as("created_on"),
+											  DSL.cast(TRIALS.UPDATED_ON, SQLDataType.DATE).as("updated_on"),
+											  duration
+									  ).from(TRIALS)
+									  .having(duration.ge(10))
+									  .orderBy(TRIALS.UPDATED_ON.desc(), duration.desc())
+									  .fetchInto(TrialStats.class)
+			).build();
 		}
 	}
 }

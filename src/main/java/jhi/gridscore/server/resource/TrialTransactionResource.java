@@ -246,7 +246,8 @@ public class TrialTransactionResource
 							{
 								cell.setBarcode(plotChanges.getBarcode())
 									.setFriendlyName(plotChanges.getFriendlyName())
-									.setPedigree(plotChanges.getPedigree());
+									.setPedigree(plotChanges.getPedigree())
+									.setTreatment(plotChanges.getTreatment());
 							}
 						}
 

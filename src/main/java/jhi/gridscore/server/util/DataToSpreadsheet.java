@@ -306,6 +306,14 @@ public class DataToSpreadsheet
 				dc.setCellValue(columnLabel);
 				pc.setCellValue(columnLabel);
 
+				// Write the treatment (if available)
+				dc = getCell(d, 5);
+				pc = getCell(p, 5);
+				if (!StringUtils.isEmpty(cell.getTreatment())) {
+					dc.setCellValue(cell.getTreatment());
+					pc.setCellValue(cell.getTreatment());
+				}
+
 				// Write the location
 				if (cell.getGeography() != null)
 				{
@@ -513,6 +521,14 @@ public class DataToSpreadsheet
 					 pc = getCell(p, 4);
 					 dc.setCellValue(columnLabel);
 					 pc.setCellValue(columnLabel);
+
+					 // Write the treatment (if available)
+					 dc = getCell(d, 5);
+					 pc = getCell(p, 5);
+					 if (!StringUtils.isEmpty(c.getTreatment())) {
+						 dc.setCellValue(c.getTreatment());
+						 pc.setCellValue(c.getTreatment());
+					 }
 
 					 // Write the location
 					 if (c.getGeography() != null)

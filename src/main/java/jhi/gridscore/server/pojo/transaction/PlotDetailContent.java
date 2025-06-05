@@ -13,4 +13,5 @@ public class PlotDetailContent extends PlotContent
 	private String pedigree;
 	private String friendlyName;
 	private String barcode;
+	private String treatment;
 }

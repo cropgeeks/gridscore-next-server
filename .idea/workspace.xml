@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Set default value for trial expiration to 365 days.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gridscore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gridscore.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/transaction/PlotDetailContent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/transaction/PlotDetailContent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ConfigTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/GerminateExportTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/GerminateExportTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +75,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -91,6 +97,9 @@
     &quot;accountId&quot;: &quot;01ef5be1-cb54-487b-a478-3a61af0079d6&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/5.2.2/3f1de93dec45fa263ec2691ad8be11b479d36e8b/poi-ooxml-5.2.2-sources.jar!/org/apache/poi/xssf/usermodel/XSSFSheet.java" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -137,7 +146,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [clean]">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -369,14 +378,14 @@
     <list>
       <item itemvalue="Application.TrialResource" />
       <item itemvalue="Gradle.gridscore-next-server [build]" />
-      <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
+      <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
+        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
         <item itemvalue="Gradle.gridscore-next-server [build]" />
         <item itemvalue="Application.TrialResource" />
@@ -461,7 +470,16 @@
       <workItem from="1746625039766" duration="2028000" />
       <workItem from="1747642580508" duration="3318000" />
       <workItem from="1747726488742" duration="3090000" />
-      <workItem from="1747807961525" duration="1265000" />
+      <workItem from="1747807961525" duration="2021000" />
+      <workItem from="1747900737164" duration="2083000" />
+      <workItem from="1747926600553" duration="2000" />
+      <workItem from="1747989152450" duration="646000" />
+      <workItem from="1748104984455" duration="833000" />
+      <workItem from="1748247993446" duration="601000" />
+      <workItem from="1748270431656" duration="685000" />
+      <workItem from="1748331369258" duration="2892000" />
+      <workItem from="1748853333369" duration="1981000" />
+      <workItem from="1749105044185" duration="835000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -559,7 +577,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747648785023</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time.">
+      <option name="closed" value="true" />
+      <created>1747846698383</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1747846698383</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -590,6 +616,7 @@
     <MESSAGE value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
     <MESSAGE value="- CHG: Formatting." />
     <MESSAGE value="- CHG: Set default value for trial expiration to 365 days." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Set default value for trial expiration to 365 days." />
+    <MESSAGE value="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time." />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time." />
   </component>
 </project>
