@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +74,7 @@
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/5.2.2/3f1de93dec45fa263ec2691ad8be11b479d36e8b/poi-ooxml-5.2.2-sources.jar!/org/apache/poi/xssf/usermodel/XSSFSheet.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
@@ -475,7 +476,18 @@
       <workItem from="1749710353778" duration="632000" />
       <workItem from="1749801954521" duration="593000" />
       <workItem from="1749805057825" duration="1207000" />
-      <workItem from="1750921054752" duration="608000" />
+      <workItem from="1750921054752" duration="3349000" />
+      <workItem from="1751011371911" duration="1784000" />
+      <workItem from="1751035866852" duration="300000" />
+      <workItem from="1751271756061" duration="1402000" />
+      <workItem from="1751355539327" duration="1786000" />
+      <workItem from="1751372688561" duration="711000" />
+      <workItem from="1751534180792" duration="643000" />
+      <workItem from="1752488755648" duration="10000" />
+      <workItem from="1752569440249" duration="1195000" />
+      <workItem from="1752576503488" duration="1548000" />
+      <workItem from="1752581954931" duration="1981000" />
+      <workItem from="1753351812396" duration="15000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -597,7 +609,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749109815625</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="- CHG: Version bump.">
+      <option name="closed" value="true" />
+      <created>1750923340223</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1750923340223</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -623,7 +643,6 @@
     <MESSAGE value="- FIX: Fixed image sharing permission issue." />
     <MESSAGE value="- CHG: Typescript updates." />
     <MESSAGE value="- ADD: Added missing trait description in Germinate template export.&#10;- ADD: Added trait reference image URL transaction support." />
-    <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
     <MESSAGE value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
     <MESSAGE value="- CHG: Formatting." />
@@ -631,6 +650,7 @@
     <MESSAGE value="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time." />
     <MESSAGE value="- ADD: Added trial stats endpoint for anonymised trial duration data.&#10;- ADD: Added treatment field to cells.&#10;-" />
     <MESSAGE value="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump." />
-    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump." />
+    <MESSAGE value="- CHG: Version bump." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
   </component>
 </project>
