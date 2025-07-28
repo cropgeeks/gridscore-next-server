@@ -188,7 +188,7 @@ public class TrialExportResource
 			int row = Integer.parseInt(rowColumn[0]);
 			int col = Integer.parseInt(rowColumn[1]);
 			Corners corners = cell.getGeography().getCorners();
-			if (corners != null)
+			if (corners != null && corners.isValid())
 			{
 				Coordinate[] coordinates = new Coordinate[]{
 						new Coordinate(corners.getTopLeft().getLng(), corners.getTopLeft().getLat()),

@@ -319,7 +319,7 @@ public class DataToSpreadsheet
 				{
 					Double lat = null;
 					Double lng = null;
-					if (cell.getGeography().getCorners() != null)
+					if (cell.getGeography().getCorners() != null && cell.getGeography().getCorners().isValid())
 					{
 						lat = 0d;
 						lng = 0d;

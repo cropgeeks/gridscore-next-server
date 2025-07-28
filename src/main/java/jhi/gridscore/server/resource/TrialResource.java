@@ -1,6 +1,7 @@
 package jhi.gridscore.server.resource;
 
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
@@ -9,7 +10,9 @@ import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.util.Secured;
 import net.logicsquad.nanocaptcha.content.LatinContentProducer;
 import net.logicsquad.nanocaptcha.image.ImageCaptcha;
-import net.logicsquad.nanocaptcha.image.backgrounds.FlatColorBackgroundProducer;
+import net.logicsquad.nanocaptcha.image.backgrounds.TransparentBackgroundProducer;
+import net.logicsquad.nanocaptcha.image.noise.CurvedLineNoiseProducer;
+import net.logicsquad.nanocaptcha.image.renderer.DefaultWordRenderer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.*;
 import org.jooq.impl.*;
@@ -23,8 +26,8 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static jhi.gridscore.server.database.codegen.tables.Trials.TRIALS;
@@ -407,7 +410,7 @@ public class TrialResource
 	@Path("/{shareCode}/captcha")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces({"image/png"})
-	public Response getRenewCaptcha(@PathParam("shareCode") String shareCode)
+	public Response getRenewCaptcha(@PathParam("shareCode") String shareCode, @QueryParam("darkMode") Boolean darkMode)
 			throws SQLException
 	{
 		if (StringUtils.isBlank(shareCode))
@@ -429,9 +432,11 @@ public class TrialResource
 
 				// Create a captcha with noise
 				ImageCaptcha imageCaptcha = new ImageCaptcha.Builder(200, 50)
-						.addNoise()
-						.addContent(new LatinContentProducer(7))
-						.addBackground(new FlatColorBackgroundProducer(Color.WHITE))
+						.addNoise(new CurvedLineNoiseProducer(Objects.equals(darkMode, true) ? Color.WHITE : Color.decode("#212529"), 3))
+						.addContent(new LatinContentProducer(7), new DefaultWordRenderer.Builder()
+								.randomColor(Color.decode("#910080"), Color.decode("#ff7c00"), Color.decode("#5ec418"), Color.decode("#00a0f1"))
+								.build())
+						.addBackground(new TransparentBackgroundProducer())
 						.build();
 
 				// Write to image
