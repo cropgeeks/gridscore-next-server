@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Trying to fix runtime issues.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialExportResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ConfigTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +94,11 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.poi/poi-ooxml/5.2.2/3f1de93dec45fa263ec2691ad8be11b479d36e8b/poi-ooxml-5.2.2-sources.jar!/org/apache/poi/xssf/usermodel/XSSFSheet.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/8bea5b53c3c052c23adaaf61140cdff4bb934c9f/nanocaptcha-2.1.jar!/net/logicsquad/nanocaptcha/content/LatinContentProducer.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/content/LatinContentProducer.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/ImageCaptcha.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/filter/FishEyeImageFilter.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/noise/CurvedLineNoiseProducer.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
@@ -139,7 +139,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\sr41756\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -148,7 +148,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
+  <component name="RunManager" selected="Application.TrialResource">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -390,17 +390,17 @@
       <item itemvalue="Application.TrialResource" />
       <item itemvalue="Gradle.gridscore-next-server [build]" />
       <item itemvalue="Gradle.gridscore-next-server [check]" />
-      <item itemvalue="Gradle.gridscore-next-server [test]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
       <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
+      <item itemvalue="Gradle.gridscore-next-server [test]" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.gridscore-next-server [test]" />
+        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
-        <item itemvalue="Gradle.gridscore-next-server [build]" />
-        <item itemvalue="Gradle.gridscore-next-server [test]" />
         <item itemvalue="Gradle.gridscore-next-server [check]" />
       </list>
     </recent_temporary>
@@ -408,8 +408,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26927.53" />
-        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.26927.53" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
       </set>
     </attachedChunks>
   </component>
@@ -517,7 +517,21 @@
       <workItem from="1753351812396" duration="8653000" />
       <workItem from="1753432701608" duration="1211000" />
       <workItem from="1753691256732" duration="1014000" />
-      <workItem from="1753696364340" duration="1399000" />
+      <workItem from="1753696364340" duration="3034000" />
+      <workItem from="1753708586647" duration="610000" />
+      <workItem from="1753774180107" duration="1462000" />
+      <workItem from="1753775712900" duration="1203000" />
+      <workItem from="1753857370179" duration="45000" />
+      <workItem from="1754482027012" duration="1372000" />
+      <workItem from="1754548210992" duration="2213000" />
+      <workItem from="1754584535041" duration="717000" />
+      <workItem from="1754900208335" duration="594000" />
+      <workItem from="1754902916345" duration="2000" />
+      <workItem from="1755504773596" duration="47000" />
+      <workItem from="1755504841970" duration="2394000" />
+      <workItem from="1755589639244" duration="2007000" />
+      <workItem from="1755703996141" duration="2847000" />
+      <workItem from="1755762179153" duration="640000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -663,7 +677,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753354098602</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving.">
+      <option name="closed" value="true" />
+      <created>1753699698919</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1753699698919</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -698,6 +720,7 @@
     <MESSAGE value="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump." />
     <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- CHG: Trying to fix runtime issues." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Trying to fix runtime issues." />
+    <MESSAGE value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
   </component>
 </project>
