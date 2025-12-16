@@ -18,6 +18,7 @@ public class Trial
 	private List<Comment>     comments;
 	private List<Event>       events;
 	private List<Person>      people;
+	private Boolean           isLocked;
 	private String            remoteUrl;
 	private String            remoteToken;
 	private Layout            layout;
@@ -29,4 +30,5 @@ public class Trial
 	private String            createdOn;
 	private String            lastSyncedOn;
 	private ShareCodes        shareCodes;
+	private String[]          mediaFilenameFormat;
 }

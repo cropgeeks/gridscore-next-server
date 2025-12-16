@@ -1,9 +1,9 @@
 package jhi.gridscore.server.util;
 
 import com.google.gson.Gson;
+import jhi.gridscore.server.pojo.*;
 import jhi.gridscore.server.pojo.Cell;
 import jhi.gridscore.server.pojo.Comment;
-import jhi.gridscore.server.pojo.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
@@ -12,7 +12,7 @@ import org.apache.poi.xssf.usermodel.*;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.*;
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -241,7 +241,7 @@ public class DataToSpreadsheet
 
 	private void exportIndividually(XSSFSheet data, XSSFSheet dates)
 	{
-		final int[] sheetRow = { 0 };
+		final int[] sheetRow = {0};
 
 		trial.getData().forEach((cellIdentifier, cell) -> {
 			String[] rowColumn = cellIdentifier.split("\\|");
@@ -309,7 +309,8 @@ public class DataToSpreadsheet
 				// Write the treatment (if available)
 				dc = getCell(d, 5);
 				pc = getCell(p, 5);
-				if (!StringUtils.isEmpty(cell.getTreatment())) {
+				if (!StringUtils.isEmpty(cell.getTreatment()))
+				{
 					dc.setCellValue(cell.getTreatment());
 					pc.setCellValue(cell.getTreatment());
 				}
@@ -371,7 +372,28 @@ public class DataToSpreadsheet
 					int counter = 0;
 					for (int j = 0; j < measurements.size(); j++)
 					{
-						List<String> nonNullValues = measurements.get(j).getValues().stream().filter(v -> !StringUtils.isBlank(v)).collect(Collectors.toList());
+						List<String> nonNullValues = measurements.get(j).getValues().stream().filter(v -> !StringUtils.isBlank(v)).toList();
+
+						// Handle multi-category values and split them apart
+						if (Objects.equals(t.getDataType(), "multicat"))
+						{
+							List<String> splitMultiMeasurements = new ArrayList<>();
+
+							nonNullValues.forEach(v -> {
+								String[] parts = v.split(":");
+
+								for (String part : parts)
+								{
+									if (!StringUtils.isBlank(part))
+									{
+										splitMultiMeasurements.add(part);
+									}
+								}
+							});
+
+							nonNullValues = splitMultiMeasurements;
+						}
+
 						for (int v = 0; v < nonNullValues.size(); v++)
 						{
 							String value = nonNullValues.get(v);
@@ -396,7 +418,7 @@ public class DataToSpreadsheet
 									// Do nothing here
 								}
 							}
-							else if (Objects.equals(t.getDataType(), "categorical"))
+							else if (Objects.equals(t.getDataType(), "categorical") || Objects.equals(t.getDataType(), "multicat"))
 							{
 								String parsed = t.getRestrictions().getCategories().get(Integer.parseInt(value));
 								setCell(t, dc, parsed);
@@ -525,7 +547,8 @@ public class DataToSpreadsheet
 					 // Write the treatment (if available)
 					 dc = getCell(d, 5);
 					 pc = getCell(p, 5);
-					 if (!StringUtils.isEmpty(c.getTreatment())) {
+					 if (!StringUtils.isEmpty(c.getTreatment()))
+					 {
 						 dc.setCellValue(c.getTreatment());
 						 pc.setCellValue(c.getTreatment());
 					 }
@@ -628,6 +651,12 @@ public class DataToSpreadsheet
 
 							 if (Objects.equals(t.getDataType(), "categorical"))
 								 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
+							 else if (Objects.equals(t.getDataType(), "multicat"))
+							 {
+								 String[] parts = value.split(":");
+
+								 value = t.getRestrictions().getCategories().get(Integer.parseInt(parts[parts.length - 1]));
+							 }
 						 }
 
 						 setCell(t, dc, value);
@@ -840,6 +869,9 @@ public class DataToSpreadsheet
 						 case "int":
 						 case "float":
 							 row.createCell(3).setCellValue("numeric");
+							 break;
+						 case "multicat":
+							 row.createCell(3).setCellValue("categorical");
 							 break;
 						 case "date":
 						 case "text":

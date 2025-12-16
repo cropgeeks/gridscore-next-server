@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
+      <change beforePath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gridscore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gridscore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +59,12 @@
                 <item name="gridscore-next" type="f1a62948:ProjectNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="deployment" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="gridscore-next" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="execution" type="c8890929:TasksNode$1" />
               </path>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
@@ -148,7 +161,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TrialResource">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -397,10 +410,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.gridscore-next-server [test]" />
-        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
+        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
+        <item itemvalue="Gradle.gridscore-next-server [test]" />
         <item itemvalue="Gradle.gridscore-next-server [check]" />
       </list>
     </recent_temporary>
@@ -409,7 +422,6 @@
     <attachedChunks>
       <set>
         <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
       </set>
     </attachedChunks>
   </component>
@@ -531,7 +543,7 @@
       <workItem from="1755504841970" duration="2394000" />
       <workItem from="1755589639244" duration="2007000" />
       <workItem from="1755703996141" duration="2847000" />
-      <workItem from="1755762179153" duration="640000" />
+      <workItem from="1755762179153" duration="2087000" />
     </task>
     <task id="LOCAL-00001" summary="- CHG: Updated Gradle to v8.8.">
       <option name="closed" value="true" />
@@ -685,7 +697,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753699698919</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="- CHG: Version bump.">
+      <option name="closed" value="true" />
+      <created>1755764018733</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1755764018733</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -718,9 +738,9 @@
     <MESSAGE value="- ADD: Added support for plot-level 'friendly name', 'barcode' and 'pedigree'. These can be defined during trial creation or at a later time." />
     <MESSAGE value="- ADD: Added trial stats endpoint for anonymised trial duration data.&#10;- ADD: Added treatment field to cells.&#10;-" />
     <MESSAGE value="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump." />
-    <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- CHG: Trying to fix runtime issues." />
     <MESSAGE value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
+    <MESSAGE value="- CHG: Version bump." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
   </component>
 </project>

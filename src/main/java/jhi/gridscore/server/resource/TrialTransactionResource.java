@@ -29,9 +29,12 @@ public class TrialTransactionResource
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response postTransactions(Transaction transaction)
+	public Response postTransactions(Transaction transaction, @QueryParam("lock-override") Boolean lockOverride)
 			throws SQLException
 	{
+		if (lockOverride == null)
+			lockOverride = false;
+
 		if (StringUtils.isEmpty(shareCode))
 		{
 			return Response.status(Response.Status.BAD_REQUEST)
@@ -95,6 +98,14 @@ public class TrialTransactionResource
 
 					Trial trial = wrapper.getTrial();
 
+					if (trial.getIsLocked() != null && trial.getIsLocked() && type != TrialPermissionType.OWNER && !lockOverride) {
+						return Response.status(Response.Status.CONFLICT).build();
+					}
+
+					/* Check if the trial has been locked/unlocked */
+					if (transaction.getTrialLockedTransaction() != null)
+						trial.setIsLocked(transaction.getTrialLockedTransaction());
+
 					/* Check for trial modifications */
 					if (transaction.getTrialEditTransaction() != null)
 					{
@@ -148,10 +159,36 @@ public class TrialTransactionResource
 						for (String germplasm : transaction.getTrialGermplasmAddedTransactions())
 						{
 							// Create new cell
-							Cell cell = new Cell()
-									.setGermplasm(germplasm)
-									.setCategories(new ArrayList<>())
-									.setRep(null);
+							Cell cell = new Cell();
+							cell.setCategories(new ArrayList<>());
+							cell.setGermplasm(germplasm);
+							cell.setRep(null);
+
+							// Add to data map
+							trial.getData().put(trial.getLayout().getRows() + counter + "|" + (trial.getLayout().getColumns() - 1), cell);
+
+							counter++;
+						}
+
+						// Increment row count
+						trial.getLayout().setRows(trial.getLayout().getRows() + counter);
+					}
+
+					/* ADD TRIAL GERMPLASM WITH METADATA */
+					if (!CollectionUtils.isEmpty(transaction.getTrialGermplasmWithMetadataAddedTransactions()))
+					{
+						int counter = 0;
+						for (CellMetadata germplasm : transaction.getTrialGermplasmWithMetadataAddedTransactions())
+						{
+							// Create new cell
+							Cell cell = new Cell();
+							cell.setCategories(new ArrayList<>());
+							cell.setGermplasm(germplasm.getGermplasm());
+							cell.setRep(germplasm.getRep());
+							cell.setTreatment(germplasm.getTreatment());
+							cell.setFriendlyName(germplasm.getFriendlyName());
+							cell.setPedigree(germplasm.getPedigree());
+							cell.setBarcode(germplasm.getBarcode());
 
 							// Add to data map
 							trial.getData().put(trial.getLayout().getRows() + counter + "|" + (trial.getLayout().getColumns() - 1), cell);
@@ -168,12 +205,20 @@ public class TrialTransactionResource
 						String key = entry.getKey();
 						Cell cell = entry.getValue();
 
+						// This cell can be modified if it's either not locked OR the owner is making changes OR the override has been set
+						boolean canEditCell = lockOverride || cell.getIsLocked() == null || !cell.getIsLocked() || type == TrialPermissionType.OWNER;
+
 						if (transaction.getBrapiIdChangeTransaction() != null && transaction.getBrapiIdChangeTransaction().getGermplasmBrapiIds() != null)
 						{
 							String id = transaction.getBrapiIdChangeTransaction().getGermplasmBrapiIds().get(key);
 
 							if (!StringUtils.isBlank(id))
+							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								cell.setBrapiId(id);
+							}
 						}
 
 						// Make sure the measurements object is set
@@ -185,6 +230,9 @@ public class TrialTransactionResource
 						{
 							Map<String, Corners> pc = transaction.getTrialEditTransaction().getPlotCorners();
 
+							if (pc.getOrDefault(key, null) != null && !canEditCell)
+								return Response.status(Response.Status.CONFLICT).build();
+
 							cell.getGeography().setCorners(pc.getOrDefault(key, null));
 						}
 
@@ -195,13 +243,29 @@ public class TrialTransactionResource
 								cell.getMeasurements().put(t.getId(), new ArrayList<>());
 						}
 
+						// Check if the disabled status has changed
+						if (transaction.getPlotLockedTransactions() != null) {
+							Boolean change = transaction.getPlotLockedTransactions().get(key);
+
+							if (change != null)
+							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+								cell.setIsLocked(change);
+							}
+						}
+
 						// Check if the marked status has changed
 						if (transaction.getPlotMarkedTransactions() != null)
 						{
 							Boolean change = transaction.getPlotMarkedTransactions().get(key);
 
 							if (change != null)
+							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
 								cell.setIsMarked(change);
+							}
 						}
 
 						// Check if the plot geography (center) has changed
@@ -211,6 +275,9 @@ public class TrialTransactionResource
 
 							if (geography != null)
 							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								if (cell.getGeography() != null && cell.getGeography().getCenter() != null)
 								{
 									// Geography and center exist, so take average
@@ -244,6 +311,9 @@ public class TrialTransactionResource
 
 							if (plotChanges != null)
 							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								cell.setBarcode(plotChanges.getBarcode())
 									.setFriendlyName(plotChanges.getFriendlyName())
 									.setPedigree(plotChanges.getPedigree())
@@ -258,11 +328,14 @@ public class TrialTransactionResource
 
 							if (!CollectionUtils.isEmpty(plotComments))
 							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								if (cell.getComments() == null)
 									cell.setComments(new ArrayList<>());
 
 								// Add all new comments
-								cell.getComments().addAll(plotComments.stream().map(c -> new Comment().setContent(c.getContent()).setTimestamp(c.getTimestamp())).collect(Collectors.toList()));
+								cell.getComments().addAll(plotComments.stream().map(c -> new Comment().setContent(c.getContent()).setTimestamp(c.getTimestamp())).toList());
 							}
 						}
 
@@ -273,6 +346,9 @@ public class TrialTransactionResource
 
 							if (!CollectionUtils.isEmpty(plotComments))
 							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								if (cell.getComments() != null)
 								{
 									// Remove all comments that match the timestamp AND content
@@ -288,6 +364,9 @@ public class TrialTransactionResource
 
 							if (!CollectionUtils.isEmpty(measures))
 							{
+								if (!canEditCell)
+									return Response.status(Response.Status.CONFLICT).build();
+
 								Map<String, List<Measurement>> cellMeasurements = cell.getMeasurements();
 								for (TraitMeasurement m : measures)
 								{
@@ -335,7 +414,7 @@ public class TrialTransactionResource
 												 else
 												 {
 													 // Update
-													 list.get(0)
+													 list.getFirst()
 														 .setPersonId(m.getPersonId())
 														 .setValues(m.getValues())
 														 .setTimestamp(m.getTimestamp());

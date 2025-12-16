@@ -25,7 +25,7 @@ java {
 }
 
 group 'uk.ac.hutton.ics.gridscore'
-version '3.4.4'
+version '4.0.0'
 
 repositories {
     maven {
@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.json:json:20250517'
     implementation 'com.google.code.gson:gson:2.9.0'
 
-    implementation 'com.mysql:mysql-connector-j:8.2.0'
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
     implementation 'org.jooq:jooq:3.20.5'
     implementation 'org.jooq:jooq-codegen:3.20.5'
 
@@ -134,7 +134,7 @@ task deployTomcat (type: CargoRedeployRemote) {
 
 generateTypeScript {
     jsonLibrary = 'jackson2'
-    classes = ['jhi.gridscore.server.pojo.Trial', 'jhi.gridscore.server.pojo.Transaction']
+    classes = ['jhi.gridscore.server.pojo.Trial', 'jhi.gridscore.server.pojo.Transaction', 'jhi.gridscore.server.pojo.TrialTimestamp']
     outputKind = 'module'
     outputFile = 'gridscore.ts'
     outputFileType = 'implementationFile'

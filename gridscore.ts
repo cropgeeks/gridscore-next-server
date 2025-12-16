@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2025-05-19 13:40:07.
+// Generated using typescript-generator version 3.2.1263 on 2025-12-15 14:12:29.
 
 export interface Trial {
     name: string;
@@ -9,6 +9,7 @@ export interface Trial {
     comments: Comment[];
     events: Event[];
     people: Person[];
+    isLocked: boolean;
     remoteUrl: string;
     remoteToken: string;
     layout: Layout;
@@ -20,6 +21,7 @@ export interface Trial {
     createdOn: string;
     lastSyncedOn: string;
     shareCodes: ShareCodes;
+    mediaFilenameFormat: string[];
 }
 
 export interface Transaction {
@@ -27,6 +29,7 @@ export interface Transaction {
     plotCommentAddedTransactions: { [index: string]: PlotCommentContent[] };
     plotCommentDeletedTransactions: { [index: string]: PlotCommentContent[] };
     plotMarkedTransactions: { [index: string]: boolean };
+    plotLockedTransactions: { [index: string]: boolean };
     plotTraitDataChangeTransactions: { [index: string]: TraitMeasurement[] };
     plotGeographyChangeTransactions: { [index: string]: PlotGeographyContent };
     plotDetailsChangeTransaction: { [index: string]: PlotDetailContent };
@@ -36,12 +39,20 @@ export interface Transaction {
     trialEventDeletedTransactions: TrialEventContent[];
     trialPersonAddedTransactions: Person[];
     trialGermplasmAddedTransactions: string[];
+    trialGermplasmWithMetadataAddedTransactions: CellMetadata[];
     trialTraitAddedTransactions: Trait[];
     trialTraitDeletedTransactions: Trait[];
     traitChangeTransactions: TraitEditContent[];
     trialEditTransaction: TrialContent;
+    trialLockedTransaction: boolean;
     brapiIdChangeTransaction: BrapiIdChangeContent;
     brapiConfigChangeTransaction: BrapiConfig;
+}
+
+export interface TrialTimestamp {
+    updatedOn: string;
+    expiresOn: string;
+    showExpiryWarning: boolean;
 }
 
 export interface Trait {
@@ -89,14 +100,10 @@ export interface Layout {
     rowLabels: number[];
 }
 
-export interface Cell {
+export interface Cell extends CellMetadata {
     brapiId: string;
-    germplasm: string;
-    barcode: string;
-    friendlyName: string;
-    pedigree: string;
-    rep: string;
     isMarked: boolean;
+    isLocked: boolean;
     geography: Geography;
     measurements: { [index: string]: Measurement[] };
     comments: Comment[];
@@ -136,6 +143,7 @@ export interface PlotDetailContent extends PlotContent {
     pedigree: string;
     friendlyName: string;
     barcode: string;
+    treatment: string;
 }
 
 export interface TrialCommentContent {
@@ -148,6 +156,15 @@ export interface TrialEventContent {
     content: string;
     type: EventType;
     impact: number;
+}
+
+export interface CellMetadata {
+    germplasm: string;
+    barcode: string;
+    friendlyName: string;
+    pedigree: string;
+    treatment: string;
+    rep: string;
 }
 
 export interface TraitEditContent {

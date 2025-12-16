@@ -10,16 +10,11 @@ import java.util.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @ToString
-public class Cell
+public class Cell extends CellMetadata
 {
 	private String                         brapiId;
-	private String                         germplasm;
-	private String                         barcode;
-	private String                         friendlyName;
-	private String                         pedigree;
-	private String                         treatment;
-	private String                         rep;
 	private Boolean                        isMarked;
+	private Boolean                        isLocked;
 	private Geography                      geography;
 	private Map<String, List<Measurement>> measurements;
 	private List<Comment>                  comments;
@@ -27,14 +22,11 @@ public class Cell
 
 	public Cell(Cell input)
 	{
+		super(input);
+
 		this.brapiId = input.getBrapiId();
-		this.germplasm = input.getGermplasm();
-		this.barcode = input.getBarcode();
-		this.friendlyName = input.getFriendlyName();
-		this.pedigree = input.getPedigree();
-		this.treatment = input.getTreatment();
-		this.rep = input.getRep();
 		this.isMarked = input.getIsMarked();
+		this.isLocked = input.getIsLocked();
 		this.geography = input.getGeography();
 		this.measurements = input.getMeasurements();
 		this.comments = input.getComments();
