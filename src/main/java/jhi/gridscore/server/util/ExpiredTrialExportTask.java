@@ -12,8 +12,8 @@ import org.jooq.DSLContext;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
 import java.nio.file.*;
+import java.nio.file.FileSystem;
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -153,6 +153,23 @@ public class ExpiredTrialExportTask implements Runnable
 				Files.copy(target.toPath(), fs.getPath("/germinate-template.xlsx"), StandardCopyOption.REPLACE_EXISTING);
 
 				target.delete();
+			}
+
+			try
+			{
+				String uuid = UUID.randomUUID().toString();
+				folder.mkdirs();
+				File target = new File(folder, uuid + ".txt");
+
+				ClientUtil.exportTabLongFormat(trial.getTrial(), target);
+
+				Files.copy(target.toPath(), fs.getPath("/long-format.txt"), StandardCopyOption.REPLACE_EXISTING);
+
+				target.delete();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 
 			File traitImageFolder = new File(PropertyWatcher.get("config.folder"), "trait-images");

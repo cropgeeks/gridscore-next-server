@@ -32,7 +32,9 @@ import java.util.Properties;
  */
 public class PropertyWatcher
 {
-	/** The name of the properties file */
+	/**
+	 * The name of the properties file
+	 */
 	private static final String PROPERTIES_FILE = "config.properties";
 
 	private static Properties properties = new Properties();
@@ -43,16 +45,27 @@ public class PropertyWatcher
 	/**
 	 * Attempts to reads the properties file and then checks the required properties.
 	 */
-	public static void initialize()
+	public static void initialize(File potentialConfig)
 	{
 		/* Start to listen for file changes */
 		try
 		{
-			// We have to load the internal one initially to figure out where the external data directory is...
-			URL resource = PropertyWatcher.class.getClassLoader().getResource(PROPERTIES_FILE);
-			if (resource != null)
+			if (potentialConfig != null)
 			{
-				config = new File(resource.toURI());
+				config = potentialConfig;
+			}
+			else
+			{
+				// We have to load the internal one initially to figure out where the external data directory is...
+				URL resource = PropertyWatcher.class.getClassLoader().getResource(PROPERTIES_FILE);
+				if (resource != null)
+				{
+					config = new File(resource.toURI());
+				}
+			}
+
+			if (config != null)
+			{
 				loadProperties(false);
 
 				// Then check if there's another version in the external data directory
@@ -145,7 +158,8 @@ public class PropertyWatcher
 		return StringUtils.isEmpty(value) ? null : value;
 	}
 
-	public static String get(String property, String defaultValue) {
+	public static String get(String property, String defaultValue)
+	{
 		String value = get(property);
 
 		if (value == null)
@@ -154,7 +168,8 @@ public class PropertyWatcher
 			return value;
 	}
 
-	public static void set(String property, String value) {
+	public static void set(String property, String value)
+	{
 		properties.setProperty(property, value);
 	}
 

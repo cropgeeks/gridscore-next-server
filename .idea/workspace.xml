@@ -4,16 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
-      <change beforePath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" afterDir="false" />
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gridscore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gridscore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Cell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/ApplicationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/ApplicationListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ConfigTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,10 +112,7 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/8bea5b53c3c052c23adaaf61140cdff4bb934c9f/nanocaptcha-2.1.jar!/net/logicsquad/nanocaptcha/content/LatinContentProducer.class" root0="SKIP_INSPECTION" />
-    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/content/LatinContentProducer.java" root0="SKIP_INSPECTION" />
-    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/ImageCaptcha.java" root0="SKIP_INSPECTION" />
-    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/filter/FishEyeImageFilter.java" root0="SKIP_INSPECTION" />
-    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.logicsquad/nanocaptcha/2.1/fb233418c7b84afbc428557a3ff544d497b54a5d/nanocaptcha-2.1-sources.jar!/net/logicsquad/nanocaptcha/image/noise/CurvedLineNoiseProducer.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/wrapper/dists/gradle-8.8-bin/dl7vupf4psengwqhwktix4v1/gradle-8.8/lib/gradle-base-services-8.8.jar!/org/gradle/api/JavaVersion.class" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
@@ -129,9 +130,12 @@
   &quot;keyToString&quot;: {
     &quot;Gradle.Build gridscore-next-server.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ReorderTraitTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ReorderTraitTest.testConfigTransactionDataChange.executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.resource.TrialResource.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ClientUtil.main()].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [build].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [check].executor&quot;: &quot;Run&quot;,
     &quot;Gradle.gridscore-next-server [clean].executor&quot;: &quot;Run&quot;,
@@ -158,6 +162,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
@@ -175,12 +180,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TrialResource" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.resource.TrialResource" />
+    <configuration name="ClientUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.util.ClientUtil" />
       <module name="gridscore-next.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="jhi.gridscore.server.resource.*" />
+          <option name="PATTERN" value="jhi.gridscore.server.util.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -188,51 +193,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="gridscore-next-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="gridscore-next-server [check]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="check" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="gridscore-next-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="ReorderTraitTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -243,15 +204,41 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="clean" />
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;ReorderTraitTest&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="ReorderTraitTest.testConfigTransactionDataChange" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;ReorderTraitTest.testConfigTransactionDataChange&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="gridscore-next-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -354,28 +341,6 @@
         <option name="taskNames">
           <list>
             <option value="generateTypeScript" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="gridscore-next-server [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="test" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -400,28 +365,27 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.TrialResource" />
-      <item itemvalue="Gradle.gridscore-next-server [build]" />
-      <item itemvalue="Gradle.gridscore-next-server [check]" />
+      <item itemvalue="Application.ClientUtil" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
+      <item itemvalue="Gradle.ReorderTraitTest" />
+      <item itemvalue="Gradle.ReorderTraitTest.testConfigTransactionDataChange" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
       <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
-      <item itemvalue="Gradle.gridscore-next-server [test]" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
-        <item itemvalue="Gradle.gridscore-next-server [clean]" />
         <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
-        <item itemvalue="Gradle.gridscore-next-server [test]" />
-        <item itemvalue="Gradle.gridscore-next-server [check]" />
+        <item itemvalue="Gradle.gridscore-next-server [clean]" />
+        <item itemvalue="Gradle.ReorderTraitTest.testConfigTransactionDataChange" />
+        <item itemvalue="Gradle.ReorderTraitTest" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.33" />
       </set>
     </attachedChunks>
   </component>
@@ -705,7 +669,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755764018733</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-">
+      <option name="closed" value="true" />
+      <created>1765898628205</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1765898628205</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -741,6 +713,36 @@
     <MESSAGE value="- CHG: Trying to fix runtime issues." />
     <MESSAGE value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
     <MESSAGE value="- CHG: Version bump." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
+    <MESSAGE value="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-" />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ClientUtil.java</url>
+          <line>31</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ClientUtil.java</url>
+          <line>36</line>
+          <properties>
+            <option name="lambda-ordinal" value="1" />
+          </properties>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ClientUtil.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

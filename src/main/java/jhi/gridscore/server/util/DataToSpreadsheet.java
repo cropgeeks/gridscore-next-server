@@ -12,35 +12,14 @@ import org.apache.poi.xssf.usermodel.*;
 import org.jooq.tools.StringUtils;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.format.*;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.*;
 
 public class DataToSpreadsheet
 {
-	public static void main(String[] args)
-			throws IOException, SQLException
-	{
-//		File template = new File("C:/Users/sr41756/workspaces/java/gridscore-next-server/src/main/resources/trials-data.xlsx");
-//		File target = new File("C:/Users/sr41756/Downloads/trial-export-test.xlsx");
-//
-//		if (target.exists() && target.isFile())
-//			target.delete();
-//
-//		Database.init("localhost", "gridscore_next", null, "root", null, false);
-//
-//		try (Connection conn = Database.getConnection())
-//		{
-//			DSLContext context = Database.getContext(conn);
-//
-//			Trials trials = context.selectFrom(TRIALS).where(TRIALS.OWNER_CODE.eq("tg2WYLBecHPWsdYxCuz2UWl-76c")).fetchAnyInto(Trials.class);
-//
-//			new DataToSpreadsheet(template, target, trials.getTrial(), false).run();
-//		}
-	}
-
 	private File                 template;
 	private File                 target;
 	private Trial                trial;
@@ -71,12 +50,20 @@ public class DataToSpreadsheet
 
 	private String getTimezonedDate(String input, boolean dashes)
 	{
-		ZonedDateTime offsetTz = ZonedDateTime.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
+		try
+		{
+			ZonedDateTime offsetTz = ZonedDateTime.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 
-		if (dashes)
-			return offsetTz.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		else
-			return offsetTz.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+			if (dashes)
+				return offsetTz.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			else
+				return offsetTz.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		}
+		catch (DateTimeParseException | IllegalArgumentException e)
+		{
+			Logger.getLogger("").severe(e.getMessage());
+			return "";
+		}
 	}
 
 	private String getTimezonedNow()
@@ -894,6 +881,7 @@ public class DataToSpreadsheet
 
 					 row.createCell(10).setCellValue(t.getSetSize());
 					 row.createCell(11).setCellValue(t.isAllowRepeats() ? "true" : "false");
+					 row.createCell(12).setCellValue(t.getGroup() != null ? t.getGroup().getName() : "");
 				 });
 
 		if (hasPlotComments)

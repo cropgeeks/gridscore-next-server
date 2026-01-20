@@ -1,10 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2025-12-15 14:12:29.
+// Generated using typescript-generator version 3.2.1263 on 2026-01-07 11:54:41.
 
 export interface Trial {
     name: string;
     description: string;
+    group: Group;
     traits: Trait[];
     comments: Comment[];
     events: Event[];
@@ -43,6 +44,7 @@ export interface Transaction {
     trialTraitAddedTransactions: Trait[];
     trialTraitDeletedTransactions: Trait[];
     traitChangeTransactions: TraitEditContent[];
+    traitOrderTransaction: string[];
     trialEditTransaction: TrialContent;
     trialLockedTransaction: boolean;
     brapiIdChangeTransaction: BrapiIdChangeContent;
@@ -53,6 +55,20 @@ export interface TrialTimestamp {
     updatedOn: string;
     expiresOn: string;
     showExpiryWarning: boolean;
+}
+
+export interface ArchiveInformation {
+    trialExportedOn: string;
+    trialUpdatedOn: string;
+    fileSize: number;
+}
+
+export interface CaptchaContent {
+    captcha: string;
+}
+
+export interface Group {
+    name: string;
 }
 
 export interface Trait {
@@ -189,10 +205,6 @@ export interface TrialContent {
 export interface BrapiIdChangeContent {
     germplasmBrapiIds: { [index: string]: string };
     traitBrapiIds: { [index: string]: string };
-}
-
-export interface Group {
-    name: string;
 }
 
 export interface Restrictions {

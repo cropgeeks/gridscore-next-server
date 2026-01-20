@@ -24,7 +24,7 @@ public class ApplicationListener implements ServletContextListener
 		System.setProperty("org.jooq.no-logo", "true");
 		System.setProperty("org.jooq.no-tips", "true");
 
-		PropertyWatcher.initialize();
+		PropertyWatcher.initialize(null);
 
 		backgroundScheduler = Executors.newSingleThreadScheduledExecutor();
 		backgroundScheduler.scheduleAtFixedRate(new ExpiredTrialExportTask(), 0, 1, TimeUnit.DAYS);

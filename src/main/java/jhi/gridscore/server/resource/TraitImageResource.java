@@ -1,7 +1,7 @@
 package jhi.gridscore.server.resource;
 
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.*;
 import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
@@ -62,6 +62,77 @@ public class TraitImageResource
 				// Then delete them all
 				for (File file : files)
 					file.delete();
+			}
+		}
+	}
+
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteTraitImage()
+			throws SQLException, IOException
+	{
+		if (StringUtils.isEmpty(shareCode))
+		{
+			return Response.status(Response.Status.BAD_REQUEST)
+						   .build();
+		}
+		else
+		{
+			try (Connection conn = Database.getConnection())
+			{
+				DSLContext context = Database.getContext(conn);
+				TrialsRecord wrapper = context.selectFrom(TRIALS)
+											  .where(TRIALS.OWNER_CODE.eq(shareCode))
+											  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+											  .or(TRIALS.VIEWER_CODE.eq(shareCode))
+											  .fetchAny();
+
+				if (wrapper == null)
+					return Response.status(Response.Status.NOT_FOUND)
+								   .build();
+
+				Trial trial = wrapper.getTrial();
+
+				Optional<Trait> traitMatch = trial.getTraits().stream().filter(t -> Objects.equals(t.getId(), traitId)).findAny();
+
+				if (traitMatch.isEmpty())
+					return Response.status(Response.Status.NOT_FOUND)
+								   .build();
+
+				File traitImageFolder = new File(PropertyWatcher.get("config.folder"), "trait-images");
+				traitImageFolder.mkdirs();
+
+				File[] potentials = traitImageFolder.listFiles(fn -> fn.getName().startsWith(wrapper.getOwnerCode() + "-" + traitId + "."));
+
+				if (potentials == null || potentials.length < 1)
+					return Response.status(Response.Status.NOT_FOUND).build();
+
+				File imageFile = potentials[0];
+
+				if (imageFile.exists())
+				{
+					imageFile.delete();
+
+					// Mark this trait as having an image
+					traitMatch.get()
+							  .setHasImage(false)
+							  .setImageUrl(null);
+
+					// Set updated on to UTC NOW
+					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+					String formattedNow = now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter());
+					trial.setUpdatedOn(formattedNow);
+					wrapper.setTrial(trial);
+					wrapper.setUpdatedOn(now.toLocalDateTime());
+					wrapper.store();
+
+					return Response.ok(true).build();
+				}
+				else
+				{
+					return Response.status(Response.Status.NOT_FOUND).build();
+				}
 			}
 		}
 	}
@@ -157,9 +228,9 @@ public class TraitImageResource
 			{
 				DSLContext context = Database.getContext(conn);
 				TrialsRecord wrapper = context.selectFrom(TRIALS)
-											  .where(TRIALS.OWNER_CODE.eq(shareCode)
-																	  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-																	  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+											  .where(TRIALS.OWNER_CODE.eq(shareCode))
+											  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+											  .or(TRIALS.VIEWER_CODE.eq(shareCode))
 											  .fetchAny();
 
 				if (wrapper == null)

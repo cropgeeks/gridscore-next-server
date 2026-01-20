@@ -522,8 +522,12 @@ public class TrialTransactionResource
 						}
 
 						if (!CollectionUtils.isEmpty(traitIdsForImageDeletion))
-							TraitImageResource.deleteForTrialTraits(trial.getShareCodes().getOwnerCode(), traitIdsForImageDeletion);
+							TraitImageResource.deleteForTrialTraits(wrapper.getOwnerCode(), traitIdsForImageDeletion);
 					}
+
+					/* Reorder traits */
+					if (!CollectionUtils.isEmpty(transaction.getTraitOrderTransaction()))
+						trial.getTraits().sort(Comparator.<Trait>comparingInt(a -> transaction.getTraitOrderTransaction().indexOf(a.getId())));
 
 					if (transaction.getBrapiConfigChangeTransaction() != null && !StringUtils.isBlank(transaction.getBrapiConfigChangeTransaction().getUrl()))
 						trial.setBrapiConfig(new BrapiConfig().setUrl(transaction.getBrapiConfigChangeTransaction().getUrl()));

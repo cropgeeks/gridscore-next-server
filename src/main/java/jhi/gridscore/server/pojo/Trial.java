@@ -14,6 +14,7 @@ public class Trial
 {
 	private String            name;
 	private String            description;
+	private Group             group;
 	private List<Trait>       traits;
 	private List<Comment>     comments;
 	private List<Event>       events;
