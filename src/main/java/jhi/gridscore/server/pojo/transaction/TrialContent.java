@@ -19,4 +19,5 @@ public class TrialContent
 	private Markers              markers;
 	private Corners              corners;
 	private Map<String, Corners> plotCorners;
+	private DimensionNames       dimensionNames;
 }

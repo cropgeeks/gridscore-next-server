@@ -115,6 +115,7 @@ public class TrialTransactionResource
 						trial.setSocialShareConfig(change.getSocialShareConfig());
 						trial.getLayout().setCorners(change.getCorners());
 						trial.getLayout().setMarkers(change.getMarkers());
+						trial.setDimensionNames(change.getDimensionNames());
 					}
 
 					/* ADD TRAITS */

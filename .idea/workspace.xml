@@ -4,20 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added handling for trial groups during synchronization.&#10;- ADD: Added new columns to Germinate template export.&#10;-">
+      <change beforePath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/gridscore-next.main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gridscore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/gridscore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/ApplicationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/ApplicationListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/PropertyWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Transaction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/Trial.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/transaction/TrialContent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/pojo/transaction/TrialContent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TraitImageResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/trials-data.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ConfigTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +161,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [generateTypeScript]">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -213,8 +208,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>true</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="ReorderTraitTest.testConfigTransactionDataChange" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -237,8 +235,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>true</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="gridscore-next-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -259,8 +260,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="gridscore-next-server [deployTomcat]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -281,8 +285,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="gridscore-next-server [deployTomcat]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -325,8 +332,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="gridscore-next-server [generateTypeScript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -374,8 +384,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
+        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
         <item itemvalue="Gradle.ReorderTraitTest.testConfigTransactionDataChange" />
         <item itemvalue="Gradle.ReorderTraitTest" />
@@ -385,7 +395,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.33" />
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
       </set>
     </attachedChunks>
   </component>
@@ -677,7 +687,15 @@
       <option name="project" value="LOCAL" />
       <updated>1765898628205</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="- ADD: Added handling for trial groups during synchronization.&#10;- ADD: Added new columns to Germinate template export.&#10;-">
+      <option name="closed" value="true" />
+      <created>1768902175469</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1768902175469</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -714,14 +732,15 @@
     <MESSAGE value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
     <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-" />
-    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-" />
+    <MESSAGE value="- ADD: Added handling for trial groups during synchronization.&#10;- ADD: Added new columns to Germinate template export.&#10;-" />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added handling for trial groups during synchronization.&#10;- ADD: Added new columns to Germinate template export.&#10;-" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ExpiredTrialExportTask.java</url>
-          <line>31</line>
+          <line>30</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

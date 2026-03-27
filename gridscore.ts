@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2026-01-07 11:54:41.
+// Generated using typescript-generator version 3.2.1263 on 2026-03-26 09:36:13.
 
 export interface Trial {
     name: string;
@@ -23,6 +23,7 @@ export interface Trial {
     lastSyncedOn: string;
     shareCodes: ShareCodes;
     mediaFilenameFormat: string[];
+    dimensionNames: DimensionNames;
 }
 
 export interface Transaction {
@@ -142,6 +143,13 @@ export interface ShareCodes {
     viewerCode: string;
 }
 
+export interface DimensionNames {
+    row: string;
+    rows: string;
+    column: string;
+    columns: string;
+}
+
 export interface PlotCommentContent extends PlotContent {
     content: string;
     timestamp: string;
@@ -200,6 +208,7 @@ export interface TrialContent {
     markers: Markers;
     corners: Corners;
     plotCorners: { [index: string]: Corners };
+    dimensionNames: DimensionNames;
 }
 
 export interface BrapiIdChangeContent {

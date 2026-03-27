@@ -32,4 +32,5 @@ public class Trial
 	private String            lastSyncedOn;
 	private ShareCodes        shareCodes;
 	private String[]          mediaFilenameFormat;
+	private DimensionNames    dimensionNames;
 }

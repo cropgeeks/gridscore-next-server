@@ -7,8 +7,9 @@ import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.*;
+import jhi.gridscore.server.util.FileUtils;
 import jhi.gridscore.server.util.Secured;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.*;
 import org.glassfish.jersey.media.multipart.*;
 import org.jooq.DSLContext;
 import org.jooq.tools.StringUtils;
@@ -247,7 +248,7 @@ public class TraitImageResource
 
 				File imageFile = potentials[0];
 
-				if (imageFile.exists())
+				if (imageFile.exists() && FileUtils.isSubDirectory(traitImageFolder, imageFile))
 				{
 					byte[] bytes = IOUtils.toByteArray(imageFile.toURI());
 

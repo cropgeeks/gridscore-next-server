@@ -775,6 +775,26 @@ public class DataToSpreadsheet
 		else
 			row.createCell(2).setCellValue("DEVELOPMENT");
 
+		if (trial.getDimensionNames() != null) {
+			// Write app name
+			i++;
+			row = sheet.getRow(i);
+			if (row == null)
+				row = sheet.createRow(i);
+			row.createCell(0).setCellValue("Custom row name");
+			row.createCell(1).setCellValue("text");
+			row.createCell(2).setCellValue(trial.getDimensionNames().getRow() + " | " + trial.getDimensionNames().getRows());
+
+			// Write app name
+			i++;
+			row = sheet.getRow(i);
+			if (row == null)
+				row = sheet.createRow(i);
+			row.createCell(0).setCellValue("Custom column name");
+			row.createCell(1).setCellValue("text");
+			row.createCell(2).setCellValue(trial.getDimensionNames().getColumn() + " | " + trial.getDimensionNames().getColumns());
+		}
+
 		if (!CollectionUtils.isEmpty(trial.getComments()))
 		{
 			// Write the trial comments
