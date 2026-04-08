@@ -530,6 +530,10 @@ public class TrialTransactionResource
 					if (!CollectionUtils.isEmpty(transaction.getTraitOrderTransaction()))
 						trial.getTraits().sort(Comparator.<Trait>comparingInt(a -> transaction.getTraitOrderTransaction().indexOf(a.getId())));
 
+					/* Reorder trait groups */
+					if (!CollectionUtils.isEmpty(transaction.getTraitGroupOrderTransaction()))
+						trial.setTraitGroupOrder(transaction.getTraitGroupOrderTransaction());
+
 					if (transaction.getBrapiConfigChangeTransaction() != null && !StringUtils.isBlank(transaction.getBrapiConfigChangeTransaction().getUrl()))
 						trial.setBrapiConfig(new BrapiConfig().setUrl(transaction.getBrapiConfigChangeTransaction().getUrl()));
 

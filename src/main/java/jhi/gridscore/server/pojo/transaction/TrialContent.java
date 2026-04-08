@@ -4,7 +4,7 @@ import jhi.gridscore.server.pojo.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter

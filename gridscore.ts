@@ -1,12 +1,13 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2026-03-26 09:36:13.
+// Generated using typescript-generator version 3.2.1263 on 2026-04-08 07:18:38.
 
 export interface Trial {
     name: string;
     description: string;
     group: Group;
     traits: Trait[];
+    traitGroupOrder: string[];
     comments: Comment[];
     events: Event[];
     people: Person[];
@@ -46,6 +47,7 @@ export interface Transaction {
     trialTraitDeletedTransactions: Trait[];
     traitChangeTransactions: TraitEditContent[];
     traitOrderTransaction: string[];
+    traitGroupOrderTransaction: string[];
     trialEditTransaction: TrialContent;
     trialLockedTransaction: boolean;
     brapiIdChangeTransaction: BrapiIdChangeContent;
@@ -219,6 +221,7 @@ export interface BrapiIdChangeContent {
 export interface Restrictions {
     min: number;
     max: number;
+    step: number;
     categories: string[];
 }
 

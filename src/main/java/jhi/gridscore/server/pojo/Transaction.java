@@ -32,6 +32,7 @@ public class Transaction
 	private List<Trait>                           trialTraitDeletedTransactions;
 	private List<TraitEditContent>                traitChangeTransactions;
 	private List<String>						  traitOrderTransaction;
+	private List<String>						  traitGroupOrderTransaction;
 	private TrialContent                          trialEditTransaction;
 	private Boolean								  trialLockedTransaction;
 	private BrapiIdChangeContent                  brapiIdChangeTransaction;

@@ -14,5 +14,6 @@ public class Restrictions
 {
 	private Double       min;
 	private Double       max;
+	private Double       step;
 	private List<String> categories;
 }

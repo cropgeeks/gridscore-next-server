@@ -16,6 +16,7 @@ public class Trial
 	private String            description;
 	private Group             group;
 	private List<Trait>       traits;
+	private List<String>      traitGroupOrder;
 	private List<Comment>     comments;
 	private List<Event>       events;
 	private List<Person>      people;
