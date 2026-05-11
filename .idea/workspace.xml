@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Pre-merge commit.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,33 +153,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ReorderTraitTest.testConfigTransactionDataChange" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;ReorderTraitTest.testConfigTransactionDataChange&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
-      <method v="2" />
-    </configuration>
     <configuration name="gridscore-next-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -256,28 +228,6 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="gridscore-next-server [deployTomcat]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="deployTomcat" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="gridscore-next-server [generateTypeScript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -303,28 +253,6 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="gridscore-next-server [generateTypeScript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="generateTypeScript" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -341,7 +269,6 @@
     <list>
       <item itemvalue="Gradle.gridscore-next-server [build]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
-      <item itemvalue="Gradle.ReorderTraitTest.testConfigTransactionDataChange" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
       <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
     </list>
@@ -351,7 +278,6 @@
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
         <item itemvalue="Gradle.gridscore-next-server [build]" />
         <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
-        <item itemvalue="Gradle.ReorderTraitTest.testConfigTransactionDataChange" />
       </list>
     </recent_temporary>
   </component>
@@ -682,7 +608,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775737930224</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="- CHG: Version bump.">
+      <option name="closed" value="true" />
+      <created>1776946926711</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1776946926711</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -717,13 +651,13 @@
     <MESSAGE value="- ADD: Added tests for metadata update transactions.&#10;- CHG: Version bump." />
     <MESSAGE value="- CHG: Trying to fix runtime issues." />
     <MESSAGE value="- CHG: Version bump.&#10;- CHG: Big dependency update.&#10;- FIX: Fixed issues during automatic trial archiving." />
-    <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- ADD: Added support for export of multicat traits to Germinate format.&#10;- ADD: Added support for locked trials and cells.&#10;- ADD: Added support for storing the media file format in the trial.&#10;-" />
     <MESSAGE value="- ADD: Added handling for trial groups during synchronization.&#10;- ADD: Added new columns to Germinate template export.&#10;-" />
     <MESSAGE value="- ADD: Added option to define custom row/column names." />
     <MESSAGE value="- ADD: Added support for trial group orders.&#10;- ADD: Added support for stepper size on range slider traits.&#10;-" />
     <MESSAGE value="- CHG: Pre-merge commit." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Pre-merge commit." />
+    <MESSAGE value="- CHG: Version bump." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
