@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed test cases.&#10;-">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/CatchAllExceptionFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/CatchAllExceptionFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ConfigTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/ConfigTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -659,7 +658,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779181284952</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="- FIX: Fixed test cases.&#10;-">
+      <option name="closed" value="true" />
+      <created>1779195863208</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1779195863208</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -702,7 +709,8 @@
     <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- FIX: Fixed issues during export to Germinate template." />
     <MESSAGE value="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server." />
-    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server." />
+    <MESSAGE value="- FIX: Fixed test cases.&#10;-" />
+    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed test cases.&#10;-" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,6 +1,8 @@
 package jhi.gridscore.server.util;
 
+import com.google.gson.Gson;
 import jhi.gridscore.server.PropertyWatcher;
+import jhi.gridscore.server.pojo.PlausiblePayload;
 import org.jooq.tools.StringUtils;
 
 import java.net.URI;
@@ -16,6 +18,8 @@ public class PlausibleExceptionHandler
 
 	private final HttpClient httpClient;
 
+	private final Gson gson;
+
 	private final boolean active;
 
 	public PlausibleExceptionHandler()
@@ -24,8 +28,11 @@ public class PlausibleExceptionHandler
 		                            .connectTimeout(Duration.ofSeconds(3))
 		                            .build();
 
+		// Check if it should be enabled based on config.properties settings
 		String domain = PropertyWatcher.get("plausible.server.exception.domain");
 		String host = PropertyWatcher.get("plausible.server.exception.host");
+
+		gson = new Gson();
 
 		if (!StringUtils.isBlank(domain) && !StringUtils.isBlank(host))
 		{
@@ -52,9 +59,7 @@ public class PlausibleExceptionHandler
 
 		// Truncate message to avoid exceeding Plausible's payload limits if necessary
 		if (message.length() > 200)
-		{
 			message = message.substring(0, 197) + "...";
-		}
 
 		// Extract file and line number safely
 		String fileName = "Unknown";
@@ -75,16 +80,14 @@ public class PlausibleExceptionHandler
 					if (className.equals(PlausibleExceptionHandler.class.getName()) ||
 							className.endsWith("CatchAllExceptionFilter") ||
 							className.endsWith("GlobalExceptionHandler"))
-					{
 						continue; // Skip this frame and keep looking down the stack
-					}
 
 					targetFrame = frame;
-					break; // Stop at the very first (most recent) match in your code
+					break; // Stop at the very first (most recent) match
 				}
 			}
 
-			// Fallback: If your code isn't in the stack trace, use the top-most frame
+			// Fallback: If no match in the stack trace, use the top-most frame
 			if (targetFrame == null)
 				targetFrame = trace[0];
 
@@ -94,27 +97,17 @@ public class PlausibleExceptionHandler
 
 		String location = fileName + ":" + lineNumber;
 
-		// Construct raw JSON payload (or use Jackson/Gson)
-		String jsonPayload = String.format("""
-						{
-						  "name": "Exception Thrown",
-						  "url": "http://backend/errors/%s",
-						  "domain": "%s",
-						  "props": {
-						    "class": "%s",
-						    "message": "%s",
-						    "service": "%s",
-						    "location": "%s"
-						  }
-						}
-						""",
-				throwable.getClass().getSimpleName(),
-				PLAUSIBLE_DOMAIN,
-				exceptionClass,
-				message.replace("\"", "\\\""), // Basic escaping for safety
-				serviceName,
-				location
-		);
+		// Construct raw JSON payload
+		PlausiblePayload payload = new PlausiblePayload()
+				.setName("Exception Thrown")
+				.setUrl("http://backend/errors/" + throwable.getClass().getSimpleName())
+				.setDomain(PLAUSIBLE_DOMAIN)
+				.setProps(new PlausiblePayload.PlausiblePayloadProps()
+						.setClazz(exceptionClass)
+						.setMessage(message.replace("\"", "\\\""))
+						.setService(serviceName)
+						.setLocation(location)
+				);
 
 		HttpRequest request = HttpRequest.newBuilder()
 		                                 .uri(URI.create(PLAUSIBLE_API_URL))
@@ -122,11 +115,11 @@ public class PlausibleExceptionHandler
 		                                 // CRITICAL: Set fake/real client headers so Plausible doesn't flag it as a bot
 		                                 .header("User-Agent", "Mozilla/5.0 (Java Backend Exception Tracker)")
 		                                 .header("X-Forwarded-For", "127.0.0.1")
-		                                 .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
+		                                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(payload)))
 		                                 .timeout(Duration.ofSeconds(2))
 		                                 .build();
 
-		// Send asynchronously so you don't block your application threads on error handling
+		// Send asynchronously so we don't block your application threads on error handling
 		httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
 		          .thenAccept(response -> {
 					  if (response.statusCode() != 202)
@@ -142,6 +135,6 @@ public class PlausibleExceptionHandler
 		          .exceptionally(ex -> {
 					  Logger.getLogger("").info("Error communicating with Plausible: " + ex.getMessage());
 					  return null;
-				  }).join();
+				  });
 	}
 }
