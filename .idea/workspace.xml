@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed test cases.&#10;-">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Removed .join() on exception handler to prevent locking.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" afterDir="false" />
     </list>
@@ -666,7 +666,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779195863208</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="- FIX: Removed .join() on exception handler to prevent locking.">
+      <option name="closed" value="true" />
+      <created>1779200963171</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1779200963171</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -710,7 +718,8 @@
     <MESSAGE value="- FIX: Fixed issues during export to Germinate template." />
     <MESSAGE value="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server." />
     <MESSAGE value="- FIX: Fixed test cases.&#10;-" />
-    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed test cases.&#10;-" />
+    <MESSAGE value="- FIX: Removed .join() on exception handler to prevent locking." />
+    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Removed .join() on exception handler to prevent locking." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

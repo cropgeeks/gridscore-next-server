@@ -104,7 +104,7 @@ public class PlausibleExceptionHandler
 				.setDomain(PLAUSIBLE_DOMAIN)
 				.setProps(new PlausiblePayload.PlausiblePayloadProps()
 						.setClazz(exceptionClass)
-						.setMessage(message.replace("\"", "\\\""))
+						.setMessage(message)
 						.setService(serviceName)
 						.setLocation(location)
 				);
@@ -123,14 +123,10 @@ public class PlausibleExceptionHandler
 		httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
 		          .thenAccept(response -> {
 					  if (response.statusCode() != 202)
-					  {
 						  Logger.getLogger("").info("Failed to send exception to Plausible. Status: " + response.statusCode());
-					  }
 					  // Debugging hint: Check if Plausible dropped it via bot filter
 					  if (response.headers().firstValue("x-plausible-dropped").isPresent())
-					  {
 						  Logger.getLogger("").info("Plausible silently dropped the event via bot filtering.");
-					  }
 				  })
 		          .exceptionally(ex -> {
 					  Logger.getLogger("").info("Error communicating with Plausible: " + ex.getMessage());
