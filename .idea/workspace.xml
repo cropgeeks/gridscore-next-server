@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed issues during export to Germinate template.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.template.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config.template.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -108,12 +109,14 @@
     "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ClientUtil.main()].executor": "Run",
     "Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor": "Run",
     "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor": "Run",
+    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.PlausibleExceptionHandler.main()].executor": "Debug",
     "Gradle.gridscore-next-server [build].executor": "Run",
     "Gradle.gridscore-next-server [check].executor": "Run",
     "Gradle.gridscore-next-server [clean].executor": "Run",
     "Gradle.gridscore-next-server [deployTomcat].executor": "Run",
     "Gradle.gridscore-next-server [generateTypeScript].executor": "Run",
     "Gradle.gridscore-next-server [test].executor": "Run",
+    "Gradle.gridscore-next-server [war].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
@@ -140,7 +143,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.DataToSpreadsheet">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -167,30 +170,18 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="gridscore-next-server [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
-      <method v="2" />
+    <configuration name="PlausibleExceptionHandler" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="jhi.gridscore.server.util.PlausibleExceptionHandler" />
+      <module name="gridscore-next.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="jhi.gridscore.server.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
     </configuration>
     <configuration name="gridscore-next-server [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -242,7 +233,7 @@
       <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
-    <configuration name="gridscore-next-server [generateTypeScript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="gridscore-next-server [war]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -253,7 +244,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="generateTypeScript" />
+            <option value="war" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -282,18 +273,18 @@
     </configuration>
     <list>
       <item itemvalue="Application.DataToSpreadsheet" />
-      <item itemvalue="Gradle.gridscore-next-server [build]" />
+      <item itemvalue="Application.PlausibleExceptionHandler" />
+      <item itemvalue="Gradle.gridscore-next-server [war]" />
       <item itemvalue="Gradle.gridscore-next-server [clean]" />
       <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
-      <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.DataToSpreadsheet" />
         <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
+        <item itemvalue="Gradle.gridscore-next-server [war]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
-        <item itemvalue="Gradle.gridscore-next-server [build]" />
-        <item itemvalue="Gradle.gridscore-next-server [generateTypeScript]" />
+        <item itemvalue="Application.PlausibleExceptionHandler" />
+        <item itemvalue="Application.DataToSpreadsheet" />
       </list>
     </recent_temporary>
   </component>
@@ -640,7 +631,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778503902805</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="- FIX: Fixed issues during export to Germinate template.">
+      <option name="closed" value="true" />
+      <created>1779177223110</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1779177223110</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -681,7 +680,8 @@
     <MESSAGE value="- ADD: Added support for trial group orders.&#10;- ADD: Added support for stepper size on range slider traits.&#10;-" />
     <MESSAGE value="- CHG: Pre-merge commit." />
     <MESSAGE value="- CHG: Version bump." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
+    <MESSAGE value="- FIX: Fixed issues during export to Germinate template." />
+    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed issues during export to Germinate template." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -708,11 +708,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/ClientUtil.java</url>
           <line>43</line>
           <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java</url>
-          <line>641</line>
-          <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -636,7 +636,7 @@ public class DataToSpreadsheet
 							 List<String> values = measurements.get(measurements.size() - 1).getValues();
 							 value = values.get(values.size() - 1);
 
-							 if (value != null)
+							 if (!StringUtils.isBlank(value))
 					         {
 								 if (Objects.equals(t.getDataType(), "categorical"))
 									 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
