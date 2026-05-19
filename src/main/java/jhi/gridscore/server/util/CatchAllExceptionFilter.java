@@ -22,7 +22,7 @@ public class CatchAllExceptionFilter implements Filter
 		}
 		catch (Throwable throwable)
 		{
-			/// 1. Cast to HTTP request to get access to web details
+			// 1. Cast to HTTP request to get access to web details
 			if (request instanceof HttpServletRequest httpRequest)
 			{
 				StringBuffer requestURL = httpRequest.getRequestURL();
