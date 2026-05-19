@@ -75,7 +75,7 @@ public class DataToSpreadsheet
 			throws IOException
 	{
 		try (FileInputStream is = new FileInputStream(template);
-			 FileOutputStream os = new FileOutputStream(target))
+		     FileOutputStream os = new FileOutputStream(target))
 		{
 			XSSFWorkbook workbook = new XSSFWorkbook(is);
 
@@ -94,8 +94,8 @@ public class DataToSpreadsheet
 			else
 				metadata.getRow(4).getCell(2).setCellValue(getTimezonedNow());
 
-			XSSFRow dataRow = data.getRow(0);
-			XSSFRow dateRow = dates.getRow(0);
+			XSSFRow dataRow = getRow(data, 0);
+			XSSFRow dateRow = getRow(dates, 0);
 
 			int offset = 10;
 			List<Trait> traits = new ArrayList<>(trial.getTraits());
@@ -167,8 +167,8 @@ public class DataToSpreadsheet
 
 			c.getMeasurements().put(lat.getId(), ms.stream().map(mm -> new Measurement()
 														   .setPersonId(mm.getPersonId())
-														   .setTimestamp(mm.getTimestamp())
-														   .setValues(mm.getValues().stream().map(v -> {
+					                                       .setTimestamp(mm.getTimestamp())
+					                                       .setValues(mm.getValues().stream().map(v -> {
 															   if (StringUtils.isEmpty(v))
 																   return v;
 
@@ -178,11 +178,11 @@ public class DataToSpreadsheet
 															   else
 																   return null;
 														   }).collect(Collectors.toList())))
-												   .collect(Collectors.toList()));
+			                                       .collect(Collectors.toList()));
 			c.getMeasurements().put(lng.getId(), ms.stream().map(mm -> new Measurement()
 														   .setPersonId(mm.getPersonId())
-														   .setTimestamp(mm.getTimestamp())
-														   .setValues(mm.getValues().stream().map(v -> {
+					                                       .setTimestamp(mm.getTimestamp())
+					                                       .setValues(mm.getValues().stream().map(v -> {
 															   if (StringUtils.isEmpty(v))
 																   return v;
 
@@ -192,7 +192,7 @@ public class DataToSpreadsheet
 															   else
 																   return null;
 														   }).collect(Collectors.toList())))
-												   .collect(Collectors.toList()));
+			                                       .collect(Collectors.toList()));
 		});
 	}
 
@@ -251,10 +251,10 @@ public class DataToSpreadsheet
 			for (int j = 0; j < measurementCount[0]; j++)
 			{
 				int i = j + sheetRow[0];
-				XSSFRow d = data.getRow(i + 1);
+				XSSFRow d = getRow(data, i + 1);
 				if (d == null)
 					d = data.createRow(i + 1);
-				XSSFRow p = dates.getRow(i + 1);
+				XSSFRow p = getRow(dates, i + 1);
 				if (p == null)
 					p = dates.createRow(i + 1);
 
@@ -386,8 +386,8 @@ public class DataToSpreadsheet
 							String value = nonNullValues.get(v);
 
 							int i = counter + sheetRow[0] + v;
-							XSSFRow d = data.getRow(i + 1);
-							XSSFRow p = dates.getRow(i + 1);
+							XSSFRow d = getRow(data, i + 1);
+							XSSFRow p = getRow(dates, i + 1);
 
 							dc = getCell(d, traitIndex);
 							pc = getCell(p, traitIndex);
@@ -427,8 +427,8 @@ public class DataToSpreadsheet
 				for (int j = 0; j < cell.getComments().size(); j++)
 				{
 					int i = sheetRow[0] + j;
-					XSSFRow d = data.getRow(i + 1);
-					XSSFRow p = dates.getRow(i + 1);
+					XSSFRow d = getRow(data, i + 1);
+					XSSFRow p = getRow(dates, i + 1);
 
 					dc = getCell(d, traitToColumnIndex.size() + 10);
 					pc = getCell(p, traitToColumnIndex.size() + 10);
@@ -487,11 +487,11 @@ public class DataToSpreadsheet
 		});
 
 		IntStream.range(0, cells.size())
-				 .forEach(i -> {
-					 XSSFRow d = data.getRow(i + 1);
+		         .forEach(i -> {
+					 XSSFRow d = getRow(data, i + 1);
 					 if (d == null)
 						 d = data.createRow(i + 1);
-					 XSSFRow p = dates.getRow(i + 1);
+					 XSSFRow p = getRow(dates, i + 1);
 					 if (p == null)
 						 p = dates.createRow(i + 1);
 
@@ -636,13 +636,16 @@ public class DataToSpreadsheet
 							 List<String> values = measurements.get(measurements.size() - 1).getValues();
 							 value = values.get(values.size() - 1);
 
-							 if (Objects.equals(t.getDataType(), "categorical"))
-								 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
-							 else if (Objects.equals(t.getDataType(), "multicat"))
-							 {
-								 String[] parts = value.split(":");
+							 if (value != null)
+					         {
+								 if (Objects.equals(t.getDataType(), "categorical"))
+									 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
+								 else if (Objects.equals(t.getDataType(), "multicat"))
+								 {
+									 String[] parts = value.split(":");
 
-								 value = t.getRestrictions().getCategories().get(Integer.parseInt(parts[parts.length - 1]));
+									 value = t.getRestrictions().getCategories().get(Integer.parseInt(parts[parts.length - 1]));
+								 }
 							 }
 						 }
 
@@ -670,6 +673,14 @@ public class DataToSpreadsheet
 						 }
 					 }
 				 });
+	}
+
+	private XSSFRow getRow(XSSFSheet sheet, int index)
+	{
+		XSSFRow row = sheet.getRow(index);
+		if (row == null)
+			row = sheet.createRow(index);
+		return row;
 	}
 
 	private XSSFCell getCell(XSSFRow row, int index)
@@ -775,7 +786,8 @@ public class DataToSpreadsheet
 		else
 			row.createCell(2).setCellValue("DEVELOPMENT");
 
-		if (trial.getDimensionNames() != null) {
+		if (trial.getDimensionNames() != null)
+		{
 			// Write app name
 			i++;
 			row = sheet.getRow(i);
@@ -806,10 +818,10 @@ public class DataToSpreadsheet
 			row.createCell(1).setCellValue("text");
 			XSSFCell cell = row.createCell(2);
 			cell.setCellValue(trial.getComments()
-								   .stream()
-								   .filter(c -> !StringUtils.isBlank(c.getContent()))
-								   .map(c -> getTimezonedDate(c.getTimestamp(), true) + ": " + c.getContent().replaceAll("\r?\n", " "))
-								   .collect(Collectors.joining("\n")));
+			                       .stream()
+			                       .filter(c -> !StringUtils.isBlank(c.getContent()))
+			                       .map(c -> getTimezonedDate(c.getTimestamp(), true) + ": " + c.getContent().replaceAll("\r?\n", " "))
+			                       .collect(Collectors.joining("\n")));
 
 			// Allow wrapping on new line characters
 			CellStyle cs = workbook.createCellStyle();
@@ -828,10 +840,10 @@ public class DataToSpreadsheet
 			row.createCell(1).setCellValue("text");
 			XSSFCell cell = row.createCell(2);
 			cell.setCellValue(trial.getEvents()
-								   .stream()
-								   .filter(e -> !StringUtils.isBlank(e.getContent()))
-								   .map(e -> getTimezonedDate(e.getTimestamp(), true) + " (" + e.getType() + "; " + e.getImpact() + "): " + e.getContent().replaceAll("\r?\n", " "))
-								   .collect(Collectors.joining("\n")));
+			                       .stream()
+			                       .filter(e -> !StringUtils.isBlank(e.getContent()))
+			                       .map(e -> getTimezonedDate(e.getTimestamp(), true) + " (" + e.getType() + "; " + e.getImpact() + "): " + e.getContent().replaceAll("\r?\n", " "))
+			                       .collect(Collectors.joining("\n")));
 
 			// Allow wrapping on new line characters
 			CellStyle cs = workbook.createCellStyle();
@@ -861,7 +873,7 @@ public class DataToSpreadsheet
 		final XSSFSheet sheet = traitTable.getXSSFSheet();
 
 		IntStream.range(0, trial.getTraits().size())
-				 .forEach(i -> {
+		         .forEach(i -> {
 					 Trait t = trial.getTraits().get(i);
 					 XSSFRow row = sheet.getRow(i + 1);
 
