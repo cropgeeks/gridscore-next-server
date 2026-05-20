@@ -3,7 +3,6 @@ package jhi.gridscore.server.util;
 import com.google.gson.Gson;
 import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
-import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.Corners;
 import jhi.gridscore.server.resource.TrialExportResource;
@@ -34,15 +33,14 @@ public class ExpiredTrialExportTask implements Runnable
 		{
 			int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days", "365"));
 
-			int count = 0;
+			int[] count = {0};
 			try (Connection conn = Database.getConnection())
 			{
 				DSLContext context = Database.getContext(conn);
 
-				List<Trials> trials = context.selectFrom(TRIALS).fetchInto(Trials.class);
+				context.selectFrom(TRIALS).forEach(trial -> {
+					Logger.getLogger("").info("PROCESSING TRIAL: " + trial.getOwnerCode() + " - " + trial.getTrial().getName());
 
-				for (Trials trial : trials)
-				{
 					ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 					// Check how soon a trial will expire after inactivity
 
@@ -55,15 +53,23 @@ public class ExpiredTrialExportTask implements Runnable
 
 					if (timeTillExpiry <= 0)
 					{
-						// Trial has expired
-						exportTrial(trial);
+						try
+						{
+							// Trial has expired
+							exportTrial(trial);
 
-						// Delete it now we don't need it anymore
-						context.deleteFrom(TRIALS).where(TRIALS.OWNER_CODE.eq(trial.getOwnerCode())).execute();
+							// Delete it now we don't need it anymore
+							trial.delete();
 
-						count++;
+							count[0]++;
+						}
+						catch (SQLException | IOException | URISyntaxException e)
+						{
+							Logger.getLogger("").severe(e.getMessage());
+							e.printStackTrace();
+						}
 					}
-				}
+				});
 			}
 			catch (NullPointerException | NumberFormatException e)
 			{
@@ -71,16 +77,18 @@ public class ExpiredTrialExportTask implements Runnable
 				e.printStackTrace();
 			}
 
-			Logger.getLogger("").info("ExpiredTrialExportTask: Archived " + count + " trials");
+			Logger.getLogger("").info("ExpiredTrialExportTask: Archived " + count[0] + " trials");
 		}
-		catch (SQLException | IOException | URISyntaxException e)
+		catch (SQLException e)
 		{
 			Logger.getLogger("").severe(e.getMessage());
 			e.printStackTrace();
 		}
+
+		Logger.getLogger("").info("ExpiredTrialExportTask finished");
 	}
 
-	private static void exportTrial(Trials trial)
+	private static void exportTrial(TrialsRecord trial)
 			throws SQLException, IOException, URISyntaxException
 	{
 		// Use the database name here as it's going to be unique per instance and usually path-safe
@@ -171,6 +179,7 @@ public class ExpiredTrialExportTask implements Runnable
 			catch (Exception e)
 			{
 				e.printStackTrace();
+				Logger.getLogger("").severe(e.getMessage());
 			}
 
 			File traitImageFolder = new File(PropertyWatcher.get("config.folder"), "trait-images");
