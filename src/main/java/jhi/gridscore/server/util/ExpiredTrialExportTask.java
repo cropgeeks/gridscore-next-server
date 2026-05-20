@@ -3,6 +3,7 @@ package jhi.gridscore.server.util;
 import com.google.gson.Gson;
 import jhi.gridscore.server.PropertyWatcher;
 import jhi.gridscore.server.database.Database;
+import jhi.gridscore.server.database.codegen.tables.pojos.Trials;
 import jhi.gridscore.server.database.codegen.tables.records.TrialsRecord;
 import jhi.gridscore.server.pojo.Corners;
 import jhi.gridscore.server.resource.TrialExportResource;
@@ -38,9 +39,9 @@ public class ExpiredTrialExportTask implements Runnable
 			{
 				DSLContext context = Database.getContext(conn);
 
-				List<TrialsRecord> trials = context.selectFrom(TRIALS).fetch();
+				List<Trials> trials = context.selectFrom(TRIALS).fetchInto(Trials.class);
 
-				for (TrialsRecord trial : trials)
+				for (Trials trial : trials)
 				{
 					ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 					// Check how soon a trial will expire after inactivity
@@ -58,7 +59,7 @@ public class ExpiredTrialExportTask implements Runnable
 						exportTrial(trial);
 
 						// Delete it now we don't need it anymore
-						trial.delete();
+						context.deleteFrom(TRIALS).where(TRIALS.OWNER_CODE.eq(trial.getOwnerCode())).execute();
 
 						count++;
 					}
@@ -79,7 +80,7 @@ public class ExpiredTrialExportTask implements Runnable
 		}
 	}
 
-	private static void exportTrial(TrialsRecord trial)
+	private static void exportTrial(Trials trial)
 			throws SQLException, IOException, URISyntaxException
 	{
 		// Use the database name here as it's going to be unique per instance and usually path-safe
