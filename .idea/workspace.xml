@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Removed .join() on exception handler to prevent locking.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed unnecessary escaping of quotes in plausible payload.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/PlausibleExceptionHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,44 +97,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build gridscore-next-server.executor": "Run",
-    "Gradle.Download Sources.executor": "Run",
-    "Gradle.ReorderTraitTest.executor": "Run",
-    "Gradle.ReorderTraitTest.testConfigTransactionDataChange.executor": "Run",
-    "Gradle.gridscore-next-server [:jhi.gridscore.server.resource.TrialResource.main()].executor": "Run",
-    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ClientUtil.main()].executor": "Run",
-    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor": "Run",
-    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor": "Run",
-    "Gradle.gridscore-next-server [:jhi.gridscore.server.util.PlausibleExceptionHandler.main()].executor": "Debug",
-    "Gradle.gridscore-next-server [build].executor": "Run",
-    "Gradle.gridscore-next-server [check].executor": "Run",
-    "Gradle.gridscore-next-server [clean].executor": "Run",
-    "Gradle.gridscore-next-server [deployTomcat].executor": "Run",
-    "Gradle.gridscore-next-server [generateTypeScript].executor": "Run",
-    "Gradle.gridscore-next-server [test].executor": "Run",
-    "Gradle.gridscore-next-server [war].executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/sr41756/workspaces/java/rpi-weather-server",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
-    "ts.external.directory.path": "C:\\Users\\sr41756\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build gridscore-next-server.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ReorderTraitTest.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.ReorderTraitTest.testConfigTransactionDataChange.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.resource.TrialResource.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ClientUtil.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.DataToSpreadsheet.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.ExpiredTrialExportTask.main()].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [:jhi.gridscore.server.util.PlausibleExceptionHandler.main()].executor&quot;: &quot;Debug&quot;,
+    &quot;Gradle.gridscore-next-server [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [check].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [deployTomcat].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [generateTypeScript].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [test].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.gridscore-next-server [war].executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/sr41756/workspaces/java/rpi-weather-server&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\sr41756\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="" />
@@ -674,7 +673,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779200963171</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="- FIX: Fixed unnecessary escaping of quotes in plausible payload.">
+      <option name="closed" value="true" />
+      <created>1779201112299</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1779201112299</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -694,7 +701,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="- CHG: Updated Gradle to v8.8." />
     <MESSAGE value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
     <MESSAGE value="- CHG: Local file changes." />
     <MESSAGE value="- FIX: Fixed image sharing permission issue." />
@@ -719,7 +725,8 @@
     <MESSAGE value="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server." />
     <MESSAGE value="- FIX: Fixed test cases.&#10;-" />
     <MESSAGE value="- FIX: Removed .join() on exception handler to prevent locking." />
-    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Removed .join() on exception handler to prevent locking." />
+    <MESSAGE value="- FIX: Fixed unnecessary escaping of quotes in plausible payload." />
+    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed unnecessary escaping of quotes in plausible payload." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
