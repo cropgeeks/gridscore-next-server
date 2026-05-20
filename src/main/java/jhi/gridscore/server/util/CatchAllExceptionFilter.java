@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @WebFilter(urlPatterns = "/*") // Intercepts all incoming API and web requests
 public class CatchAllExceptionFilter implements Filter
@@ -42,6 +43,8 @@ public class CatchAllExceptionFilter implements Filter
 			}
 
 			// Bubble up or handle gracefully so the client gets a clean response
+			throwable.printStackTrace();
+			Logger.getLogger("").severe(throwable.getMessage());
 			throw throwable;
 		}
 	}
