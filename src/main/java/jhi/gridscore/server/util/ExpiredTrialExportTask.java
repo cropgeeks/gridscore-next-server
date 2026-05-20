@@ -39,8 +39,6 @@ public class ExpiredTrialExportTask implements Runnable
 				DSLContext context = Database.getContext(conn);
 
 				context.selectFrom(TRIALS).forEach(trial -> {
-					Logger.getLogger("").info("PROCESSING TRIAL: " + trial.getOwnerCode() + " - " + trial.getTrial().getName());
-
 					ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 					// Check how soon a trial will expire after inactivity
 
