@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Fixed unnecessary escaping of quotes in plausible payload.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Bump version for release.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +142,7 @@
       <recent name="jhi.gridscore.server.pojo.transaction" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.gridscore-next-server [build]">
+  <component name="RunManager" selected="Gradle.gridscore-next-server [deployTomcat]">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gridscore-next-server" />
       <method v="2">
@@ -290,9 +291,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [build]" />
         <item itemvalue="Gradle.gridscore-next-server [clean]" />
-        <item itemvalue="Gradle.gridscore-next-server [deployTomcat]" />
         <item itemvalue="Gradle.gridscore-next-server [war]" />
         <item itemvalue="Application.PlausibleExceptionHandler" />
       </list>
@@ -681,7 +682,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779201112299</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="- CHG: Bump version for release.">
+      <option name="closed" value="true" />
+      <created>1779290685929</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1779290685929</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -701,7 +710,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="- ADD: Added index to `trials`.`updated_on` column to prevent errors on MySQL 8/9 when sorting a table with json columns on a non-indexed field." />
     <MESSAGE value="- CHG: Local file changes." />
     <MESSAGE value="- FIX: Fixed image sharing permission issue." />
     <MESSAGE value="- CHG: Typescript updates." />
@@ -726,7 +734,8 @@
     <MESSAGE value="- FIX: Fixed test cases.&#10;-" />
     <MESSAGE value="- FIX: Removed .join() on exception handler to prevent locking." />
     <MESSAGE value="- FIX: Fixed unnecessary escaping of quotes in plausible payload." />
-    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Fixed unnecessary escaping of quotes in plausible payload." />
+    <MESSAGE value="- CHG: Bump version for release." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Bump version for release." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

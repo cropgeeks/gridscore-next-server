@@ -80,10 +80,10 @@ public class TrialResource
 			DSLContext context = Database.getContext(conn);
 
 			TrialsRecord trial = context.selectFrom(TRIALS)
-										.where(TRIALS.OWNER_CODE.eq(shareCode)
-																.or(TRIALS.EDITOR_CODE.eq(shareCode))
-																.or(TRIALS.VIEWER_CODE.eq(shareCode)))
-										.fetchAny();
+			                            .where(TRIALS.OWNER_CODE.eq(shareCode)
+			                                                    .or(TRIALS.EDITOR_CODE.eq(shareCode))
+			                                                    .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+			                            .fetchAny();
 
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
@@ -91,10 +91,10 @@ public class TrialResource
 			synchronized (trial.getOwnerCode())
 			{
 				trial = context.selectFrom(TRIALS)
-							   .where(TRIALS.OWNER_CODE.eq(shareCode)
-													   .or(TRIALS.EDITOR_CODE.eq(shareCode))
-													   .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-							   .fetchAny();
+				               .where(TRIALS.OWNER_CODE.eq(shareCode)
+				                                       .or(TRIALS.EDITOR_CODE.eq(shareCode))
+				                                       .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+				               .fetchAny();
 
 				Trial result = trial.getTrial();
 				TrialPermissionType type = setShareCodes(result, shareCode, trial);
@@ -107,17 +107,17 @@ public class TrialResource
 				if (type == TrialPermissionType.OWNER)
 				{
 					stats.getOwnerUpdates()
-						 .setLoadCount(stats.getOwnerUpdates().getLoadCount() + 1);
+					     .setLoadCount(stats.getOwnerUpdates().getLoadCount() + 1);
 				}
 				else if (type == TrialPermissionType.EDITOR)
 				{
 					stats.getEditorUpdates()
-						 .setLoadCount(stats.getEditorUpdates().getLoadCount() + 1);
+					     .setLoadCount(stats.getEditorUpdates().getLoadCount() + 1);
 				}
 				else if (type == TrialPermissionType.VIEWER)
 				{
 					stats.getViewerUpdates()
-						 .setLoadCount(stats.getViewerUpdates().getLoadCount() + 1);
+					     .setLoadCount(stats.getViewerUpdates().getLoadCount() + 1);
 				}
 
 				trial.setUpdateStats(stats);
@@ -145,8 +145,8 @@ public class TrialResource
 			DSLContext context = Database.getContext(conn);
 
 			TrialsRecord trial = context.selectFrom(TRIALS)
-										.where(TRIALS.OWNER_CODE.eq(shareCode))
-										.fetchAny();
+			                            .where(TRIALS.OWNER_CODE.eq(shareCode))
+			                            .fetchAny();
 
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
@@ -174,14 +174,14 @@ public class TrialResource
 		{
 			type = TrialPermissionType.OWNER;
 			codes.setOwnerCode(trial.getOwnerCode())
-				 .setEditorCode(trial.getEditorCode())
-				 .setViewerCode(trial.getViewerCode());
+			     .setEditorCode(trial.getEditorCode())
+			     .setViewerCode(trial.getViewerCode());
 		}
 		else if (equalsIgnoreCase(baseShareCode, trial.getEditorCode()))
 		{
 			type = TrialPermissionType.EDITOR;
 			codes.setEditorCode(trial.getEditorCode())
-				 .setViewerCode(trial.getViewerCode());
+			     .setViewerCode(trial.getViewerCode());
 		}
 		else if (equalsIgnoreCase(baseShareCode, trial.getViewerCode()))
 		{
@@ -212,19 +212,24 @@ public class TrialResource
 
 			for (String id : ids)
 			{
-				TrialsRecord trial = context.selectFrom(TRIALS)
-											.where(TRIALS.OWNER_CODE.eq(id)
-																	.or(TRIALS.EDITOR_CODE.eq(id))
-																	.or(TRIALS.VIEWER_CODE.eq(id)))
-											.fetchAny();
+				String uo = context.select(DSL.field(
+										   "json_unquote(json_extract({0}, '$.updatedOn'))",
+										   String.class,
+										   TRIALS.TRIAL
+								   ))
+				                   .from(TRIALS)
+				                   .where(TRIALS.OWNER_CODE.eq(id)
+				                                           .or(TRIALS.EDITOR_CODE.eq(id))
+				                                           .or(TRIALS.VIEWER_CODE.eq(id)))
+				                   .fetchAnyInto(String.class);
 
-				if (trial != null)
+				if (uo != null)
 				{
 					TrialTimestamp time = new TrialTimestamp()
-							.setUpdatedOn(trial.getTrial().getUpdatedOn());
+							.setUpdatedOn(uo);
 					try
 					{
-						ZonedDateTime updatedOn = ZonedDateTime.parse(trial.getTrial().getUpdatedOn(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
+						ZonedDateTime updatedOn = ZonedDateTime.parse(uo, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX"));
 						// Check how soon a trial will expire after inactivity
 						int daysTillExpiry = Integer.parseInt(PropertyWatcher.get("trial.expiry.days", "365"));
 						// Add that number of days to the updatedOn date
@@ -276,8 +281,8 @@ public class TrialResource
 					DSLContext context = Database.getContext(conn);
 
 					TrialsRecord match = context.selectFrom(TRIALS)
-												.where(TRIALS.OWNER_CODE.eq(trial.getShareCodes().getOwnerCode()))
-												.fetchAny();
+					                            .where(TRIALS.OWNER_CODE.eq(trial.getShareCodes().getOwnerCode()))
+					                            .fetchAny();
 
 					if (match != null)
 					{
@@ -363,9 +368,9 @@ public class TrialResource
 			DSLContext context = Database.getContext(conn);
 
 			TrialsRecord wrapper = context.selectFrom(TRIALS)
-										  .where(TRIALS.OWNER_CODE.eq(shareCode)
-																  .or(TRIALS.EDITOR_CODE.eq(shareCode)))
-										  .fetchAny();
+			                              .where(TRIALS.OWNER_CODE.eq(shareCode)
+			                                                      .or(TRIALS.EDITOR_CODE.eq(shareCode)))
+			                              .fetchAny();
 
 			if (wrapper == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
@@ -383,10 +388,10 @@ public class TrialResource
 				{
 					// Fetch it again once we're in the synchronised block
 					wrapper = context.selectFrom(TRIALS)
-									 .where(TRIALS.OWNER_CODE.eq(shareCode)
-															 .or(TRIALS.EDITOR_CODE.eq(shareCode))
-															 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-									 .fetchAny();
+					                 .where(TRIALS.OWNER_CODE.eq(shareCode)
+					                                         .or(TRIALS.EDITOR_CODE.eq(shareCode))
+					                                         .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+					                 .fetchAny();
 
 					Trial trial = wrapper.getTrial();
 
@@ -423,9 +428,9 @@ public class TrialResource
 				DSLContext context = Database.getContext(conn);
 
 				TrialsRecord trial = context.selectFrom(TRIALS)
-											.where(TRIALS.OWNER_CODE.eq(shareCode)
-																	.or(TRIALS.EDITOR_CODE.eq(shareCode)))
-											.fetchAny();
+				                            .where(TRIALS.OWNER_CODE.eq(shareCode)
+				                                                    .or(TRIALS.EDITOR_CODE.eq(shareCode)))
+				                            .fetchAny();
 
 				if (trial == null)
 					return Response.status(Response.Status.NOT_FOUND).build();
@@ -456,7 +461,7 @@ public class TrialResource
 			e.printStackTrace();
 			Logger.getLogger("").severe(e.getLocalizedMessage());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-						   .build();
+			               .build();
 		}
 	}
 
@@ -478,9 +483,9 @@ public class TrialResource
 											  DSL.cast(TRIALS.UPDATED_ON, SQLDataType.DATE).as("updated_on"),
 											  duration
 									  ).from(TRIALS)
-									  .having(duration.ge(10))
-									  .orderBy(TRIALS.UPDATED_ON.desc(), duration.desc())
-									  .fetchInto(TrialStats.class)
+			                          .having(duration.ge(10))
+			                          .orderBy(TRIALS.UPDATED_ON.desc(), duration.desc())
+			                          .fetchInto(TrialStats.class)
 			).build();
 		}
 	}
