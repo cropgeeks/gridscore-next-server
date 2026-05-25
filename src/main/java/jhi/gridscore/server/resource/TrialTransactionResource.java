@@ -38,7 +38,7 @@ public class TrialTransactionResource
 		if (StringUtils.isEmpty(shareCode))
 		{
 			return Response.status(Response.Status.BAD_REQUEST)
-						   .build();
+			               .build();
 		}
 		else
 		{
@@ -46,15 +46,15 @@ public class TrialTransactionResource
 			{
 				DSLContext context = Database.getContext(conn);
 				TrialsRecord wrapper = context.selectFrom(TRIALS)
-											  .where(TRIALS.OWNER_CODE.eq(shareCode)
-																	  .or(TRIALS.EDITOR_CODE.eq(shareCode))
-																	  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-											  .fetchAny();
+				                              .where(TRIALS.OWNER_CODE.eq(shareCode)
+				                                                      .or(TRIALS.EDITOR_CODE.eq(shareCode))
+				                                                      .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+				                              .fetchAny();
 
 				if (wrapper == null)
 				{
 					return Response.status(Response.Status.NOT_FOUND)
-								   .build();
+					               .build();
 				}
 
 				// By default, let's assume they're the owner
@@ -66,7 +66,7 @@ public class TrialTransactionResource
 					if (!Objects.equals(shareCode, wrapper.getEditorCode()) && !Objects.equals(shareCode, wrapper.getOwnerCode()))
 					{
 						return Response.status(Response.Status.FORBIDDEN)
-									   .build();
+						               .build();
 					}
 				}
 				else if (Objects.equals(shareCode, wrapper.getEditorCode()))
@@ -87,18 +87,22 @@ public class TrialTransactionResource
 					return Response.status(Response.Status.FORBIDDEN).build();
 				}
 
-				synchronized (wrapper.getOwnerCode())
-				{
-					// Fetch it again once we're in the synchronised block
-					wrapper = context.selectFrom(TRIALS)
-									 .where(TRIALS.OWNER_CODE.eq(shareCode)
-															 .or(TRIALS.EDITOR_CODE.eq(shareCode))
-															 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-									 .fetchAny();
+				boolean finalLockOverride = lockOverride;
+				TrialPermissionType finalType = type;
 
-					Trial trial = wrapper.getTrial();
+				return context.transactionResult(trx -> {
+					// Fetch it again once we're in the transaction block with FOR UPDATE
+					TrialsRecord wrapperTransaction = context.selectFrom(TRIALS)
+					                                         .where(TRIALS.OWNER_CODE.eq(shareCode)
+					                                                                 .or(TRIALS.EDITOR_CODE.eq(shareCode))
+					                                                                 .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+					                                         .forUpdate() // IMPORTANT FOR PESSIMISTIC LOCKING
+					                                         .fetchAny();
 
-					if (trial.getIsLocked() != null && trial.getIsLocked() && type != TrialPermissionType.OWNER && !lockOverride) {
+					Trial trial = wrapperTransaction.getTrial();
+
+					if (trial.getIsLocked() != null && trial.getIsLocked() && finalType != TrialPermissionType.OWNER && !finalLockOverride)
+					{
 						return Response.status(Response.Status.CONFLICT).build();
 					}
 
@@ -207,7 +211,7 @@ public class TrialTransactionResource
 						Cell cell = entry.getValue();
 
 						// This cell can be modified if it's either not locked OR the owner is making changes OR the override has been set
-						boolean canEditCell = lockOverride || cell.getIsLocked() == null || !cell.getIsLocked() || type == TrialPermissionType.OWNER;
+						boolean canEditCell = finalLockOverride || cell.getIsLocked() == null || !cell.getIsLocked() || finalType == TrialPermissionType.OWNER;
 
 						if (transaction.getBrapiIdChangeTransaction() != null && transaction.getBrapiIdChangeTransaction().getGermplasmBrapiIds() != null)
 						{
@@ -245,7 +249,8 @@ public class TrialTransactionResource
 						}
 
 						// Check if the disabled status has changed
-						if (transaction.getPlotLockedTransactions() != null) {
+						if (transaction.getPlotLockedTransactions() != null)
+						{
 							Boolean change = transaction.getPlotLockedTransactions().get(key);
 
 							if (change != null)
@@ -316,9 +321,9 @@ public class TrialTransactionResource
 									return Response.status(Response.Status.CONFLICT).build();
 
 								cell.setBarcode(plotChanges.getBarcode())
-									.setFriendlyName(plotChanges.getFriendlyName())
-									.setPedigree(plotChanges.getPedigree())
-									.setTreatment(plotChanges.getTreatment());
+								    .setFriendlyName(plotChanges.getFriendlyName())
+								    .setPedigree(plotChanges.getPedigree())
+								    .setTreatment(plotChanges.getTreatment());
 							}
 						}
 
@@ -372,7 +377,7 @@ public class TrialTransactionResource
 								for (TraitMeasurement m : measures)
 								{
 									trial.getTraits().stream().filter(trait -> Objects.equals(trait.getId(), m.getTraitId())).findFirst()
-										 .ifPresent(trait -> {
+									     .ifPresent(trait -> {
 											 if (!cellMeasurements.containsKey(trait.getId()))
 												 cellMeasurements.put(trait.getId(), new ArrayList<>());
 
@@ -400,25 +405,25 @@ public class TrialTransactionResource
 													 if (match.isPresent())
 													 {
 														 match.get()
-															  .setPersonId(m.getPersonId())
-															  .setValues(m.getValues());
+													          .setPersonId(m.getPersonId())
+													          .setValues(m.getValues());
 													 }
 													 else
 													 {
 														 // Add new
 														 list.add(new Measurement()
 																 .setPersonId(m.getPersonId())
-																 .setValues(m.getValues())
-																 .setTimestamp(m.getTimestamp()));
+															     .setValues(m.getValues())
+															     .setTimestamp(m.getTimestamp()));
 													 }
 												 }
 												 else
 												 {
 													 // Update
 													 list.getFirst()
-														 .setPersonId(m.getPersonId())
-														 .setValues(m.getValues())
-														 .setTimestamp(m.getTimestamp());
+												         .setPersonId(m.getPersonId())
+												         .setValues(m.getValues())
+												         .setTimestamp(m.getTimestamp());
 												 }
 											 }
 										 });
@@ -439,7 +444,7 @@ public class TrialTransactionResource
 
 						// Add the new comment
 						comments.forEach(c -> trial.getComments().add(new Comment().setContent(c.getContent())
-																				   .setTimestamp(c.getTimestamp())));
+						                                                           .setTimestamp(c.getTimestamp())));
 					}
 
 					/* REMOVE TRIAL COMMENTS */
@@ -465,9 +470,9 @@ public class TrialTransactionResource
 
 						// Add the new event
 						events.forEach(c -> trial.getEvents().add(new Event().setContent(c.getContent())
-																			 .setTimestamp(c.getTimestamp())
-																			 .setType(c.getType())
-																			 .setImpact(c.getImpact())));
+						                                                     .setTimestamp(c.getTimestamp())
+						                                                     .setType(c.getType())
+						                                                     .setImpact(c.getImpact())));
 					}
 
 					/* REMOVE TRIAL EVENT */
@@ -506,7 +511,7 @@ public class TrialTransactionResource
 						for (TraitEditContent newTraitData : transaction.getTraitChangeTransactions())
 						{
 							trial.getTraits().stream().filter(t -> Objects.equals(t.getId(), newTraitData.getId())).findAny()
-								 .ifPresent(oldTraitData -> {
+							     .ifPresent(oldTraitData -> {
 									 // It used to have an image, but now it doesn't
 									 if (oldTraitData.isHasImage() && newTraitData.getHasImage() != null && !newTraitData.getHasImage())
 										 traitIdsForImageDeletion.add(oldTraitData.getId());
@@ -541,35 +546,35 @@ public class TrialTransactionResource
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
 					String formattedNow = now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter());
 					trial.setUpdatedOn(formattedNow);
-					wrapper.setTrial(trial);
+					wrapperTransaction.setTrial(trial);
 
-					UpdateStats stats = wrapper.getUpdateStats();
+					UpdateStats stats = wrapperTransaction.getUpdateStats();
 
 					if (stats == null)
 						stats = new UpdateStats();
 
-					if (type == TrialPermissionType.OWNER)
+					if (finalType == TrialPermissionType.OWNER)
 					{
 						stats.getOwnerUpdates()
-							 .setUpdateCount(stats.getOwnerUpdates().getUpdateCount() + 1)
-							 .setLastUpdateOn(formattedNow);
+						     .setUpdateCount(stats.getOwnerUpdates().getUpdateCount() + 1)
+						     .setLastUpdateOn(formattedNow);
 					}
-					else if (type == TrialPermissionType.EDITOR)
+					else if (finalType == TrialPermissionType.EDITOR)
 					{
 						stats.getEditorUpdates()
-							 .setUpdateCount(stats.getEditorUpdates().getUpdateCount() + 1)
-							 .setLastUpdateOn(formattedNow);
+						     .setUpdateCount(stats.getEditorUpdates().getUpdateCount() + 1)
+						     .setLastUpdateOn(formattedNow);
 					}
 
-					wrapper.setUpdateStats(stats);
-					wrapper.setUpdatedOn(now.toLocalDateTime());
-					wrapper.store();
+					wrapperTransaction.setUpdateStats(stats);
+					wrapperTransaction.setUpdatedOn(now.toLocalDateTime());
+					wrapperTransaction.store();
 
 					// Limit the share codes to what the user is allowed to see
-					TrialResource.setShareCodes(trial, shareCode, wrapper);
+					TrialResource.setShareCodes(trial, shareCode, wrapperTransaction);
 
 					return Response.ok(trial).build();
-				}
+				});
 			}
 		}
 	}

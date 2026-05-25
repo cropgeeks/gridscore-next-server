@@ -88,18 +88,18 @@ public class TrialResource
 			if (trial == null)
 				return Response.status(Response.Status.NOT_FOUND).build();
 
-			synchronized (trial.getOwnerCode())
-			{
-				trial = context.selectFrom(TRIALS)
-				               .where(TRIALS.OWNER_CODE.eq(shareCode)
-				                                       .or(TRIALS.EDITOR_CODE.eq(shareCode))
-				                                       .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-				               .fetchAny();
+			return context.transactionResult(trx -> {
+				TrialsRecord transactionTrial = context.selectFrom(TRIALS)
+				                                       .where(TRIALS.OWNER_CODE.eq(shareCode)
+				                                                               .or(TRIALS.EDITOR_CODE.eq(shareCode))
+				                                                               .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+				                                       .forUpdate() // IMPORTANT FOR PESSIMISTIC LOCKING
+				                                       .fetchAny();
 
-				Trial result = trial.getTrial();
-				TrialPermissionType type = setShareCodes(result, shareCode, trial);
+				Trial result = transactionTrial.getTrial();
+				TrialPermissionType type = setShareCodes(result, shareCode, transactionTrial);
 
-				UpdateStats stats = trial.getUpdateStats();
+				UpdateStats stats = transactionTrial.getUpdateStats();
 
 				if (stats == null)
 					stats = new UpdateStats();
@@ -126,7 +126,7 @@ public class TrialResource
 				trial.store(TRIALS.UPDATE_STATS, TRIALS.UPDATED_ON);
 
 				return Response.ok(result).build();
-			}
+			});
 		}
 	}
 
@@ -384,29 +384,29 @@ public class TrialResource
 				if (StringUtils.isEmpty(mapCaptcha) || !Objects.equals(mapCaptcha, captchaContent.getCaptcha()))
 					return Response.status(Response.Status.NOT_FOUND).build();
 
-				synchronized (wrapper.getOwnerCode())
-				{
+				return context.transactionResult(trx -> {
 					// Fetch it again once we're in the synchronised block
-					wrapper = context.selectFrom(TRIALS)
-					                 .where(TRIALS.OWNER_CODE.eq(shareCode)
-					                                         .or(TRIALS.EDITOR_CODE.eq(shareCode))
-					                                         .or(TRIALS.VIEWER_CODE.eq(shareCode)))
-					                 .fetchAny();
+					TrialsRecord transactionWrapper = context.selectFrom(TRIALS)
+					                                          .where(TRIALS.OWNER_CODE.eq(shareCode)
+					                                                                  .or(TRIALS.EDITOR_CODE.eq(shareCode))
+					                                                                  .or(TRIALS.VIEWER_CODE.eq(shareCode)))
+					                                          .forUpdate() // IMPORTANT FOR PESSIMISTIC LOCKING
+					                                          .fetchAny();
 
-					Trial trial = wrapper.getTrial();
+					Trial trial = transactionWrapper.getTrial();
 
 					// Set updated on to UTC NOW
 					ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
 					trial.setUpdatedOn(now.format(new DateTimeFormatterBuilder().appendInstant(3).toFormatter()));
-					wrapper.setUpdatedOn(now.toLocalDateTime());
-					wrapper.setTrial(trial);
-					wrapper.store();
+					transactionWrapper.setUpdatedOn(now.toLocalDateTime());
+					transactionWrapper.setTrial(trial);
+					transactionWrapper.store();
 
 					// Remove it from the map if all is successful
 					captchaMap.remove(shareCode);
 
 					return Response.ok().build();
-				}
+				});
 			}
 		}
 	}
