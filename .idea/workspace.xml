@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- FIX: Trying to fix server startup issues.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/resource/TrialTransactionResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -303,7 +302,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
       </set>
     </attachedChunks>
   </component>
@@ -731,7 +731,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779313458501</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-">
+      <option name="closed" value="true" />
+      <created>1779722256567</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1779722256567</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -751,7 +759,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="- CHG: Typescript updates." />
     <MESSAGE value="- ADD: Added missing trait description in Germinate template export.&#10;- ADD: Added trait reference image URL transaction support." />
     <MESSAGE value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
     <MESSAGE value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
@@ -776,7 +783,8 @@
     <MESSAGE value="- CHG: Bump version for release." />
     <MESSAGE value="- CHG: Reduced server load of /checkupdate by only fetching the timestamp rather than the whole trial into memory." />
     <MESSAGE value="- FIX: Trying to fix server startup issues." />
-    <option name="LAST_COMMIT_MESSAGE" value="- FIX: Trying to fix server startup issues." />
+    <MESSAGE value="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-" />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
