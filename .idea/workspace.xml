@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,19 +38,7 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="gridscore-next" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="gridscore-next" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="gridscore-next" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="deployment" type="c8890929:TasksNode$1" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -739,7 +726,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779722256567</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="- CHG: Version bump.">
+      <option name="closed" value="true" />
+      <created>1780907849215</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1780907849215</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -774,7 +769,6 @@
     <MESSAGE value="- ADD: Added option to define custom row/column names." />
     <MESSAGE value="- ADD: Added support for trial group orders.&#10;- ADD: Added support for stepper size on range slider traits.&#10;-" />
     <MESSAGE value="- CHG: Pre-merge commit." />
-    <MESSAGE value="- CHG: Version bump." />
     <MESSAGE value="- FIX: Fixed issues during export to Germinate template." />
     <MESSAGE value="- ADD: Added exception tracking to separate Plausible &quot;website&quot; to know when things fail on the server." />
     <MESSAGE value="- FIX: Fixed test cases.&#10;-" />
@@ -784,7 +778,8 @@
     <MESSAGE value="- CHG: Reduced server load of /checkupdate by only fetching the timestamp rather than the whole trial into memory." />
     <MESSAGE value="- FIX: Trying to fix server startup issues." />
     <MESSAGE value="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-" />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-" />
+    <MESSAGE value="- CHG: Version bump." />
+    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
