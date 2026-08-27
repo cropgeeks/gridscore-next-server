@@ -20,11 +20,11 @@ import java.util.stream.*;
 
 public class DataToSpreadsheet
 {
-	private File                 template;
-	private File                 target;
-	private Trial                trial;
-	private boolean              aggregate;
-	private Map<String, Integer> traitToColumnIndex = new HashMap<>();
+	private final File                 template;
+	private final File                 target;
+	private final Trial                trial;
+	private final boolean              aggregate;
+	private final Map<String, Integer> traitToColumnIndex = new HashMap<>();
 
 	private boolean hasPlotComments = false;
 
@@ -238,7 +238,7 @@ public class DataToSpreadsheet
 			// Get the maximum number of measurements (including individual set size measurements)
 			int[] measurementCount = new int[]{0};
 			cell.getMeasurements().forEach((traitId, measurements) -> {
-				long count = measurements.stream().map(m -> m.getValues().stream().filter(Objects::nonNull).count()).reduce(0l, Long::sum);
+				long count = measurements.stream().map(m -> m.getValues().stream().filter(Objects::nonNull).count()).reduce(0L, Long::sum);
 				measurementCount[0] = (int) Math.max(measurementCount[0], count);
 			});
 
@@ -357,11 +357,11 @@ public class DataToSpreadsheet
 				if (!CollectionUtils.isEmpty(measurements))
 				{
 					int counter = 0;
-					for (int j = 0; j < measurements.size(); j++)
+					for (Measurement measurement : measurements)
 					{
-						List<String> nonNullValues = measurements.get(j).getValues().stream().filter(v -> !StringUtils.isBlank(v)).toList();
+						List<String> nonNullValues = measurement.getValues().stream().filter(v -> !StringUtils.isBlank(v)).toList();
 
-						// Handle multi-category values and split them apart
+						// Handle multicategory values and split them apart
 						if (Objects.equals(t.getDataType(), "multicat"))
 						{
 							List<String> splitMultiMeasurements = new ArrayList<>();
@@ -392,13 +392,13 @@ public class DataToSpreadsheet
 							dc = getCell(d, traitIndex);
 							pc = getCell(p, traitIndex);
 
-							if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "numeric"))
+							if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "float") || Objects.equals(t.getDataType(), "range") || Objects.equals(t.getDataType(), "vegindex"))
 							{
 								try
 								{
 									Double.parseDouble(value);
 									setCell(t, dc, value);
-									setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+									setCell(t, pc, getTimezonedDate(measurement.getTimestamp(), false));
 								}
 								catch (Exception e)
 								{
@@ -409,12 +409,12 @@ public class DataToSpreadsheet
 							{
 								String parsed = t.getRestrictions().getCategories().get(Integer.parseInt(value));
 								setCell(t, dc, parsed);
-								setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+								setCell(t, pc, getTimezonedDate(measurement.getTimestamp(), false));
 							}
 							else
 							{
 								setCell(t, dc, value);
-								setCell(t, pc, getTimezonedDate(measurements.get(j).getTimestamp(), false));
+								setCell(t, pc, getTimezonedDate(measurement.getTimestamp(), false));
 							}
 						}
 						counter += nonNullValues.size();
@@ -605,7 +605,7 @@ public class DataToSpreadsheet
 						 }
 
 						 String value;
-						 if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "numeric"))
+						 if (Objects.equals(t.getDataType(), "int") || Objects.equals(t.getDataType(), "float") || Objects.equals(t.getDataType(), "range") || Objects.equals(t.getDataType(), "vegindex"))
 						 {
 							 double total = 0;
 							 int count = 0;
@@ -633,8 +633,8 @@ public class DataToSpreadsheet
 						 }
 						 else
 						 {
-							 List<String> values = measurements.get(measurements.size() - 1).getValues();
-							 value = values.get(values.size() - 1);
+							 List<String> values = measurements.getLast().getValues();
+							 value = values.getLast();
 
 							 if (!StringUtils.isBlank(value))
 					         {
@@ -694,7 +694,7 @@ public class DataToSpreadsheet
 	private void writeCollaborators(XSSFWorkbook workbook)
 	{
 		XSSFSheet collaborators = workbook.getSheet("COLLABORATORS");
-		XSSFTable collaboratorsTable = collaborators.getTables().get(0);
+		XSSFTable collaboratorsTable = collaborators.getTables().getFirst();
 
 		// Adjust the table size
 		AreaReference area = new AreaReference(collaboratorsTable.getStartCellReference(), new CellReference(trial.getPeople().size() + 1, collaboratorsTable.getEndCellReference().getCol()), SpreadsheetVersion.EXCEL2007);
@@ -725,7 +725,7 @@ public class DataToSpreadsheet
 	private void writeAttributes(XSSFWorkbook workbook)
 	{
 		XSSFSheet attributes = workbook.getSheet("ATTRIBUTES");
-		XSSFTable attributeTable = attributes.getTables().get(0);
+		XSSFTable attributeTable = attributes.getTables().getFirst();
 
 		int count = 3;
 		if (!CollectionUtils.isEmpty(trial.getComments()))
@@ -857,7 +857,7 @@ public class DataToSpreadsheet
 		Gson gson = new Gson();
 
 		XSSFSheet phenotypes = workbook.getSheet("PHENOTYPES");
-		XSSFTable traitTable = phenotypes.getTables().get(0);
+		XSSFTable traitTable = phenotypes.getTables().getFirst();
 
 		int traitDimensions = trial.getTraits().size();
 
@@ -887,6 +887,8 @@ public class DataToSpreadsheet
 					 {
 						 case "int":
 						 case "float":
+						 case "range":
+						 case "vegindex":
 							 row.createCell(3).setCellValue("numeric");
 							 break;
 						 case "multicat":
@@ -912,7 +914,7 @@ public class DataToSpreadsheet
 					 }
 
 					 row.createCell(10).setCellValue(t.getSetSize());
-					 row.createCell(11).setCellValue(t.isAllowRepeats() ? "true" : "false");
+					 row.createCell(11).setCellValue(Boolean.toString(t.isAllowRepeats()));
 					 row.createCell(12).setCellValue(t.getGroup() != null ? t.getGroup().getName() : "");
 				 });
 
