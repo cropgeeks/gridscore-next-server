@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- CHG: Version bump.">
+    <list default="true" id="3b8b9152-a329-4bd4-9d04-96de64643f99" name="Changes" comment="- ADD: Added support for new 'vegindex' trait type which uses Spriggles to extract the vegetation index from images.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/jhi/gridscore/server/util/DataToSpreadsheet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,11 +35,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="gridscore-next" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="gridscore-next" type="f1a62948:ProjectNode" />
-                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -290,8 +285,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.27258.48" />
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.27258.48" />
+        <option value="bundled-jdk-30f59d01ecdd-34e2839f716b-intellij.indexing.shared.core-IU-262.9437.185" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.9437.185" />
       </set>
     </attachedChunks>
   </component>
@@ -743,7 +738,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785226057412</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="- ADD: Added support for new 'vegindex' trait type which uses Spriggles to extract the vegetation index from images.">
+      <option name="closed" value="true" />
+      <created>1787816562644</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1787816562644</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -763,7 +766,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="- ADD: Added missing trait description in Germinate template export.&#10;- ADD: Added trait reference image URL transaction support." />
     <MESSAGE value="- ADD: Added set size and timeseries flag to traits/phenotypes." />
     <MESSAGE value="- FIX: Fixed potential issues with old trial archiving.&#10;-" />
     <MESSAGE value="- CHG: Formatting." />
@@ -788,7 +790,8 @@
     <MESSAGE value="- FIX: Trying to fix server startup issues." />
     <MESSAGE value="- CHG: Replaced `synchronized` blocks with DB transactions and FOR UPDATE calls.&#10;-" />
     <MESSAGE value="- CHG: Version bump." />
-    <option name="LAST_COMMIT_MESSAGE" value="- CHG: Version bump." />
+    <MESSAGE value="- ADD: Added support for new 'vegindex' trait type which uses Spriggles to extract the vegetation index from images." />
+    <option name="LAST_COMMIT_MESSAGE" value="- ADD: Added support for new 'vegindex' trait type which uses Spriggles to extract the vegetation index from images." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
