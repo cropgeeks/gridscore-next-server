@@ -75,7 +75,7 @@ public class DataToSpreadsheet
 			throws IOException
 	{
 		try (FileInputStream is = new FileInputStream(template);
-		     FileOutputStream os = new FileOutputStream(target))
+			 FileOutputStream os = new FileOutputStream(target))
 		{
 			XSSFWorkbook workbook = new XSSFWorkbook(is);
 
@@ -167,8 +167,8 @@ public class DataToSpreadsheet
 
 			c.getMeasurements().put(lat.getId(), ms.stream().map(mm -> new Measurement()
 														   .setPersonId(mm.getPersonId())
-					                                       .setTimestamp(mm.getTimestamp())
-					                                       .setValues(mm.getValues().stream().map(v -> {
+														   .setTimestamp(mm.getTimestamp())
+														   .setValues(mm.getValues().stream().map(v -> {
 															   if (StringUtils.isEmpty(v))
 																   return v;
 
@@ -178,11 +178,11 @@ public class DataToSpreadsheet
 															   else
 																   return null;
 														   }).collect(Collectors.toList())))
-			                                       .collect(Collectors.toList()));
+												   .collect(Collectors.toList()));
 			c.getMeasurements().put(lng.getId(), ms.stream().map(mm -> new Measurement()
 														   .setPersonId(mm.getPersonId())
-					                                       .setTimestamp(mm.getTimestamp())
-					                                       .setValues(mm.getValues().stream().map(v -> {
+														   .setTimestamp(mm.getTimestamp())
+														   .setValues(mm.getValues().stream().map(v -> {
 															   if (StringUtils.isEmpty(v))
 																   return v;
 
@@ -192,7 +192,7 @@ public class DataToSpreadsheet
 															   else
 																   return null;
 														   }).collect(Collectors.toList())))
-			                                       .collect(Collectors.toList()));
+												   .collect(Collectors.toList()));
 		});
 	}
 
@@ -407,7 +407,19 @@ public class DataToSpreadsheet
 							}
 							else if (Objects.equals(t.getDataType(), "categorical") || Objects.equals(t.getDataType(), "multicat"))
 							{
-								String parsed = t.getRestrictions().getCategories().get(Integer.parseInt(value));
+								int index = -1;
+								try
+								{
+									// Parse the index
+									index = Integer.parseInt(value);
+								}
+								catch (NumberFormatException e)
+								{
+									// As a fallback, try to see if the value is one of the categories
+									index = t.getRestrictions().getCategories().indexOf(value);
+								}
+
+								String parsed = index != -1 ? t.getRestrictions().getCategories().get(index) : "";
 								setCell(t, dc, parsed);
 								setCell(t, pc, getTimezonedDate(measurement.getTimestamp(), false));
 							}
@@ -487,7 +499,7 @@ public class DataToSpreadsheet
 		});
 
 		IntStream.range(0, cells.size())
-		         .forEach(i -> {
+				 .forEach(i -> {
 					 XSSFRow d = getRow(data, i + 1);
 					 if (d == null)
 						 d = data.createRow(i + 1);
@@ -637,14 +649,26 @@ public class DataToSpreadsheet
 							 value = values.getLast();
 
 							 if (!StringUtils.isBlank(value))
-					         {
+							 {
 								 if (Objects.equals(t.getDataType(), "categorical"))
 									 value = t.getRestrictions().getCategories().get(Integer.parseInt(value));
 								 else if (Objects.equals(t.getDataType(), "multicat"))
 								 {
 									 String[] parts = value.split(":");
 
-									 value = t.getRestrictions().getCategories().get(Integer.parseInt(parts[parts.length - 1]));
+									 int index = -1;
+									 try
+									 {
+										 // Parse the index
+										 index = Integer.parseInt(parts[parts.length - 1]);
+									 }
+									 catch (NumberFormatException e)
+									 {
+										 // As a fallback, try to see if the value is one of the categories
+										 index = t.getRestrictions().getCategories().indexOf(parts[parts.length - 1]);
+									 }
+
+									 value = index != -1 ? t.getRestrictions().getCategories().get(index) : "";
 								 }
 							 }
 						 }
@@ -818,10 +842,10 @@ public class DataToSpreadsheet
 			row.createCell(1).setCellValue("text");
 			XSSFCell cell = row.createCell(2);
 			cell.setCellValue(trial.getComments()
-			                       .stream()
-			                       .filter(c -> !StringUtils.isBlank(c.getContent()))
-			                       .map(c -> getTimezonedDate(c.getTimestamp(), true) + ": " + c.getContent().replaceAll("\r?\n", " "))
-			                       .collect(Collectors.joining("\n")));
+								   .stream()
+								   .filter(c -> !StringUtils.isBlank(c.getContent()))
+								   .map(c -> getTimezonedDate(c.getTimestamp(), true) + ": " + c.getContent().replaceAll("\r?\n", " "))
+								   .collect(Collectors.joining("\n")));
 
 			// Allow wrapping on new line characters
 			CellStyle cs = workbook.createCellStyle();
@@ -840,10 +864,10 @@ public class DataToSpreadsheet
 			row.createCell(1).setCellValue("text");
 			XSSFCell cell = row.createCell(2);
 			cell.setCellValue(trial.getEvents()
-			                       .stream()
-			                       .filter(e -> !StringUtils.isBlank(e.getContent()))
-			                       .map(e -> getTimezonedDate(e.getTimestamp(), true) + " (" + e.getType() + "; " + e.getImpact() + "): " + e.getContent().replaceAll("\r?\n", " "))
-			                       .collect(Collectors.joining("\n")));
+								   .stream()
+								   .filter(e -> !StringUtils.isBlank(e.getContent()))
+								   .map(e -> getTimezonedDate(e.getTimestamp(), true) + " (" + e.getType() + "; " + e.getImpact() + "): " + e.getContent().replaceAll("\r?\n", " "))
+								   .collect(Collectors.joining("\n")));
 
 			// Allow wrapping on new line characters
 			CellStyle cs = workbook.createCellStyle();
@@ -873,7 +897,7 @@ public class DataToSpreadsheet
 		final XSSFSheet sheet = traitTable.getXSSFSheet();
 
 		IntStream.range(0, trial.getTraits().size())
-		         .forEach(i -> {
+				 .forEach(i -> {
 					 Trait t = trial.getTraits().get(i);
 					 XSSFRow row = sheet.getRow(i + 1);
 
